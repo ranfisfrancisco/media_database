@@ -8,6 +8,8 @@ const bodyParser = require('body-parser');
 const app = express();
 const server = http.createServer(app);
 
+require('./database/initDb');
+
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cors());
