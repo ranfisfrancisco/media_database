@@ -20,7 +20,7 @@ module.exports.addDocCopy = async (req, res) => {
 }
 
 module.exports.getDocCopy = async (req, res) => {
-	let { bId, docId, copyNo } = req.body;
+	let { bId, docId, copyNo } = req.params;
 	let query = `
 		SELECT BOR_NO
 		FROM BORROWING NATURAL JOIN BORROWS
@@ -56,7 +56,7 @@ module.exports.getBranchInfo = async (req, res) => {
 }
 
 module.exports.topBranchBorrowers = async (req, res) => {
-	let { branchNum, maxBorrowers } = req.body;
+	let { branchNum, maxBorrowers } = req.params;
 	let query = `
 		SELECT RID, RNAME
 		FROM READER
@@ -90,7 +90,7 @@ module.exports.topLibraryBorrowers = async (req, res) => {
 }
 
 module.exports.topBorrowedBooksBranch = async (req, res) => {
-	let { branchNum, maxBorrow } = req.body;
+	let { branchNum, maxBorrowers } = req.params;
 	let query = `
 		SELECT DOCID
 		FROM BORROWS
@@ -146,7 +146,7 @@ module.exports.topBorrowedBooksLibraryByYear = async (req, res) => {
 }
 
 module.exports.averageBranchBorrowingFine = async (req, res) => {
-	let { startDate, endDate } = req.body;
+	let { startDate, endDate } = req.params;
 	let query = `
 		SELECT BID, LNAME, AVG((DATEDIFF(RDTIME, BDTIME) - 6) * 0.75) AS AVG_FINES
 		FROM BRANCH NATURAL JOIN BORROWS NATURAL JOIN BORROWING
