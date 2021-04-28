@@ -4,6 +4,7 @@ const router = express.Router();
 
 const admin = require('../controllers/admin');
 
+router.post('/login', admin.login);
 router.post('/add_doc', admin.addDocCopy);
 router.get('/get_doc', admin.getDocCopy);
 router.post('/add_reader', admin.addReader);

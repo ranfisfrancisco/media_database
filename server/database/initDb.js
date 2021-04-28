@@ -1,10 +1,6 @@
 const mysql = require('mysql');
 
-const con = mysql.createConnection({
-	host: 'localhost',
-	user: 'root',
-	password: '123',
-});
+const con = require('./initConn');
 
 con.connect((err) => {
 	if(err) throw err;
@@ -18,23 +14,23 @@ con.connect((err) => {
 		console.log("DB created")
 	});
 
-	con.changeUser({database : 'library'}, function(err) {
+	con.changeUser({ database : 'library' }, function(err) {
 		if (err) throw err;
 	});
 
 	let createTables = `CREATE TABLE PERSON (
-		PID		INTEGER	NOT NULL,
+		PID		INTEGER	NOT NULL	AUTO_INCREMENT,
 		PNAME	VARCHAR(15),
 		PRIMARY KEY(PID)
 	);
 	CREATE TABLE PUBLISHER (
-		PUBLISHERID	INTEGER	NOT NULL,
+		PUBLISHERID	INTEGER	NOT NULL	AUTO_INCREMENT,
 		PUBNAME		VARCHAR(15),
 		ADDRESS		VARCHAR(20),
 		PRIMARY KEY(PUBLISHERID)
 	);
 	CREATE TABLE DOCUMENT (
-		DOCID		INTEGER	NOT NULL,
+		DOCID		INTEGER	NOT NULL	AUTO_INCREMENT,
 		TITLE			VARCHAR(20),
 		PDATE		DATE,
 		PUBLISHERID	INTEGER,
@@ -93,7 +89,7 @@ con.connect((err) => {
 		FOREIGN KEY(PID) REFERENCES PERSON(PID) ON DELETE CASCADE
 	);
 	CREATE TABLE BRANCH (
-		BID		INTEGER	NOT NULL,
+		BID		INTEGER	NOT NULL	AUTO_INCREMENT,
 		LNAME	VARCHAR(20),
 		ADDRESS	VARCHAR(20),
 		PRIMARY KEY(BID)
@@ -116,7 +112,7 @@ con.connect((err) => {
 		PRIMARY KEY(RID)
 	);
 	CREATE TABLE BORROWING (
-		BOR_NO	INTEGER	NOT NULL,
+		BOR_NO	INTEGER	NOT NULL	AUTO_INCREMENT,
 		BDTIME	DATETIME,
 		RDTIME	DATETIME,
 		PRIMARY KEY(BOR_NO)
@@ -133,7 +129,7 @@ con.connect((err) => {
 		FOREIGN KEY(DOCID, COPYNO, BID) REFERENCES COPY(DOCID, COPYNO, BID) ON DELETE CASCADE
 	);
 	CREATE TABLE RESERVATION (
-		RES_NO	INTEGER	NOT NULL,
+		RES_NO	INTEGER	NOT NULL	AUTO_INCREMENT,
 		DTIME	DATETIME,
 		PRIMARY KEY(RES_NO)
 	);
@@ -147,8 +143,7 @@ con.connect((err) => {
 		FOREIGN KEY(RESERVATION_NO) REFERENCES RESERVATION(RES_NO) ON DELETE CASCADE,
 		FOREIGN KEY(RID) REFERENCES READER(RID) ON DELETE CASCADE,
 		FOREIGN KEY(DOCID, COPYNO, BID) REFERENCES COPY(DOCID, COPYNO, BID) ON DELETE CASCADE
-	)	
-	`
+	);`
 	con.query(createTables,  function(err, result) {
 		if(err) throw err;
 		console.log("Tables created")
@@ -209,4 +204,5 @@ con.connect((err) => {
 		if(err) throw err;
 		console.log("Tables filled")
 	});
+	
 });
