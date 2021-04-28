@@ -22,6 +22,8 @@ const ReaderPage = () => {
 
 	const [visibleContent, setVisibleContent] = useState('search');
 
+	const handleClick = (e) => setVisibleContent(e.key);
+
 	const renderContent = () => {
 		if(visibleContent === 'search') {
 			return <SearchPage />;
@@ -41,8 +43,6 @@ const ReaderPage = () => {
 			return <div>ERROR</div>;
 		}
 	}
-
-	const handleClick = (e) => setVisibleContent(e.key);
 
 	const renderMenu = () => (
 		<Menu mode='horizontal' onClick={handleClick} selectedKeys={[visibleContent]}>

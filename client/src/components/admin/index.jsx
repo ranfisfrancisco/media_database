@@ -9,11 +9,46 @@ import {
 	QuestionCircleOutlined,
 } from '@ant-design/icons';
 
+import AddDocPage from './AddDocPage';
+import AddReaderPage from './AddReaderPage';
+import AverageFinePage from './AverageFinePage';
+import BranchInfoPage from './BranchInfoPage';
+import SearchDocPage from './SearchDocPage';
+import TopBorrowedBooksBranchPage from './TopBorrowedBooksBranchPage';
+import TopBorrowedBooksLibraryPage from './TopBorrowedBooksLibraryPage';
+import TopBorrowedLibBooksByYearPage from './TopBorrowedLibBooksByYearPage';
+import TopBranchBorrowersPage from './TopBranchBorrowersPage';
+import TopLibraryBorrowersPage from './TopLibraryBorrowersPage';
+
 const AdminPage = () => {
 
 	const [visibleContent, setVisibleContent] = useState('addDoc');
 
 	const handleClick = (e) => setVisibleContent(e.key);
+
+	const renderContent = () => {
+		if(visibleContent === 'addDoc') {
+			return <AddDocPage />;
+		} else if(visibleContent === 'searchDoc') {
+			return <SearchDocPage />;
+		} else if(visibleContent === 'addReader') {
+			return <AddReaderPage />;
+		} else if(visibleContent === 'branchInfo') {
+			return <BranchInfoPage />;
+		} else if(visibleContent === 'topBranchBorrowers') {
+			return <TopBranchBorrowersPage/>;
+		} else if(visibleContent === 'topLibraryBorrowers') {
+			return <TopLibraryBorrowersPage/>;
+		} else if(visibleContent === 'topBorrowedBooksBranch') {
+			return <TopBorrowedBooksBranchPage />;
+		} else if(visibleContent === 'topBorrowedBooksLibrary') {
+			return <TopBorrowedBooksLibraryPage />;
+		} else if(visibleContent === 'topBorrowedBooksLibraryByYear') {
+			return <TopBorrowedLibBooksByYearPage />;
+		} else if(visibleContent === 'averageBorrowingFine') {
+			return <AverageFinePage />;
+		}
+	}
 
 	const renderMenu = () => (
 		<Menu mode='horizontal' onClick={handleClick} selectedKeys={[visibleContent]}>
@@ -53,6 +88,7 @@ const AdminPage = () => {
 	return (
 		<div className='admin-page-wrapper'>
 			{renderMenu()}
+			{renderContent()}
 		</div>
 	);	
 }
