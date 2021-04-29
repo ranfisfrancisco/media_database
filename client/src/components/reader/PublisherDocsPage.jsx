@@ -43,7 +43,7 @@ const PublisherDocsPage = () => {
 	}
 
 	return (
-		<div className='publisher-docs-page-wrapper'>
+		<div className='reader-content-wrapper'>
 			{renderPublishedSearch()}
 			{renderPublishedDocsList()}
 		</div>

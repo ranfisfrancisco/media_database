@@ -46,7 +46,7 @@ module.exports.addReader = async (req, res) => {
 module.exports.getBranchInfo = async (req, res) => {
 	let { bId } = req.params;
 	let query = `
-		SELECT LNAME, LOCATION
+		SELECT LNAME, ADDRESS
 		FROM BRANCH
 		WHERE BID=${bId}`;
 	conn.query(query, (err, result) => {
@@ -55,6 +55,7 @@ module.exports.getBranchInfo = async (req, res) => {
 	});
 }
 
+// error 
 module.exports.topBranchBorrowers = async (req, res) => {
 	let { branchNum, maxBorrowers } = req.params;
 	let query = `
@@ -100,7 +101,7 @@ module.exports.topBorrowedBooksBranch = async (req, res) => {
 		)
 		GROUP BY DOCID
 		ORDER BY COUNT(DOCID)
-		LIMIT ${maxBorrow}`;
+		LIMIT ${maxBorrowers}`;
 	conn.query(query, (err, result) => {
 		if(err) return res.status(400).json({ message: 'Query error' });
 		res.send({ result });
@@ -127,12 +128,12 @@ module.exports.topBorrowedBooksLibrary = async (req, res) => {
 
 module.exports.topBorrowedBooksLibraryByYear = async (req, res) => {
 	let { year } = req.params;
-	let yearStart = `${year}-01-01 00:00:01.000`;
-	let yearEnd = `${year}-12-31 11:59:59.000`;
+	let yearStart = `${year}-01-01 00:00:01`;
+	let yearEnd = `${year}-12-31 11:59:59`;
 	let query = `
 		SELECT DOCID
 		FROM BORROWS NATURAL JOIN BORROWING
-		WHERE BDTIME BETWEEN CAST(${yearStart} AS DATETIME) AND CAST(${yearEnd} AS DATETIME) AND DOCID IN (
+		WHERE BDTIME BETWEEN CAST(\'${yearStart}\' AS DATETIME) AND CAST(\'${yearEnd}\' AS DATETIME) AND DOCID IN (
 			SELECT DOCID
 			FROM BOOK
 		)

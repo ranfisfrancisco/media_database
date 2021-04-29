@@ -93,7 +93,7 @@ const SearchPage = () => {
 	}
 
 	return (
-		<div className='search-page-wrapper'>
+		<div className='reader-content-wrapper'>
 			{renderIdSearch()}
 			{renderTitleSearch()}
 			{renderPublisherSearch()}

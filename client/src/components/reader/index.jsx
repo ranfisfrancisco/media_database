@@ -10,6 +10,8 @@ import {
 	FileOutlined,
 } from '@ant-design/icons';
 
+import LogoutButton from '../LogoutButton';
+
 import SearchPage from './SearchPage';
 import CheckoutPage from './CheckoutPage';
 import ReturnPage from './ReturnPage';
@@ -45,7 +47,7 @@ const ReaderPage = () => {
 	}
 
 	const renderMenu = () => (
-		<Menu mode='horizontal' onClick={handleClick} selectedKeys={[visibleContent]}>
+		<Menu mode='horizontal' onClick={handleClick} selectedKeys={[visibleContent]} theme='dark'>
 			<Menu.Item key='search' icon={<SearchOutlined />}>
 				Search
 			</Menu.Item>
@@ -73,6 +75,7 @@ const ReaderPage = () => {
 
 	return (
 		<div className='reader-page-wrapper'>
+			<LogoutButton />
 			{renderMenu()}
 			{renderContent()}
 		</div>

@@ -1,6 +1,6 @@
 const ComputeFinePage = () => {
 	return (
-		<div className='compute-fine-page-wrapper'>
+		<div className='reader-content-wrapper'>
 			Compute Fine Page!
 		</div>
 	);

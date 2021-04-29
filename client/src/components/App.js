@@ -7,6 +7,8 @@ import { adminLogin } from '../actions/admin';
 import AdminPage from './admin';
 import ReaderPage from './reader';
 
+import './css/App.css';
+
 const pageSelector = (state) => state.page;
 
 // add form validation rules later
@@ -18,10 +20,10 @@ const App = () => {
 	const renderPage = () => {
 		if(page.visible === 'homepage') {
 			return (
-				<>
+				<div className='homepage-wrapper'>
 					{renderReaderLogin()}
 					{renderAdminLogin()}
-				</>
+				</div>
 			);
 		} else if(page.visible === 'admin') {
 			return <AdminPage />;
@@ -38,8 +40,8 @@ const App = () => {
 		dispatch(adminLogin(value.id, value.password));
 	}
 
-	const renderReaderLogin = () => {
-		return (
+	const renderReaderLogin = () => (
+		<div className='reader-login-wrapper'>
 			<Form onFinish={readerOnFinished}>
 				<Form.Item label='Card Number:' name='cardNumber'>
 					<Input />
@@ -50,11 +52,11 @@ const App = () => {
 					</Button>
 				</Form.Item>
 			</Form>
-		);
-	}
+		</div>
+	);
 
-	const renderAdminLogin = () => {
-		return (
+	const renderAdminLogin = () => (
+		<div className='admin-login-wrapper'>
 			<Form onFinish={adminOnFinished}>
 				<Form.Item label='Admin ID' name='id'>
 					<Input />
@@ -68,8 +70,8 @@ const App = () => {
 					</Button>
 				</Form.Item>
 			</Form>
-		);
-	}
+		</div>
+	);
 
 
 	return (

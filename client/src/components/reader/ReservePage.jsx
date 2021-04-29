@@ -1,6 +1,6 @@
 const ReservePage = () => {
 	return (
-		<div className='reserve-page-wrapper'>
+		<div className='reader-content-wrapper'>
 			Reserve Page!
 		</div>
 	);

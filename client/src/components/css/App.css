@@ -1,0 +1,25 @@
+#root {
+	height: 100%;
+}
+
+.app-wrapper {
+	height: 100%;
+}
+
+.homepage-wrapper {
+	width: 30%;
+	margin: auto;
+	margin-top: 15%;
+}
+
+.reader-content-wrapper, .admin-content-wrapper {
+	width: 40%;
+	margin: auto;
+	margin-top: 5%;
+}
+
+.logout-button-wrapper {
+	display: flex;
+	justify-content: center;
+	margin: 5px;
+}

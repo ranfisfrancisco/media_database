@@ -31,7 +31,7 @@ const ReservedDocsPage = () => {
 	);
 
 	return (
-		<div className='reserved-docs-page-wrapper'>
+		<div className='reader-content-wrapper'>
 			{renderReservedDocs()}
 		</div>
 	);

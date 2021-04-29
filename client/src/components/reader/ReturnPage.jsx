@@ -1,6 +1,6 @@
 const ReturnPage = () => {
 	return (
-		<div className='return-page-wrapper'>
+		<div className='reader-content-wrapper'>
 			Return Page!
 		</div>
 	);

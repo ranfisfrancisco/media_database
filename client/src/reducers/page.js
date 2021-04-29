@@ -70,6 +70,12 @@ export default (state = initState, action) => {
 				},
 			}
 		}
+		case 'LOGOUT': {
+			return {
+				...state,
+				visible: 'homepage',
+			}
+		}
 		default: {
 			return state;
 		}

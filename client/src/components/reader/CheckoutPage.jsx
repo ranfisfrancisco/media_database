@@ -1,6 +1,6 @@
 const CheckoutPage = () => {
 	return (
-		<div className='checkout-page-wrapper'>
+		<div className='reader-content-wrapper'>
 			Checkout Page!
 		</div>
 	);

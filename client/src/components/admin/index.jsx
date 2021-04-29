@@ -9,6 +9,8 @@ import {
 	QuestionCircleOutlined,
 } from '@ant-design/icons';
 
+import LogoutButton from '../LogoutButton';
+
 import AddDocPage from './AddDocPage';
 import AddReaderPage from './AddReaderPage';
 import AverageFinePage from './AverageFinePage';
@@ -51,7 +53,7 @@ const AdminPage = () => {
 	}
 
 	const renderMenu = () => (
-		<Menu mode='horizontal' onClick={handleClick} selectedKeys={[visibleContent]}>
+		<Menu mode='horizontal' onClick={handleClick} selectedKeys={[visibleContent]} theme='dark'>
 			<Menu.Item key='addDoc' icon={<PlusOutlined />}>
 				Add Document
 			</Menu.Item>
@@ -87,6 +89,7 @@ const AdminPage = () => {
 
 	return (
 		<div className='admin-page-wrapper'>
+			<LogoutButton />
 			{renderMenu()}
 			{renderContent()}
 		</div>
