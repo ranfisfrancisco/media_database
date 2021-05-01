@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { Form, Input, Button, List } from 'antd';
+import { Form, Input, Button, Table } from 'antd';
 
 import { searchId, searchTitle, searchPublisher } from '../../actions/reader';
 
@@ -22,30 +22,16 @@ const SearchPage = () => {
 		dispatch(searchPublisher(value.publisher));
 	}
 
-	const renderHeader = () => (
-		<div className='header-wrapper'>
-			<>DOCID</>
-			<>TITLE</>
-			<>PDATE</>
-			<>PUBLISHERID</>
-		</div>
-	);
-
-	const renderSearchList = () => (
-		<List 
-			itemLayout='horizontal'
-			dataSource={search.data}
-			renderItem={item => (
-				<List.Item>
-					{item.DOCID}
-					{item.TITLE}
-					{item.PDATE}
-					{item.PUBLISHERID}
-				</List.Item>
-			)}
-			header={renderHeader()}
-		/>
-	)
+	const renderSearchTable = () => {
+		let dataSource = search.data;
+		let columns = [
+			{ title: 'Doc ID', dataIndex: 'DOCID' },
+			{ title: 'Title', dataIndex: 'TITLE' },
+			{ title: 'Published Date', dataIndex: 'PDATE' },
+			{ title: 'Publisher ID', dataIndex: 'PUBLISHERID' },
+		];
+		return <Table dataSource={dataSource} columns={columns} />;
+	}
 
 	const renderIdSearch = () => {
 		return (
@@ -97,7 +83,7 @@ const SearchPage = () => {
 			{renderIdSearch()}
 			{renderTitleSearch()}
 			{renderPublisherSearch()}
-			{renderSearchList()}
+			{renderSearchTable()}
 		</div>
 	);
 }

@@ -31,6 +31,7 @@ export const addDocCopy = (bId, docId, copyNo, position) => async (dispatch) => 
 		return message.error('Error adding doc copy');
 	}
 	dispatch({ type: 'ADMIN_ADD_DOC_COPY_SUCCESS', payload: response.data.result });
+	message.success('Document copy added!');
 }
 
 export const searchDoc = (bId, docId, copyNo) => async (dispatch) => {
@@ -127,7 +128,7 @@ export const topBorrowedBooksLibByYear = (year) => async (dispatch) => {
 		dispatch({ type: 'ADMIN_GET_TOP_BORROWED_BOOKS_BY_YEAR_FAILED' });
 		return message.error('Error getting top borrowed books from library by year');
 	}
-	dispatch({ type: 'ADMIN_GET_TOP_BORROWED_BOOKS_BY_YEAR_FAILED', payload: response.data.result });
+	dispatch({ type: 'ADMIN_GET_TOP_BORROWED_BOOKS_BY_YEAR_SUCCESS', payload: response.data.result });
 }
 
 export const averageBorrowingFine = (startDate, endDate) => async (dispatch) => {

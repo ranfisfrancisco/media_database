@@ -8,8 +8,10 @@ import publisherDocsReducer from './publisherDocs';
 // admin
 import branchInfoReducer from './branchInfo';
 import topLibraryBorrowersReducer from './topLibraryBorrowers';
+import topBranchBorrowersReducer from './topBranchBorrowers';
 import topBorrowedBranchReducer from './topBorrowedBranch';
 import topBorrowedLibraryReducer from './topBorrowedLibrary';
+import topLibBooksByYearReducer from './topLibBooksByYear';
 
 export default combineReducers({
 	page: pageReducer,
@@ -18,6 +20,8 @@ export default combineReducers({
 	publisherDocs: publisherDocsReducer,
 	branchInfo: branchInfoReducer,
 	topLibraryBorrowers: topLibraryBorrowersReducer,
+	topBranchBorrowers: topBranchBorrowersReducer,
 	topBorrowedBranch: topBorrowedBranchReducer,
 	topBorrowedLibrary: topBorrowedLibraryReducer,
+	topLibBooksByYear: topLibBooksByYearReducer,
 });

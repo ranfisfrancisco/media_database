@@ -11,8 +11,8 @@ module.exports.addDocCopy = async (req, res) => {
 	let { bId, docId, copyNo, position } = req.body;
 	position = position ? position : 'NULL';
 	let query = `
-		INERT INTO COPY
-		VALUES (${docId}, ${copyNo}, ${bId}, ${position})`; 
+		INSERT INTO COPY 
+		VALUES (${docId}, ${copyNo}, ${bId}, \'${position}\')`; 
 	conn.query(query, (err, result) => {
 		if(err) return res.status(400).json({ message: 'Query error' });
 		res.send({ result });
@@ -25,8 +25,9 @@ module.exports.getDocCopy = async (req, res) => {
 		SELECT BOR_NO
 		FROM BORROWING NATURAL JOIN BORROWS
 		WHERE DOCID=${docId} AND COPYNO=${copyNo} AND BID=${bId}
-		AND TDTIME IS NULL`;
+		AND RDTIME IS NULL`;
 	conn.query(query, (err, result) => {
+		console.log(err);
 		if(err) return res.status(400).json({ message: 'Query error' });
 		res.send({ result });
 	});
@@ -36,7 +37,7 @@ module.exports.addReader = async (req, res) => {
 	let { type, name, address, phone } = req.body;
 	let query = `
 		INSERT INTO READER
-		VALUES (0, ${type}, ${name}, ${address}, ${phone})`;
+		VALUES (NULL, \'${type}\', \'${name}\', \'${address}\', \'${phone}\')`;
 	conn.query(query, (err, result) => {
 		if(err) return res.status(400).json({ message: 'Query error' });
 		res.send({ result });
@@ -60,15 +61,11 @@ module.exports.topBranchBorrowers = async (req, res) => {
 	let { branchNum, maxBorrowers } = req.params;
 	let query = `
 		SELECT RID, RNAME
-		FROM READER
-		WHERE RID IN (
-			SELECT RID
-			FROM BORROWS
-			WHERE BID=${branchNum}
-			GROUP BY RID
-			ORDER BY COUNT(RID) DESC
-			LIMIT ${maxBorrowers}
-		);`;
+		FROM READER NATURAL JOIN BORROWS
+		WHERE BID=${branchNum}
+		GROUP BY RID, RNAME
+		ORDER BY COUNT(RID) DESC
+		LIMIT ${maxBorrowers}`;
 	conn.query(query, (err, result) => {
 		if(err) return res.status(400).json({ message: 'Query error' });
 		res.send({ result });
@@ -92,6 +89,7 @@ module.exports.topLibraryBorrowers = async (req, res) => {
 
 module.exports.topBorrowedBooksBranch = async (req, res) => {
 	let { branchNum, maxBorrowers } = req.params;
+	// ISBN, TITLE, PUBLISHER
 	let query = `
 		SELECT DOCID
 		FROM BORROWS

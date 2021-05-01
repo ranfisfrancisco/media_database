@@ -56,26 +56,61 @@ export const searchPublisher = (publisher) => async (dispatch) => {
 	dispatch({ type: 'SEARCH_BY_PUBLISHER_SUCCESS', payload: response.data.result });
 }
 
-/*
 export const checkout = (readerId, docId, copyNo, bId) => async (dispatch) => {
 	dispatch({ type: 'CHECKOUT_REQUEST' });
 	let response;
 	let body = { readerId, docId, copyNo, bId };
+	try {
+		response = await reader.post('/checkout', body);
+	} catch(error) {
+		dispatch({ type: 'CHECKOUT_REQUEST_FAILED' });
+		return message.error('Error checking out');
+	}
+	dispatch({ type: 'CHECKOUT_REQUEST_SUCCESS', payload: response.data.result });
+	message.success('Checked out book!');
 }
 
 export const returnDoc = (readerId, docId, copyNo, bId) => async (dispatch) => {
-
+	dispatch({ type: 'RETURN_DOC_REQUEST' });
+	let response;
+	let body = { readerId, docId, copyNo, bId };
+	try {
+		response = await reader.post('/return', body);
+	} catch(error) {
+		dispatch({ type: 'RETURN_DOC_FAILED' });
+		return message.error('Error returning document');
+	}
+	dispatch({ type: 'RETURN_DOC_SUCCESS' });
+	message.success('Returned document!');
 }
 
 export const reserveDoc = (readerId, docId, copyNo, bId) => async (dispatch) => {
-
+	dispatch({ type: 'RESERVE_DOC_REQUEST' });
+	let response;
+	let body = { readerId, docId, copyNo, bId };
+	try {
+		response = await reader.post('/reserve', body);
+	} catch(error) {
+		dispatch({ type: 'RESERVE_DOC_FAILED' });
+		return message.error('Error reserving document');
+	}
+	dispatch({ type: 'RESERVE_DOC_SUCCESS' });
+	message.success('Reserved document!');
 }
 
 export const computeFine = (readerId, docId, copyNo, bId) => async (dispatch) => {
-	
+	dispatch({ type: 'COMPUTE_FINE_REQUEST' });
+	let response;
+	let body = { readerId, docId, copyNo, bId };
+	try {
+		response = await reader.post('/get_fine', body);
+	} catch(error) {
+		dispatch({ type: 'COMPUTE_FINE_FAILED' });
+		return message.error('Error computing fine');
+	}
+	dispatch({ type: 'COMPUTE_FINE_SUCCESS', payload: response.data.result });
+	message.success('Computed Fine!');
 }
-
-*/
 
 export const getReserveDocs = (readerId) => async (dispatch) => {
 	// /get_reserved/:readerId

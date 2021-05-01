@@ -58,22 +58,36 @@ module.exports.searchDocByPublisher = async (req, res) => {
 module.exports.checkoutDoc = async (req, res) => {
 	let { readerId, docId, copyNo, bId } = req.body;
 	if(!readerId || !docId || !copyNo || !bId) return res.status(400).json({ message: 'Missing params' });
+	let checkIfBorrowedQuery = `
+		SELECT *
+		FROM COPY NATURAL JOIN BORROWS NATURAL JOIN BORROWING
+		WHERE RDTIME IS NOT NULL AND DOCID=${docId} AND COPYNO=${copyNo} AND BID=${bId}`;
+	let checkIfReservedQuery = `
+		SELECT *
+		FROM COPY NATURAL JOIN RESERVES
+		WHERE RID <> ${readerId} AND DOCID=${docId} AND COPYNO=${copyNo} AND BID=${bId}`;
 	let deleteQuery = `
 		DELETE FROM RESERVATION
 		WHERE RES_NO IN (
 			SELECT RESERVATION_NO
 			FROM RESERVES
 			WHERE DOCID=${docId} AND COPYNO=${copyNo} AND BID=${bId} AND RID=${readerId}
-		)`;
+		);`;
 	let insertQuery = `
 			INSERT INTO BORROWING
 			VALUES (0, NOW(), NULL);
 			INSERT INTO BORROWS
 			VALUES (LAST_INSERT_ID(), ${docId}, ${copyNo}, ${bId}, ${readerId});`;
 	let query = deleteQuery + insertQuery;
-	conn.query(query, (err, result) => {
-		if(err) return res.status(400).json({ message: 'Query error' });
-		res.send({ result });
+	conn.query(checkIfBorrowedQuery, (err, result) => {
+		if(result.length > 0) return res.status(400).json({ message: 'Book borrowed' });
+		conn.query(checkIfReservedQuery, (err, result) => {
+			if(result.length > 0) return res.status(400).json({ message: 'Book reserved' });
+			conn.query(query, (err, result) => {
+				if(err) return res.status(400).json({ message: 'Query error' });
+				res.send({ result });
+			});
+		});
 	});
 }
 

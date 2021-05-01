@@ -3,12 +3,24 @@ import { Form, Input, Button, Table } from 'antd';
 
 import { topBranchBorrowers } from '../../actions/admin';
 
+const topBorrowersSelector = (state) => state.topBranchBorrowers;
+
 const TopBranchBorrowersPage = () => {
 
 	const dispatch = useDispatch();
+	const topBorrowers = useSelector(topBorrowersSelector);
 
 	const topBranchBorrowersOnFinished = (value) => {
 		dispatch(topBranchBorrowers(value.branchNum, value.maxBorrowers));
+	}
+
+	const renderTopBorrowers = () => {
+		let dataSource = topBorrowers.data;
+		let columns = [
+			{ title: 'Reader ID', dataIndex: 'RID' },
+			{ title: 'Reader Name', dataIndex: 'RNAME' },
+		];
+		return <Table dataSource={dataSource} columns={columns} />;
 	}
 
 	const renderForm = () => {
@@ -32,6 +44,7 @@ const TopBranchBorrowersPage = () => {
 	return (
 		<div className='admin-content-wrapper'>
 			{renderForm()}
+			{renderTopBorrowers()}
 		</div>
 	);
 }

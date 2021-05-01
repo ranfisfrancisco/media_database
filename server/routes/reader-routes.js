@@ -11,7 +11,7 @@ router.get('/search/publisher/:publisher', reader.searchDocByPublisher);
 router.post('/checkout', reader.checkoutDoc);
 router.post('/return', reader.returnDoc);
 router.post('/reserve', reader.reserveDoc);
-router.get('/get_fine', reader.computeFine);
+router.post('/get_fine', reader.computeFine);
 router.get('/get_reserved/:readerId', reader.getReserveDocs);
 router.get('/get_publisher_docs/:publisher', reader.getPublisherDocs)
 

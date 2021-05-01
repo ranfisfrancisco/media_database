@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { Form, Input, Button, List } from 'antd';
+import { Form, Input, Button, Table } from 'antd';
 
 import { getPublisherDocs } from '../../actions/reader';
 
@@ -14,18 +14,14 @@ const PublisherDocsPage = () => {
 		dispatch(getPublisherDocs(value.publisher));
 	}
 
-	const renderPublishedDocsList = () => (
-		<List
-			itemLayout='horizontal'
-			dataSource={publisherDocs.data}
-			renderItem={item => (
-				<List.Item>
-					{item.DOCID}
-					{item.TITLE}
-				</List.Item>
-			)}
-		/>
-	);
+	const renderPublishedDocsTable = () => {
+		let dataSource = publisherDocs.data;
+		let columns = [
+			{ title: 'Doc ID', dataIndex: 'DOCID' },
+			{ title: 'Title', dataIndex: 'TITLE' },
+		];
+		return <Table dataSource={dataSource} columns={columns} />;
+	}
 
 	const renderPublishedSearch = () => {
 		return (
@@ -45,7 +41,7 @@ const PublisherDocsPage = () => {
 	return (
 		<div className='reader-content-wrapper'>
 			{renderPublishedSearch()}
-			{renderPublishedDocsList()}
+			{renderPublishedDocsTable()}
 		</div>
 	);
 }

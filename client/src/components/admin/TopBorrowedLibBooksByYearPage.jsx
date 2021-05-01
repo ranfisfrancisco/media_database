@@ -3,12 +3,23 @@ import { Form, Input, Button, Table } from 'antd';
 
 import { topBorrowedBooksLibByYear } from '../../actions/admin';
 
+const topLibBooksByYearSelector = (state) => state.topLibBooksByYear;
+
 const TopBorrowedLibBooksByYearPage = () => {
 
 	const dispatch = useDispatch();
+	const topLibBooksByYear = useSelector(topLibBooksByYearSelector);
 
 	const topBorrowedOnFinished = (value) => {
 		dispatch(topBorrowedBooksLibByYear(value.year));
+	}
+
+	const renderTopBooks = () => {
+		let dataSource = topLibBooksByYear.data;
+		let columns = [
+			{ title: 'Doc ID', dataIndex: 'DOCID' },
+		];
+		return <Table dataSource={dataSource} columns={columns} />;
 	}
 
 	const renderForm = () => {
@@ -29,6 +40,7 @@ const TopBorrowedLibBooksByYearPage = () => {
 	return (
 		<div className='admin-content-wrapper'>
 			{renderForm()}
+			{renderTopBooks()}
 		</div>
 	);
 }

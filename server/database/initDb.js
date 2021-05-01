@@ -104,7 +104,7 @@ con.connect((err) => {
 		FOREIGN KEY(BID) REFERENCES BRANCH(BID) ON DELETE CASCADE
 	);
 	CREATE TABLE READER (
-		RID		INTEGER	NOT NULL,
+		RID		INTEGER	NOT NULL	AUTO_INCREMENT,
 		RTYPE	VARCHAR(20),
 		RNAME	VARCHAR(20),
 		RADDRESS	VARCHAR(20),
@@ -183,13 +183,13 @@ con.connect((err) => {
 	VALUES(1, 'Monmouth', '321 Street Road'), (2, 'Holmdel', '123 Road Street');
 	
 	INSERT INTO COPY(DOCID, COPYNO, BID, POSITION)
-	VALUES (1, 1, 1, '577.639'), (2, 1, 1, '324.623'), (4, 1, 2, '862.998'), (6, 1, 2, '455.012');
+	VALUES (1, 1, 1, '577.639'), (2, 1, 1, '324.623'), (4, 1, 2, '862.998'), (6, 1, 2, '455.012'), (1, 2, 1, '522.321');
 	
 	INSERT INTO READER(RID, RTYPE, RNAME, RADDRESS, PHONE_NO)
 	VALUES (1, 'Adult', 'Louisiana', '2 Avenue Road', '1112223344'), (2, 'Youth', 'Blair', '7 Road Avenue', '1231231234'), (3, 'Senior', 'Chad', '9 Cool Street', '9998887777'), (4, 'Youth', 'Alaska', '8 Cool Road', '1112223333');
 	
 	INSERT INTO BORROWING(BOR_NO, BDTIME, RDTIME)
-	VALUES (1, '3032-04-20 04:29:50', '2021-05-05 12:36:41'), (2, '2020-12-20 11:05:01', NULL);
+	VALUES (1, '2021-04-20 04:29:50', '2021-05-05 12:36:41'), (2, '2020-12-20 11:05:01', NULL);
 	
 	INSERT INTO BORROWS(BOR_NO, DOCID, COPYNO, BID, RID)
 	VALUES (1, 1, 1, 1, 1), (2, 6, 1, 2, 2);
