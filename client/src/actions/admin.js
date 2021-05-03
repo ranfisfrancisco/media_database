@@ -43,7 +43,10 @@ export const searchDoc = (bId, docId, copyNo) => async (dispatch) => {
 		dispatch({ type: 'ADMIN_SEARCH_DOC_FAILED' });
 		return message.error('Error searching for doc');
 	}
-	dispatch({ type: 'ADMIN_SEARCH_DOC_SUCCESS', payload: response.data.result });
+	let result = response.data.result[0];
+	result.borrowed = response.data.borrowed;
+	result.reserved = response.data.reserved;
+	dispatch({ type: 'ADMIN_SEARCH_DOC_SUCCESS', payload: [result] });
 }
 
 export const addReader = (rType, rName, rAddress, rPhone) => async (dispatch) => {
@@ -57,6 +60,7 @@ export const addReader = (rType, rName, rAddress, rPhone) => async (dispatch) =>
 		return message.error('Error adding reader');
 	}
 	dispatch({ type: 'ADMIN_ADD_READER_SUCCESS', payload: response.data.result });
+	message.success(`Reader added, Reader ID: ${response.data.result.insertId}`);
 }
 
 export const getBranchInfo = (bId) => async (dispatch) => {

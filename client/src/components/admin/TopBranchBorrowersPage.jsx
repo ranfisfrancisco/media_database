@@ -19,6 +19,7 @@ const TopBranchBorrowersPage = () => {
 		let columns = [
 			{ title: 'Reader ID', dataIndex: 'RID' },
 			{ title: 'Reader Name', dataIndex: 'RNAME' },
+			{ title: 'Amount Borrowed', dataIndex: 'COUNT(RID)' },
 		];
 		return <Table dataSource={dataSource} columns={columns} />;
 	}

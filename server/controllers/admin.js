@@ -21,15 +21,29 @@ module.exports.addDocCopy = async (req, res) => {
 
 module.exports.getDocCopy = async (req, res) => {
 	let { bId, docId, copyNo } = req.params;
+	let borrowedFlag = false;
+	let reservedFlag = false;
+	let checkIfBorrowedQuery = `
+		SELECT *
+		FROM COPY NATURAL JOIN BORROWS NATURAL JOIN BORROWING
+		WHERE RDTIME IS NULL AND DOCID=${docId} AND COPYNO=${copyNo} and BID=${bId}`;
+	let checkIfReservedQuery = `
+		SELECT *
+		FROM COPY NATURAL JOIN RESERVES
+		WHERE DOCID=${docId} AND COPYNO=${copyNo} AND BID=${bId}`;
 	let query = `
-		SELECT BOR_NO
-		FROM BORROWING NATURAL JOIN BORROWS
-		WHERE DOCID=${docId} AND COPYNO=${copyNo} AND BID=${bId}
-		AND RDTIME IS NULL`;
-	conn.query(query, (err, result) => {
-		console.log(err);
-		if(err) return res.status(400).json({ message: 'Query error' });
-		res.send({ result });
+		SELECT TITLE, PUBLISHERID
+		FROM DOCUMENT 
+		WHERE DOCID=${docId}`;
+	conn.query(checkIfBorrowedQuery, (err, result) => {
+		if(result.length > 0) borrowedFlag = true;
+		conn.query(checkIfReservedQuery, (err, result) => {
+			if(result.length > 0) reservedFlag = true;
+			conn.query(query, (err, result) => {
+				if(err) return res.status(400).json({ message: 'Query error' });
+				res.send({ result, reserved: reservedFlag, borrowed: borrowedFlag });
+			});
+		});
 	});
 }
 
@@ -60,7 +74,7 @@ module.exports.getBranchInfo = async (req, res) => {
 module.exports.topBranchBorrowers = async (req, res) => {
 	let { branchNum, maxBorrowers } = req.params;
 	let query = `
-		SELECT RID, RNAME
+		SELECT RID, RNAME, COUNT(RID)
 		FROM READER NATURAL JOIN BORROWS
 		WHERE BID=${branchNum}
 		GROUP BY RID, RNAME
@@ -79,8 +93,7 @@ module.exports.topLibraryBorrowers = async (req, res) => {
 		FROM BORROWS NATURAL JOIN READER
 		GROUP BY RID, RNAME
 		ORDER BY COUNT(RID) DESC
-		LIMIT ${maxBorrowers}
-	`;
+		LIMIT ${maxBorrowers}`;
 	conn.query(query, (err, result) => {
 		if(err) return res.status(400).json({ message: 'Query error' });
 		res.send({ result });
@@ -91,14 +104,14 @@ module.exports.topBorrowedBooksBranch = async (req, res) => {
 	let { branchNum, maxBorrowers } = req.params;
 	// ISBN, TITLE, PUBLISHER
 	let query = `
-		SELECT DOCID
-		FROM BORROWS
+		SELECT DOCID, COUNT(DOCID), TITLE, PUBLISHERID, PUBNAME
+		FROM BORROWS NATURAL JOIN DOCUMENT NATURAL JOIN PUBLISHER
 		WHERE BID=${branchNum} AND DOCID IN (
 			SELECT DOCID
 			FROM BOOK
 		)
 		GROUP BY DOCID
-		ORDER BY COUNT(DOCID)
+		ORDER BY COUNT(DOCID) DESC
 		LIMIT ${maxBorrowers}`;
 	conn.query(query, (err, result) => {
 		if(err) return res.status(400).json({ message: 'Query error' });
@@ -109,14 +122,14 @@ module.exports.topBorrowedBooksBranch = async (req, res) => {
 module.exports.topBorrowedBooksLibrary = async (req, res) => {
 	let { maxBorrow } = req.params;
 	let query = `
-		SELECT DOCID
-		FROM BORROWS
+		SELECT DOCID, COUNT(DOCID), TITLE, PUBLISHERID, PUBNAME
+		FROM BORROWS NATURAL JOIN DOCUMENT NATURAL JOIN PUBLISHER
 		WHERE DOCID IN (
 			SELECT DOCID 
 			FROM BOOK
 		)
 		GROUP BY DOCID
-		ORDER BY COUNT(DOCID)
+		ORDER BY COUNT(DOCID) DESC
 		LIMIT ${maxBorrow}`;
 	conn.query(query, (err, result) => {
 		if(err) return res.status(400).json({ message: 'Query error' });
@@ -129,15 +142,15 @@ module.exports.topBorrowedBooksLibraryByYear = async (req, res) => {
 	let yearStart = `${year}-01-01 00:00:01`;
 	let yearEnd = `${year}-12-31 11:59:59`;
 	let query = `
-		SELECT DOCID
-		FROM BORROWS NATURAL JOIN BORROWING
+		SELECT DOCID, COUNT(DOCID), TITLE, PUBLISHERID, PUBNAME
+		FROM BORROWS NATURAL JOIN BORROWING NATURAL JOIN DOCUMENT NATURAL JOIN PUBLISHER
 		WHERE BDTIME BETWEEN CAST(\'${yearStart}\' AS DATETIME) AND CAST(\'${yearEnd}\' AS DATETIME) AND DOCID IN (
 			SELECT DOCID
 			FROM BOOK
 		)
 		GROUP BY DOCID
-		ORDER BY COUNT(DOCID)
-		LIMIT 10;`;
+		ORDER BY COUNT(DOCID) DESC
+		LIMIT 10`;
 	conn.query(query, (err, result) => {
 		if(err) return res.status(400).json({ message: 'Query error' });
 		res.send({ result });
@@ -149,10 +162,11 @@ module.exports.averageBranchBorrowingFine = async (req, res) => {
 	let query = `
 		SELECT BID, LNAME, AVG((DATEDIFF(RDTIME, BDTIME) - 6) * 0.75) AS AVG_FINES
 		FROM BRANCH NATURAL JOIN BORROWS NATURAL JOIN BORROWING
-		WHERE RDTIME IS NOT NULL AND DATEDIFF(BDTIME, RDTIME) > 6 
-			AND CAST(BDTIME AS DATE) BETWEEN CAST(${startDate} AS DATE)
-			AND CAST(${endDate} AS DATE)
+		WHERE RDTIME IS NOT NULL AND DATEDIFF(RDTIME, BDTIME) > 6 
+			AND CAST(BDTIME AS DATE) BETWEEN CAST(\'${startDate}\' AS DATE)
+			AND CAST(\'${endDate}\' AS DATE)
 		GROUP BY BID, LNAME`;
+	console.log(query);
 	conn.query(query, (err, result) => {
 		if(err) return res.status(400).json({ message: 'Query error' });
 		res.send({ result });

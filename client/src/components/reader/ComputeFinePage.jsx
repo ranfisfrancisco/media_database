@@ -4,16 +4,28 @@ import { Form, Input, Button, Table } from 'antd';
 import { computeFine } from '../../actions/reader';
 
 const readerSelector = (state) => state.page.reader;
+const computeFineSelector = (state) => state.computeFine;
 
 const ComputeFinePage = () => {
 
 	const dispatch = useDispatch();
 	const reader = useSelector(readerSelector);
+	const computeFineData = useSelector(computeFineSelector);
 
 	const computeOnFinished = (value) => {
 		let readerId = reader.pid;
 		let { docId, copyNo, bId } = value;
 		dispatch(computeFine(readerId, docId, copyNo, bId));
+	}
+
+	const renderTable = () => {
+		let dataSource = computeFineData.data;
+		let columns = [
+			{ title: 'Title', dataIndex: 'TITLE' },
+			{ title: 'Fine', dataIndex: 'FINES' },
+			{ title: 'Borrow Date', dataIndex: 'BDTIME' },
+		];
+		return <Table dataSource={dataSource} columns={columns} />;
 	}
 
 	const renderForm = () => (
@@ -38,6 +50,7 @@ const ComputeFinePage = () => {
 	return (
 		<div className='reader-content-wrapper'>
 			{renderForm()}
+			{renderTable()}
 		</div>
 	);
 }

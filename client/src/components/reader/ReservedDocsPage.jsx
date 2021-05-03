@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { List } from 'antd';
+import { Table } from 'antd';
 
 import { getReserveDocs } from '../../actions/reader';
 
@@ -17,22 +17,21 @@ const ReservedDocsPage = () => {
 		dispatch(getReserveDocs(pid));
 	}, []);
 
-	const renderReservedDocs = () => (
-		<List
-			itemLayout='horizontal'
-			dataSource={reserved.data}
-			renderItem={item => (
-				<List.Item>
-					{item.DTIME}
-					{item.DOCID}
-				</List.Item>
-			)}
-		/>
-	);
+	const renderTable = () => {
+		let dataSource = reserved.data;
+		let columns = [
+			{ title: 'Title', dataIndex: 'TITLE' },
+			{ title: 'Doc ID', dataIndex: 'DOCID' },
+			{ title: 'Copy #', dataIndex: 'COPYNO' },
+			{ title: 'Branch ID', dataIndex: 'BID' },
+			{ title: 'Date Reserved', dataIndex: 'DTIME' },
+		];
+		return <Table dataSource={dataSource} columns={columns} />;
+	}
 
 	return (
 		<div className='reader-content-wrapper'>
-			{renderReservedDocs()}
+			{renderTable()}
 		</div>
 	);
 }

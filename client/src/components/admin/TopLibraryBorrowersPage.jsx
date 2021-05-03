@@ -17,6 +17,7 @@ const TopLibraryBorrowersPage = () => {
 	const renderTopBorrowerInfo = () => {
 		let dataSource = topLibraryBorrowersData.data;
 		let columns = [
+			{ title: 'Reader ID', dataIndex: 'RID' },
 			{ title: 'Reader', dataIndex: 'RNAME' },
 			{ title: 'Borrowed', dataIndex: 'COUNT(RID)' },
 		];

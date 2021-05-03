@@ -183,22 +183,22 @@ con.connect((err) => {
 	VALUES(1, 'Monmouth', '321 Street Road'), (2, 'Holmdel', '123 Road Street');
 	
 	INSERT INTO COPY(DOCID, COPYNO, BID, POSITION)
-	VALUES (1, 1, 1, '577.639'), (2, 1, 1, '324.623'), (4, 1, 2, '862.998'), (6, 1, 2, '455.012'), (1, 2, 1, '522.321');
-	
+	VALUES (1, 1, 1, '577.639'), (2, 1, 1, '324.623'), (4, 1, 2, '862.998'), (6, 1, 2, '455.012'), (1, 2, 1,  '455.012'), (2, 2, 1, '577.639'), (4, 2, 2, '324.623'), (6, 2, 2,'862.998');
+
 	INSERT INTO READER(RID, RTYPE, RNAME, RADDRESS, PHONE_NO)
 	VALUES (1, 'Adult', 'Louisiana', '2 Avenue Road', '1112223344'), (2, 'Youth', 'Blair', '7 Road Avenue', '1231231234'), (3, 'Senior', 'Chad', '9 Cool Street', '9998887777'), (4, 'Youth', 'Alaska', '8 Cool Road', '1112223333');
-	
+
 	INSERT INTO BORROWING(BOR_NO, BDTIME, RDTIME)
-	VALUES (1, '2021-04-20 04:29:50', '2021-05-05 12:36:41'), (2, '2020-12-20 11:05:01', NULL);
-	
+	VALUES (1, '2020-04-20 04:29:50', '2021-05-05 12:36:41'), (2, '2020-12-20 11:05:01', NULL), (3, '2021-01-20 11:05:01', '2021-01-30 11:05:01'), (4, '2021-04-20 11:05:01', NULL), (5, '2021-11-25 11:05:01', NULL), (6, '2021-04-30 11:05:01', '2021-05-01 11:05:01'), (7, '2021-02-15 11:05:01', '2021-03-15 11:05:01');
+
 	INSERT INTO BORROWS(BOR_NO, DOCID, COPYNO, BID, RID)
-	VALUES (1, 1, 1, 1, 1), (2, 6, 1, 2, 2);
-	
+	VALUES (1, 1, 1, 1, 1), (2, 6, 1, 2, 2), (3, 6, 2, 2, 3), (4, 6, 2, 2, 4), (5, 4, 2, 2, 2), (6, 2, 2, 1, 1), (7, 1, 2, 1, 4);
+
 	INSERT INTO RESERVATION(RES_NO, DTIME)
-	VALUES (1, '2021-04-18 03:28:27'), (2, '2021-04-17 06:00:00');
-	
+	VALUES (1, '2021-04-18 03:28:27'), (2, '2021-04-17 06:00:00'), (3, '2021-04-30 03:28:27'), (4, '2021-04-29 03:28:27'), (5, '2021-04-28 06:00:00');
+
 	INSERT INTO RESERVES(RID, RESERVATION_NO, DOCID, COPYNO, BID)
-	VALUES (3, 1, 4, 1, 2), (4, 2, 6, 1, 2)	
+	VALUES (3, 1, 4, 1, 2), (4, 2, 6, 1, 2), (1, 3, 4, 2, 2), (2, 4, 6, 2, 2), (3, 5, 1, 1, 1);
 	`
 	con.query(fillTables,  function(err, result) {
 		if(err) throw err;

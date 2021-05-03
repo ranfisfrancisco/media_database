@@ -32,7 +32,6 @@ module.exports.searchDocByTitle = async (req, res) => {
 		WHERE TITLE='${title}'`;
 	conn.query(query, (err, result) => {
 		if(err) {
-			console.log(err); 
 			return res.status(400).json({ message: 'Query error' });
 		}
 		res.send({ result });
@@ -61,7 +60,7 @@ module.exports.checkoutDoc = async (req, res) => {
 	let checkIfBorrowedQuery = `
 		SELECT *
 		FROM COPY NATURAL JOIN BORROWS NATURAL JOIN BORROWING
-		WHERE RDTIME IS NOT NULL AND DOCID=${docId} AND COPYNO=${copyNo} AND BID=${bId}`;
+		WHERE RDTIME IS NULL AND DOCID=${docId} AND COPYNO=${copyNo} AND BID=${bId}`;
 	let checkIfReservedQuery = `
 		SELECT *
 		FROM COPY NATURAL JOIN RESERVES
@@ -113,7 +112,7 @@ module.exports.reserveDoc = async (req, res) => {
 		INSERT INTO RESERVATION
 		VALUES(0, NOW());
 		INSERT INTO RESERVES
-		VALUES(LAST_INSERT_ID(), ${docId}, ${copyNo}, ${bId}, ${readerId})`;
+		VALUES(${readerId}, LAST_INSERT_ID(), ${docId}, ${copyNo}, ${bId})`;
 	conn.query(query, (err, result) => {
 		if(err) return res.status(400).json({ message: 'Query error' });
 		res.send({ result });
@@ -123,9 +122,9 @@ module.exports.reserveDoc = async (req, res) => {
 module.exports.computeFine = async (req, res) => {
 	let { docId, copyNo, bId, readerId } = req.body;
 	let query = `
-		SELECT GREATEST(DATEDIFF(CURDATE(), BDTIME) - 6, 0) * 0.75 AS FINES
-		FROM BORROWING NATURAL JOIN BORROWS
-		WHERE DOCID=${docId} AND COPYNO=${copyNo} AND BID=${bId} AND RID=${readerId};`;
+		SELECT GREATEST(DATEDIFF(CURDATE(), BDTIME) - 6, 0) * 0.75 AS FINES, BDTIME, TITLE
+		FROM BORROWING NATURAL JOIN BORROWS NATURAL JOIN DOCUMENT
+		WHERE DOCID=${docId} AND COPYNO=${copyNo} AND BID=${bId} AND RID=${readerId} AND RDTIME IS NULL;`;
 	conn.query(query, (err, result) => {
 		if(err) return res.status(400).json({ message: 'Query error' });
 		res.send({ result });
@@ -136,8 +135,8 @@ module.exports.getReserveDocs = async (req, res) => {
 	let { readerId } = req.params;
 	// include more fields later
 	let query = `
-		SELECT DTIME, DOCID
-		FROM RESERVES JOIN RESERVATION ON (RESERVATION_NO=RES_NO)
+		SELECT DTIME, DOCID, BID, COPYNO, TITLE
+		FROM RESERVES JOIN RESERVATION ON (RESERVATION_NO=RES_NO) NATURAL JOIN DOCUMENT
 		WHERE RID=${readerId}`;
 	conn.query(query, (err, result) => {
 		if(err) return res.status(400).json({ message: 'Query error' });
@@ -155,7 +154,6 @@ module.exports.getPublisherDocs = async (req, res) => {
 			FROM PUBLISHER
 			WHERE PUBNAME='${publisher}'
 		)`;
-	console.log(query);
 	conn.query(query, (err, result) => {
 		if(err) return res.status(400).json({ message: 'Query error' });
 		res.send({ result });

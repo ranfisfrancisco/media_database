@@ -18,6 +18,10 @@ const TopBorrowedBooksBranchPage = () => {
 		let dataSource = topBorrowedBranch.data;
 		let columns = [
 			{ title: 'Doc ID', dataIndex: 'DOCID' },
+			{ title: 'Title', dataIndex: 'TITLE' },
+			{ title: 'Amount Borrowed', dataIndex: 'COUNT(DOCID)' },
+			{ title: 'Publisher ID', dataIndex: 'PUBLISHERID' },
+			{ title: 'Publisher Name', dataIndex: 'PUBNAME' },
 		];
 		return <Table dataSource={dataSource} columns={columns} />;
 	}
