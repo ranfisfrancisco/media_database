@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useSelector } from 'react-redux';
 import { Menu } from 'antd';
 import { 
 	SearchOutlined,
@@ -20,9 +21,12 @@ import ComputeFinePage from './ComputeFinePage';
 import ReservedDocsPage from './ReservedDocsPage';
 import PublisherDocsPage from './PublisherDocsPage';
 
+const readerUsernameSelector = (state) => state.page.reader.pname;
+
 const ReaderPage = () => {
 
 	const [visibleContent, setVisibleContent] = useState('search');
+	const readerUsername = useSelector(readerUsernameSelector);
 
 	const handleClick = (e) => setVisibleContent(e.key);
 
@@ -75,7 +79,7 @@ const ReaderPage = () => {
 
 	return (
 		<div className='reader-page-wrapper'>
-			<LogoutButton />
+			<LogoutButton username={readerUsername} />
 			{renderMenu()}
 			{renderContent()}
 		</div>

@@ -4,8 +4,8 @@ module.exports.login = async (req, res) => {
 	let { cardNumber } = req.body;
 	let query = `
 		SELECT *
-		FROM PERSON
-		WHERE PID=${cardNumber}`;
+		FROM READER 
+		WHERE RID=${cardNumber}`;
 	conn.query(query, (err, result) => {
 		if(err || result.length === 0) return res.status(400).json({ message: 'LOGIN_FAILED' });
 		res.send({ message: 'LOGIN_SUCCESS', result });
@@ -108,14 +108,21 @@ module.exports.returnDoc = async (req, res) => {
 
 module.exports.reserveDoc = async (req, res) => {
 	let { docId, copyNo, bId, readerId } = req.body;
+	let checkIfReservedQuery = `
+		SELECT *
+		FROM COPY NATURAL JOIN RESERVES
+		WHERE DOCID=${docId} AND COPYNO=${copyNo} AND BID=${bId}`;
 	let query = `
 		INSERT INTO RESERVATION
 		VALUES(0, NOW());
 		INSERT INTO RESERVES
 		VALUES(${readerId}, LAST_INSERT_ID(), ${docId}, ${copyNo}, ${bId})`;
-	conn.query(query, (err, result) => {
-		if(err) return res.status(400).json({ message: 'Query error' });
-		res.send({ result });
+	conn.query(checkIfReservedQuery, (err, result) => {
+		if(result.length > 0) return res.status(400).json({ message: 'Book reserved' });
+		conn.query(query, (err, result) => {
+			if(err) return res.status(400).json({ message: 'Query error' });
+			res.send({ result });
+		});
 	});
 }
 

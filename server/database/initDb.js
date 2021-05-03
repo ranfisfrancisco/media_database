@@ -155,11 +155,18 @@ con.connect((err) => {
 	INSERT INTO PUBLISHER(PUBLISHERID, PUBNAME, ADDRESS)
 	VALUES (1, 'Penguin', '123 Lake Ave'), (2, 'Apple', '75 Cool Street');
 	
+	/*
 	INSERT INTO DOCUMENT (DOCID, TITLE, PDATE, PUBLISHERID)
 	VALUES (1, 'Blue Ruin', '2013-05-17', 1), (2, 'Green Room', '2015-05-17', 2), (3, 'A Journal', '1985-05-19', 1), (4, 'Not A Journal', '1984-04-21', 2), (5, 'Proc1', '2020-04-05', 2), (6, 'Proc2', '2021-05-06', 1);
 	
 	INSERT INTO BOOK(DOCID, ISBN)
 	VALUES (1, '9781433202445'), (2, '9781433202476');
+	*/
+	INSERT INTO DOCUMENT (DOCID, TITLE, PDATE, PUBLISHERID)
+	VALUES (1, 'Blue Ruin', '2013-05-17', 1), (2, 'Green Room', '2015-05-17', 2), (3, 'A Journal', '1985-05-19', 1), (4, 'Not A Journal', '1984-04-21', 2), (5, 'Proc1', '2020-04-05', 2), (6, 'Proc2', '2021-05-06', 1), (7, 'Arrival', '2014-05-20', 2), (8, 'Hereditary', '2014-05-20', 2), (9, 'Her', '2014-05-20', 2);
+
+	INSERT INTO BOOK(DOCID, ISBN)
+	VALUES (1, '9781433202445'), (2, '9781433202476'), (7, '9781433202477'), (8, '9781433202478'), (9, '9781433202479');
 	
 	INSERT INTO AUTHORS(PID, DOCID)
 	VALUES (3, 1), (2, 2);

@@ -13,7 +13,7 @@ export const adminLogin = (adminId, password) => async (dispatch) => {
 		return message.error('Error logging in!');
 	}
 	if(response.data.message === 'LOGIN_SUCCESS') {
-		dispatch({ type: 'ADMIN_LOGIN_SUCCESS' });
+		dispatch({ type: 'ADMIN_LOGIN_SUCCESS', payload: { adminId } });
 		return message.success('Admin logged in!');
 	}
 	dispatch({ type: 'ADMIN_LOGIN_FAILED' });

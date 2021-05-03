@@ -63,6 +63,11 @@ export const checkout = (readerId, docId, copyNo, bId) => async (dispatch) => {
 	try {
 		response = await reader.post('/checkout', body);
 	} catch(error) {
+		if(error.response.data.message === 'Book borrowed') {
+			return message.error('Book already borrowed');
+		} else if (error.response.data.message === 'Book reserved') {
+			return message.error('Book reserved by someone else');
+		}
 		dispatch({ type: 'CHECKOUT_REQUEST_FAILED' });
 		return message.error('Error checking out');
 	}
@@ -80,6 +85,9 @@ export const returnDoc = (readerId, docId, copyNo, bId) => async (dispatch) => {
 		dispatch({ type: 'RETURN_DOC_FAILED' });
 		return message.error('Error returning document');
 	}
+	if(response.data.result.affectedRows === 0) {
+		return message.error('You do not own this document');
+	}
 	dispatch({ type: 'RETURN_DOC_SUCCESS' });
 	message.success('Returned document!');
 }
@@ -92,6 +100,9 @@ export const reserveDoc = (readerId, docId, copyNo, bId) => async (dispatch) => 
 		response = await reader.post('/reserve', body);
 	} catch(error) {
 		dispatch({ type: 'RESERVE_DOC_FAILED' });
+		if(error.response.data.message === 'Book reserved') {
+			return message.error('Book already reserved!');
+		}
 		return message.error('Error reserving document');
 	}
 	dispatch({ type: 'RESERVE_DOC_SUCCESS' });
@@ -108,6 +119,7 @@ export const computeFine = (readerId, docId, copyNo, bId) => async (dispatch) =>
 		dispatch({ type: 'COMPUTE_FINE_FAILED' });
 		return message.error('Error computing fine');
 	}
+	if(response.data.result.length === 0) return message.info('No fine found!');
 	dispatch({ type: 'COMPUTE_FINE_SUCCESS', payload: response.data.result });
 	message.success('Computed Fine!');
 }

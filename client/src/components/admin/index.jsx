@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useSelector } from 'react-redux';
 import { Menu } from 'antd';
 import {
 	SearchOutlined,
@@ -22,9 +23,12 @@ import TopBorrowedLibBooksByYearPage from './TopBorrowedLibBooksByYearPage';
 import TopBranchBorrowersPage from './TopBranchBorrowersPage';
 import TopLibraryBorrowersPage from './TopLibraryBorrowersPage';
 
+const adminUsernameSelector = (state) => state.page.admin.pname;
+
 const AdminPage = () => {
 
 	const [visibleContent, setVisibleContent] = useState('addDoc');
+	const adminUsername = useSelector(adminUsernameSelector);
 
 	const handleClick = (e) => setVisibleContent(e.key);
 
@@ -89,7 +93,7 @@ const AdminPage = () => {
 
 	return (
 		<div className='admin-page-wrapper'>
-			<LogoutButton />
+			<LogoutButton username={adminUsername}/>
 			{renderMenu()}
 			{renderContent()}
 		</div>

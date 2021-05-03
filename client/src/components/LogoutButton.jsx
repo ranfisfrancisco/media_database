@@ -3,7 +3,7 @@ import { Button } from 'antd';
 
 import { logout } from '../actions/auth';
 
-const LogoutButton = () => {
+const LogoutButton = ({ username }) => {
 
 	const dispatch = useDispatch();
 	const onLogoutClick = () => dispatch(logout());
@@ -11,7 +11,7 @@ const LogoutButton = () => {
 	return (
 		<div className='logout-button-wrapper'>
 			<Button type='primary' onClick={onLogoutClick}>
-				LOGOUT
+				LOGOUT, {`${username}`}
 			</Button>
 		</div>
 	);

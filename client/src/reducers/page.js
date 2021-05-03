@@ -6,7 +6,8 @@ const initState = {
 		pid: '',
 	},
 	admin: { 
-		loading: false 
+		loading: false,
+		pname: '',
 	},
 };
 
@@ -27,8 +28,8 @@ export default (state = initState, action) => {
 				reader: {
 					...state.reader,
 					loading: false,
-					pname: action.payload.PNAME,
-					pid: action.payload.PID
+					pname: action.payload.RNAME,
+					pid: action.payload.RID
 				},
 				visible: 'reader',
 			}
@@ -57,6 +58,7 @@ export default (state = initState, action) => {
 				admin: {
 					...state.admin,
 					loading: false,
+					pname: action.payload.adminId,
 				},
 				visible: 'admin',
 			}
