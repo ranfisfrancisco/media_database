@@ -1,25 +1,22 @@
+require('dotenv').config()
 const express = require('express');
 // not necessary to set up ssl cert so using http
 const http = require('http');
 // not necessary to set up access control headers so using CORS mw
 const cors = require('cors');
-const bodyParser = require('body-parser');
 
 const app = express();
 const server = http.createServer(app);
 
-require('./database/initDb');
-
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
 app.use(cors());
 
-const ReaderRoutes = require('./routes/reader-routes');
-const AdminRoutes = require('./routes/admin-routes');
+const routes = require('./routes/routes');
 
-app.use('/reader', ReaderRoutes);
-app.use('/admin', AdminRoutes);
+app.use('/reader', routes);
 
 // move to process.env.PORT if you'd like to in the future
-const PORT = 9922;
-server.listen(PORT);
+console.log(`PORT ${process.env.port}`)
+const PORT = process.env.PORT;
+server.listen(PORT, () => console.log(`Listening on port ${PORT}`));
