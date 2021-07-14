@@ -1,6 +1,6 @@
 import { message } from 'antd';
 
-import reader from './api/reader';
+import reader from './api/api';
 
 export const readerLogin = (cardNumber) => async (dispatch) => {
 	dispatch({ type: 'READER_LOGIN_REQUEST' });
