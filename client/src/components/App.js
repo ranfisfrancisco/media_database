@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 //import { adminLogin } from '../actions/admin';
 
-//import Page from './page';
+import Page from './pages/GetAllPage';
 
 import './css/App.css';
 
@@ -13,6 +13,7 @@ const pageSelector = (state) => state.page;
 const App = () => {
 
 	const dispatch = useDispatch();
+
 	//const page = useSelector(pageSelector);
 
 	// const renderPage = () => {
@@ -34,10 +35,9 @@ const App = () => {
 
 
 	return (
-		// <div className='app-wrapper'>
-		// 	{renderPage()}
-		// </div>
-		"Testing"
+	<div className='app-wrapper'>
+	 		<Page/>
+	 	</div>
 	);
 };
 

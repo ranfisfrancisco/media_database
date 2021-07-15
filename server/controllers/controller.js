@@ -1,7 +1,7 @@
 const conn = require('../database/initConn');
 
 module.exports.home = async (req, res) => {
-	res.send("Hello World")
+	res.send("Server")
 }
 
 module.exports.getAllMedia = async (req, res) => {
