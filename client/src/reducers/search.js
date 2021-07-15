@@ -11,6 +11,9 @@ export default (state = initState, action) => {
 		case 'SEARCH_BY_PUBLISHER_SUCCESS': {
 			return { data: action.payload };
 		}
+		case 'GET_ALL_SUCCESS': {
+			return { data: action.payload };
+		}
 		default: {
 			return state;
 		}
