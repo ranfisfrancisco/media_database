@@ -19,3 +19,15 @@ export const getAllAMedia = () => async (dispatch) => {
 	dispatch({ type: 'GET_MEDIA_FAILED' });
 	return message.error('Query Error 2!');
 }
+
+export const searchId = () => async (dispatch) => {
+	dispatch({ type: 'SEARCH_BY_ID_REQUEST' });
+	let response;
+	try {
+		response = await reader.get(`/search/id/${docId}`);
+	} catch(error) {
+		dispatch({ type: 'SEARCH_BY_ID_FAILED' });
+		return message.error('Error searching by ID!');
+	}
+	dispatch({ type: 'SEARCH_BY_ID_SUCCESS', payload: response.data.result });
+}
