@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { Form, Input, Button, Table } from 'antd';
 
-import { searchId, searchTitle } from '../../actions/actions';
+import { searchId, searchName } from '../../actions/actions';
 
 const searchSelector = (state) => state.search;
 
@@ -14,8 +14,8 @@ const SearchPage = () => {
 		dispatch(searchId(value.id));
 	}
 
-	const titleOnFinished = (value) => {
-		dispatch(searchTitle(value.title));
+	const nameOnFinished = (value) => {
+		dispatch(searchName(value.name));
 	}
 
 	const renderSearchTable = () => {
@@ -44,10 +44,10 @@ const SearchPage = () => {
 		);
 	}
 
-	const renderTitleSearch = () => {
+	const renderNameSearch = () => {
 		return (
-			<Form onFinish={titleOnFinished}>
-				<Form.Item label='Search by Title:' name='title'>
+			<Form onFinish={nameOnFinished}>
+				<Form.Item label='Search by Name:' name='name'>
 					<Input />
 				</Form.Item>
 				<Form.Item>
@@ -63,7 +63,7 @@ const SearchPage = () => {
 	return (
 		<div className='reader-content-wrapper'>
 			{renderIdSearch()}
-			{renderTitleSearch()}
+			{renderNameSearch()}
 			{renderSearchTable()}
 		</div>
 	);

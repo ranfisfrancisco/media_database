@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 //import { adminLogin } from '../actions/admin';
 
-import Page from './pages/GetAllPage';
+import SearchPage from './pages/SearchPage';
 
 import './css/App.css';
 
@@ -34,7 +34,7 @@ const App = () => {
 
 	return (
 	<div className='app-wrapper'>
-	 		<Page/>
+	 		<SearchPage/>
 	 	</div>
 	);
 };
