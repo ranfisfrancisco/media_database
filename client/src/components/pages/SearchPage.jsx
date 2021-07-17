@@ -1,16 +1,18 @@
 import { useDispatch, useSelector } from 'react-redux';
+import { useEffect } from 'react';
 import { Form, Input, Button, Table, Select } from 'antd';
-
-import { searchId, searchName } from '../../actions/actions';
+import { searchId, searchName, getAllMediaTypes } from '../../actions/actions';
 
 const { Option } = Select;
 
 const searchSelector = (state) => state.search;
+const mediaTypesSelector = (state) => state.mediaTypes;
 
 const SearchPage = () => {
 
 	const dispatch = useDispatch();
 	const search = useSelector(searchSelector);
+    const mediaTypes = useSelector(mediaTypesSelector);
 
 	const idOnFinished = (value) => {
 		dispatch(searchId(value.id));
@@ -22,7 +24,6 @@ const SearchPage = () => {
 
     //TODO: Handle change
     const filterTypeOnChange = (value) => {
-        console.log(`selected ${value}`);
     }
 
 	const renderSearchTable = () => {
@@ -83,6 +84,10 @@ const SearchPage = () => {
 		);
     }
 
+    //load media types, statuses, formats once on page load
+    useEffect(() => {
+        getAllMediaTypes();
+      }, []);
 
 	return (
 		<div className='reader-content-wrapper'>
