@@ -8,7 +8,7 @@ export default (state = initState, action) => {
 		case 'SEARCH_BY_NAME_SUCCESS': {
 			return { data: action.payload };
 		}
-		case 'GET_ALL_SUCCESS': {
+		case 'GET_ALL_MEDIA_SUCCESS': {
 			return { data: action.payload };
 		}
 		default: {

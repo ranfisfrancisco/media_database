@@ -4,6 +4,18 @@ module.exports.home = async (req, res) => {
 	res.send("Server")
 }
 
+module.exports.getAllTypes = async (req, res) => {
+	let query = `SELECT *
+	FROM media_types
+	ORDER BY type;`; 
+
+	conn.query(query, (err, result) => {
+		if(err) return res.status(400).json({ message: 'Query error' });
+		res.send({ message:"GET_ALL_TYPES_SUCCESS", result });
+	});
+}
+
+
 module.exports.getAllMedia = async (req, res) => {
 	let query = `SELECT id, name, releaseDate, useDate, type, format, status FROM media_items
 	NATURAL JOIN media_types
@@ -13,7 +25,7 @@ module.exports.getAllMedia = async (req, res) => {
 
 	conn.query(query, (err, result) => {
 		if(err) return res.status(400).json({ message: 'Query error' });
-		res.send({ message:"GET_ALL_SUCCESS", result });
+		res.send({ message:"GET_ALL_MEDIA_SUCCESS", result });
 	});
 }
 
