@@ -26,10 +26,17 @@ const GetAllPage = () => {
 	const renderSearchTable = () => {
 		let dataSource = search.data;
 		let columns = [
+			{ title: 'ID', dataIndex: 'id' },
 			{ title: 'Name', dataIndex: 'name' },
+			{ title: 'Release Date', dataIndex: 'releaseDate' },
+			{ title: 'Use Date', dataIndex: 'useDate' },
+            { title: 'Type', dataIndex: 'type' },
+            { title: 'Format', dataIndex: 'format' },
+            { title: 'Status', dataIndex: 'status' },
 		];
 		return <Table dataSource={dataSource} columns={columns} />;
 	}
+
 
 	return (
 		<div className='user-content-wrapper'>

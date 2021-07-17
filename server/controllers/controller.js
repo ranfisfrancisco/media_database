@@ -8,8 +8,9 @@ module.exports.getAllMedia = async (req, res) => {
 	let query = `SELECT id, name, releaseDate, useDate, type, format, status FROM media_items
 	NATURAL JOIN media_types
 	NATURAL JOIN media_formats
-	NATURAL JOIN media_statuses;`; 
-	
+	NATURAL JOIN media_statuses
+	ORDER BY id;`; 
+
 	conn.query(query, (err, result) => {
 		if(err) return res.status(400).json({ message: 'Query error' });
 		res.send({ message:"GET_ALL_SUCCESS", result });
@@ -32,10 +33,12 @@ module.exports.searchByID = async (req, res) => {
 
 module.exports.searchByName = async (req, res) => {
 	let { mediaName } = req.params;
-	let query = `SELECT id, name, releaseDate, useDate, type, format, status FROM media_items
+	let query = 
+	`SELECT id, name, releaseDate, useDate, type, format, status FROM media_items
 	NATURAL JOIN media_types
 	NATURAL JOIN media_formats
-	NATURAL JOIN media_statuses WHERE name="${mediaName}"`; 
+	NATURAL JOIN media_statuses
+	WHERE name LIKE "%${mediaName}%"`; 
 
 	conn.query(query, (err, result) => {
 		if(err) return res.status(400).json({ message: mediaName });
