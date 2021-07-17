@@ -24,7 +24,10 @@ const SearchPage = () => {
 			{ title: 'ID', dataIndex: 'id' },
 			{ title: 'Name', dataIndex: 'name' },
 			{ title: 'Release Date', dataIndex: 'releaseDate' },
-			{ title: 'useDate', dataIndex: 'useDate' },
+			{ title: 'Use Date', dataIndex: 'useDate' },
+            { title: 'Type', dataIndex: 'type' },
+            { title: 'Format', dataIndex: 'format' },
+            { title: 'Status', dataIndex: 'status' },
 		];
 		return <Table dataSource={dataSource} columns={columns} />;
 	}

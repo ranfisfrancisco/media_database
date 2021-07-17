@@ -5,7 +5,11 @@ module.exports.home = async (req, res) => {
 }
 
 module.exports.getAllMedia = async (req, res) => {
-	let query = `SELECT * FROM media_items`; 
+	let query = `SELECT id, name, releaseDate, useDate, type, format, status FROM media_items
+	NATURAL JOIN media_types
+	NATURAL JOIN media_formats
+	NATURAL JOIN media_statuses;`; 
+	
 	conn.query(query, (err, result) => {
 		if(err) return res.status(400).json({ message: 'Query error' });
 		res.send({ message:"GET_ALL_SUCCESS", result });
@@ -14,7 +18,12 @@ module.exports.getAllMedia = async (req, res) => {
 
 module.exports.searchByID = async (req, res) => {
 	let { mediaID } = req.params;
-	let query = `SELECT * FROM media_items WHERE ID=${mediaID}`; 
+	let query = `SELECT id, name, releaseDate, useDate, type, format, status FROM media_items
+	NATURAL JOIN media_types
+	NATURAL JOIN media_formats
+	NATURAL JOIN media_statuses
+	WHERE ID=${mediaID};`; 
+
 	conn.query(query, (err, result) => {
 		if(err) return res.status(400).json({ message: 'Query error' });
 		res.send({ message:"GET_BY_ID_SUCCESS", result });
@@ -23,7 +32,11 @@ module.exports.searchByID = async (req, res) => {
 
 module.exports.searchByName = async (req, res) => {
 	let { mediaName } = req.params;
-	let query = `SELECT * FROM media_items WHERE name="${mediaName}"`; 
+	let query = `SELECT id, name, releaseDate, useDate, type, format, status FROM media_items
+	NATURAL JOIN media_types
+	NATURAL JOIN media_formats
+	NATURAL JOIN media_statuses WHERE name="${mediaName}"`; 
+
 	conn.query(query, (err, result) => {
 		if(err) return res.status(400).json({ message: mediaName });
 		res.send({ message:"GET_BY_NAME_SUCCESS", result });
