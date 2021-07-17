@@ -20,6 +20,24 @@ export const getAllAMedia = () => async (dispatch) => {
 	return message.error('Query Error 2!');
 }
 
+export const getAllMediaTypes = () => async (dispatch) => {
+	dispatch({ type: 'GET_ALL_MEDIA_TYPES_REQUEST' });
+	let response;
+	try {
+		response = await api.get('/media_types');
+	} catch(error) {
+		dispatch({ type: 'GET_ALL_MEDIA_TYPES_FAILED' });
+		return message.error('Query Error 1!');
+	}
+	if(response.data.message === 'GET_ALL_MEDIA_TYPES_SUCCESS') {
+		dispatch({ type: 'GET_ALL_MEDIA_TYPES_SUCCESS', payload: response.data.result });
+		console.log("Success")
+		return message.success('Got all media types');
+	}
+	dispatch({ type: 'GET_ALL_MEDIA_TYPES_FAILED' });
+	return message.error('Query Error 2!');
+}
+
 export const searchId = (mediaID) => async (dispatch) => {
 	dispatch({ type: 'SEARCH_BY_ID_REQUEST' });
 	let response;

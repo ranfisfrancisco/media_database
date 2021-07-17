@@ -15,6 +15,27 @@ module.exports.getAllTypes = async (req, res) => {
 	});
 }
 
+module.exports.getAllFormats = async (req, res) => {
+	let query = `SELECT *
+	FROM media_formats
+	order by format_id `; 
+
+	conn.query(query, (err, result) => {
+		if(err) return res.status(400).json({ message: 'Query error' });
+		res.send({ message:"GET_ALL_FORMATS_SUCCESS", result });
+	});
+}
+
+module.exports.getAllStatuses = async (req, res) => {
+	let query = `SELECT *
+	FROM media_statuses
+	order by status_id `; 
+
+	conn.query(query, (err, result) => {
+		if(err) return res.status(400).json({ message: 'Query error' });
+		res.send({ message:"GET_ALL_STATUSES_SUCCESS", result });
+	});
+}
 
 module.exports.getAllMedia = async (req, res) => {
 	let query = `SELECT id, name, releaseDate, useDate, type, format, status FROM media_items
