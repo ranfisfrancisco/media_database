@@ -17,7 +17,7 @@ module.exports.searchByID = async (req, res) => {
 	let query = `SELECT * FROM media_items WHERE ID=${mediaID}`; 
 	conn.query(query, (err, result) => {
 		if(err) return res.status(400).json({ message: 'Query error' });
-		res.send({ message:"GET_ID_SUCCESS", result });
+		res.send({ message:"GET_BY_ID_SUCCESS", result });
 	});
 }
 
@@ -25,7 +25,7 @@ module.exports.searchByName = async (req, res) => {
 	let { mediaName } = req.params;
 	let query = `SELECT * FROM media_items WHERE name="${mediaName}"`; 
 	conn.query(query, (err, result) => {
-		if(err) return res.status(400).json({ message: 'Query error' });
-		res.send({ message:"GET_NAME_SUCCESS", result });
+		if(err) return res.status(400).json({ message: mediaName });
+		res.send({ message:"GET_BY_NAME_SUCCESS", result });
 	});
 }
