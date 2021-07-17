@@ -1,7 +1,9 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { Form, Input, Button, Table } from 'antd';
+import { Form, Input, Button, Table, Select } from 'antd';
 
 import { searchId, searchName } from '../../actions/actions';
+
+const { Option } = Select;
 
 const searchSelector = (state) => state.search;
 
@@ -17,6 +19,11 @@ const SearchPage = () => {
 	const nameOnFinished = (value) => {
 		dispatch(searchName(value.name));
 	}
+
+    //TODO: Handle change
+    const filterTypeOnChange = (value) => {
+        console.log(`selected ${value}`);
+    }
 
 	const renderSearchTable = () => {
 		let dataSource = search.data;
@@ -62,11 +69,26 @@ const SearchPage = () => {
 		);
 	}
 
+    //TODO: Load Types from database and load results into here
+    const renderFilterOptions = () => {
+        return (
+			<Form onFinish={filterTypeOnChange}>
+				<Form.Item label='Filter by Type' name='typeFilter'>
+                    <Select defaultValue="None" style={{ width: 120 }} onChange={filterTypeOnChange}>
+                        <Option value="None">None</Option>
+                        <Option value="Other">Other</Option>
+                    </Select>
+				</Form.Item>
+			</Form>
+		);
+    }
+
 
 	return (
 		<div className='reader-content-wrapper'>
 			{renderIdSearch()}
 			{renderNameSearch()}
+            {renderFilterOptions()}
 			{renderSearchTable()}
 		</div>
 	);
