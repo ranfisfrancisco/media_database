@@ -16,10 +16,12 @@ export const searchForMedia = (id, name ,type_id, format_id, status_id, exactNam
 		let paramString = "?";
 
 		for (var p of params){
-			if (p.val && p.val !== -1 && p.val !== ""){
+			console.log(p)
+			if (p.val !== undefined && p.val !== -1 && p.val !== ""){
 				paramString += `${p.col}=${p.val}&`
 			}
 		}
+		console.log(paramString)
 
 		response = await api.get('/media' + paramString);
 	} catch(error) {

@@ -25,6 +25,7 @@ const SearchPage = () => {
 	// }
 
 	const searchOnFinish = (value) => {
+		console.log(value.id, value.name, typeFilter)
 		dispatch(searchForMedia(value.id, value.name, typeFilter));
 	}
 

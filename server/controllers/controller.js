@@ -8,21 +8,22 @@ module.exports.search = async (req, res) => {
 	let filters = 
 	[{col: "id", val: req.query.id || ""},
 	{col: "name", val: req.query.name || ""},
-	{col: "type_ID", val: req.query.typeID || ""},
-	{col: "format_ID", val: req.query.formatID || ""},
-	{col: "status_ID", val: req.query.statusID || ""},
+	{col: "type_ID", val: req.query.type_ID || ""},
+	{col: "format_ID", val: req.query.format_ID || ""},
+	{col: "status_ID", val: req.query.status_ID || ""},
 	]
+	console.log(filters);
 	let matchName = false;
 	let whereClause = "";
 
 	if (req.query.matchName && (req.query.matchName === "1" || req.query.matchName === "true"))
 		matchName = true;
 
-	if (req.query.id || req.query.name ||req.query.typeID || req.query.formatID ||req.query.statusID){
+	if (req.query.id || req.query.name ||req.query.type_ID || req.query.format_ID || req.query.status_ID){
 		whereClause = "WHERE ";
 		let numOfStatements = 0;
 
-		for (f of filters){
+		for (var f of filters){
 			if (f.val !== ""){
 				if(numOfStatements > 0)
 					whereClause += " AND ";
