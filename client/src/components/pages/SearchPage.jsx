@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Form, Input, Button, Table, Select } from 'antd';
 import { searchForMedia, getAllMediaTypes } from '../../actions/actions';
 
@@ -14,7 +14,7 @@ const SearchPage = () => {
 	const search = useSelector(searchSelector);
     const mediaTypes = useSelector(mediaTypesSelector);
 	const NOT_SELECTED = -1;
-	var typeFilter = NOT_SELECTED;
+	const [typeFilter, setTypeFilter] = useState(NOT_SELECTED);
 
 	// const idOnFinished = (value) => {
 	// 	dispatch(searchId(value.id));
@@ -37,7 +37,7 @@ const SearchPage = () => {
 
 		for (const mediaType of mediaTypes){
 			if (value === mediaType.type){
-				typeFilter = mediaType.type_id;
+				setTypeFilter(mediaType.type_id);
 				return;
 			}
 		}
