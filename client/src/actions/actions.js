@@ -57,8 +57,8 @@ export const getAllMediaTypes = () => async (dispatch) => {
 	}
 	if(response.data.message === 'GET_ALL_MEDIA_TYPES_SUCCESS') {
 		dispatch({ type: 'GET_ALL_MEDIA_TYPES_SUCCESS', payload: response.data.result });
-		console.log("Success")
-		return message.success('Got all media types');
+		//return message.success('Got all media types');
+		return;
 	}
 	dispatch({ type: 'GET_ALL_MEDIA_TYPES_FAILED' });
 	return message.error('Query Error 2!');

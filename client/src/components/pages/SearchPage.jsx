@@ -1,29 +1,42 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { Form, Input, Button, Table, Select } from 'antd';
 import { searchId, searchName, getAllMediaTypes } from '../../actions/actions';
 
 const { Option } = Select;
 
 const searchSelector = (state) => state.search;
-const mediaTypesSelector = (state) => state.mediaTypes;
+const mediaTypesSelector = (state) => state.mediaTypes.data;
 
 const SearchPage = () => {
 
 	const dispatch = useDispatch();
 	const search = useSelector(searchSelector);
     const mediaTypes = useSelector(mediaTypesSelector);
+	const NOT_SELECTED = -1;
+	var typeFilter = NOT_SELECTED;
 
 	const idOnFinished = (value) => {
 		dispatch(searchId(value.id));
+        console.log(mediaTypes);
 	}
 
 	const nameOnFinished = (value) => {
 		dispatch(searchName(value.name));
 	}
 
-    //TODO: Handle change
     const filterTypeOnChange = (value) => {
+		if (value === "None"){
+			typeFilter = NOT_SELECTED;
+			return;
+		}
+
+		for (const mediaType of mediaTypes){
+			if (value === mediaType.type){
+				typeFilter = mediaType.type_id;
+				return;
+			}
+		}
     }
 
 	const renderSearchTable = () => {
@@ -72,12 +85,17 @@ const SearchPage = () => {
 
     //TODO: Load Types from database and load results into here
     const renderFilterOptions = () => {
+
+        var typeOptions = mediaTypes.map(function(typeObj, index){
+            return <Option key={ typeObj.type }>{ typeObj.type }</Option>;
+        });
+
         return (
 			<Form onFinish={filterTypeOnChange}>
 				<Form.Item label='Filter by Type' name='typeFilter'>
                     <Select defaultValue="None" style={{ width: 120 }} onChange={filterTypeOnChange}>
-                        <Option value="None">None</Option>
-                        <Option value="Other">Other</Option>
+						<Option key="None">None</Option>
+                        { typeOptions }
                     </Select>
 				</Form.Item>
 			</Form>
@@ -86,8 +104,8 @@ const SearchPage = () => {
 
     //load media types, statuses, formats once on page load
     useEffect(() => {
-        getAllMediaTypes();
-      }, []);
+        dispatch(getAllMediaTypes());
+    }, []);
 
 	return (
 		<div className='reader-content-wrapper'>
