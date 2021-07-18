@@ -1,20 +1,27 @@
 import { useDispatch, useSelector } from 'react-redux';
 import React, { useEffect, useState } from 'react';
 import { Form, Input, Button, Table, Select } from 'antd';
-import { searchForMedia, getAllMediaTypes } from '../../actions/actions';
+import { searchForMedia, getAllMediaTypes, getAllMediaFormats, getAllMediaStatuses } from '../../actions/actions';
 
 const { Option } = Select;
 
 const searchSelector = (state) => state.search;
 const mediaTypesSelector = (state) => state.mediaTypes.data;
+const mediaFormatsSelector = (state) => state.mediaFormats.data;
+const mediaStatusesSelector = (state) => state.mediaStatuses.data;
 
 const SearchPage = () => {
 
 	const dispatch = useDispatch();
 	const search = useSelector(searchSelector);
     const mediaTypes = useSelector(mediaTypesSelector);
+	const mediaFormats = useSelector(mediaFormatsSelector);
+	const mediaStatuses = useSelector(mediaStatusesSelector);
+
 	const NOT_SELECTED = -1;
 	const [typeFilter, setTypeFilter] = useState(NOT_SELECTED);
+	const [formatFilter, setFormatFilter] = useState(NOT_SELECTED);
+	const [statusFilter, setStatusFilter] = useState(NOT_SELECTED);
 
 	// const idOnFinished = (value) => {
 	// 	dispatch(searchId(value.id));
@@ -26,22 +33,50 @@ const SearchPage = () => {
 
 	const searchOnFinish = (value) => {
 		console.log(value.id, value.name, typeFilter)
-		dispatch(searchForMedia(value.id, value.name, typeFilter));
+		dispatch(searchForMedia(value.id, value.name, typeFilter, formatFilter, statusFilter));
 	}
 
     const filterTypeOnChange = (value) => {
 		if (value === "None"){
-			typeFilter = NOT_SELECTED;
+			setTypeFilter(NOT_SELECTED);
 			return;
 		}
 
-		for (const mediaType of mediaTypes){
-			if (value === mediaType.type){
-				setTypeFilter(mediaType.type_id);
+		for (const option of mediaTypes){
+			if (value === option.type){
+				setTypeFilter(option.type_id);
 				return;
 			}
 		}
     }
+
+	const filterFormatOnChange = (value) => {
+		if (value === "None"){
+			setFormatFilter(NOT_SELECTED);
+			return;
+		}
+
+		for (const option of mediaFormats){
+			if (value === option.format){
+				setFormatFilter(option.format_id);
+				return;
+			}
+		}
+    }
+
+	const filterStatusOnChange = (value) => {
+		if (value === "None"){
+			setStatusFilter(NOT_SELECTED);
+			return;
+		}
+
+		for (const option of mediaStatuses){
+			if (value === option.status){
+				setStatusFilter(option.status_id);
+				return;
+			}
+		}
+	}
 
 	const renderSearchTable = () => {
 		let dataSource = search.data;
@@ -76,17 +111,39 @@ const SearchPage = () => {
     //TODO: Load Types from database and load results into here
     const renderFilterOptions = () => {
 
-        var typeOptions = mediaTypes.map(function(typeObj, index){
-            return <Option key={ typeObj.type }>{ typeObj.type }</Option>;
+        var typeOptions = mediaTypes.map(function(obj, index){
+            return <Option key={ obj.type }>{ obj.type }</Option>;
+        });
+
+		var formatOptions = mediaFormats.map(function(obj, index){
+            return <Option key={ obj.format }>{ obj.format }</Option>;
+        });
+
+		var statusOptions = mediaStatuses.map(function(obj, index){
+            return <Option key={ obj.status }>{ obj.status }</Option>;
         });
 
         return (
+			<Form>
 				<Form.Item label='Filter by Type' name='typeFilter'>
                     <Select defaultValue="None" style={{ width: 120 }} onChange={filterTypeOnChange}>
 						<Option key="None">None</Option>
                         { typeOptions }
                     </Select>
 				</Form.Item>
+				<Form.Item label='Filter by Format' name='formatFilter'>
+                    <Select defaultValue="None" style={{ width: 120 }} onChange={filterFormatOnChange}>
+						<Option key="None">None</Option>
+                        { formatOptions }
+                    </Select>
+				</Form.Item>
+				<Form.Item label='Filter by Status' name='statusFilter'>
+                    <Select defaultValue="None" style={{ width: 120 }} onChange={filterStatusOnChange}>
+						<Option key="None">None</Option>
+                        { statusOptions }
+                    </Select>
+				</Form.Item>
+			</Form>
 		);
     }
 
@@ -115,6 +172,8 @@ const SearchPage = () => {
     //load media types, statuses, formats once on page load
     useEffect(() => {
         dispatch(getAllMediaTypes());
+		dispatch(getAllMediaFormats());
+		dispatch(getAllMediaStatuses());
     }, []);
 
 	return (

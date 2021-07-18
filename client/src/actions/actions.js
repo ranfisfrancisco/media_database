@@ -16,7 +16,6 @@ export const searchForMedia = (id, name ,type_id, format_id, status_id, exactNam
 		let paramString = "?";
 
 		for (var p of params){
-			console.log(p)
 			if (p.val !== undefined && p.val !== -1 && p.val !== ""){
 				paramString += `${p.col}=${p.val}&`
 			}
@@ -52,6 +51,40 @@ export const getAllMediaTypes = () => async (dispatch) => {
 		return;
 	}
 	dispatch({ type: 'GET_ALL_MEDIA_TYPES_FAILED' });
+	return message.error('Query Error 2!');
+}
+
+export const getAllMediaFormats = () => async (dispatch) => {
+	dispatch({ type: 'GET_ALL_MEDIA_FORMATS_REQUEST' });
+	let response;
+	try {
+		response = await api.get('/media_formats');
+	} catch(error) {
+		dispatch({ type: 'GET_ALL_MEDIA_FORMATS_FAILED' });
+		return message.error('Query Error 1!');
+	}
+	if(response.data.message === 'GET_ALL_MEDIA_FORMATS_SUCCESS') {
+		dispatch({ type: 'GET_ALL_MEDIA_FORMATS_SUCCESS', payload: response.data.result });
+		return;
+	}
+	dispatch({ type: 'GET_ALL_MEDIA_FORMATS_FAILED' });
+	return message.error('Query Error 2!');
+}
+
+export const getAllMediaStatuses = () => async (dispatch) => {
+	dispatch({ type: 'GET_ALL_MEDIA_STATUSES_REQUEST' });
+	let response;
+	try {
+		response = await api.get('/media_statuses');
+	} catch(error) {
+		dispatch({ type: 'GET_ALL_MEDIA_STATUSES_FAILED' });
+		return message.error('Query Error 1!');
+	}
+	if(response.data.message === 'GET_ALL_MEDIA_STATUSES_SUCCESS') {
+		dispatch({ type: 'GET_ALL_MEDIA_STATUSES_SUCCESS', payload: response.data.result });
+		return;
+	}
+	dispatch({ type: 'GET_ALL_MEDIA_STATUSES_FAILED' });
 	return message.error('Query Error 2!');
 }
 
