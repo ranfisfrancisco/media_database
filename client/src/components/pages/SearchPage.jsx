@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 import React, { useEffect } from 'react';
 import { Form, Input, Button, Table, Select } from 'antd';
-import { searchId, searchName, getAllMediaTypes } from '../../actions/actions';
+import { searchForMedia, getAllMediaTypes } from '../../actions/actions';
 
 const { Option } = Select;
 
@@ -16,13 +16,16 @@ const SearchPage = () => {
 	const NOT_SELECTED = -1;
 	var typeFilter = NOT_SELECTED;
 
-	const idOnFinished = (value) => {
-		dispatch(searchId(value.id));
-        console.log(mediaTypes);
-	}
+	// const idOnFinished = (value) => {
+	// 	dispatch(searchId(value.id));
+	// }
 
-	const nameOnFinished = (value) => {
-		dispatch(searchName(value.name));
+	// const nameOnFinished = (value) => {
+	// 	dispatch(searchName(value.name));
+	// }
+
+	const searchOnFinish = (value) => {
+		dispatch(searchForMedia(value.id, value.name, typeFilter));
 	}
 
     const filterTypeOnChange = (value) => {
@@ -55,31 +58,17 @@ const SearchPage = () => {
 
 	const renderIdSearch = () => {
 		return (
-			<Form onFinish={idOnFinished}>
 				<Form.Item label='Search by ID:' name='id'>
 					<Input />
 				</Form.Item>
-				<Form.Item>
-					<Button type='primary' htmlType='submit'>
-						Submit	
-					</Button>
-				</Form.Item>
-			</Form>
 		);
 	}
 
 	const renderNameSearch = () => {
 		return (
-			<Form onFinish={nameOnFinished}>
 				<Form.Item label='Search by Name:' name='name'>
 					<Input />
 				</Form.Item>
-				<Form.Item>
-					<Button type='primary' htmlType='submit'>
-						Submit
-					</Button>
-				</Form.Item>
-			</Form>
 		);
 	}
 
@@ -91,16 +80,36 @@ const SearchPage = () => {
         });
 
         return (
-			<Form onFinish={filterTypeOnChange}>
 				<Form.Item label='Filter by Type' name='typeFilter'>
                     <Select defaultValue="None" style={{ width: 120 }} onChange={filterTypeOnChange}>
 						<Option key="None">None</Option>
                         { typeOptions }
                     </Select>
 				</Form.Item>
-			</Form>
 		);
     }
+
+	const renderSearchButton = () => {
+		return (
+				<Form.Item>
+					<Button type='primary' htmlType='submit'>
+						Submit
+					</Button>
+				</Form.Item>
+		);
+	}
+
+	const renderSearchForm = () => {
+		return (
+			<Form onFinish={searchOnFinish}>
+				{renderIdSearch()}
+				{renderNameSearch()}
+				{renderFilterOptions()}
+				{renderSearchButton()}
+				{renderSearchTable()}
+			</Form>
+		);
+	}
 
     //load media types, statuses, formats once on page load
     useEffect(() => {
@@ -109,10 +118,7 @@ const SearchPage = () => {
 
 	return (
 		<div className='reader-content-wrapper'>
-			{renderIdSearch()}
-			{renderNameSearch()}
-            {renderFilterOptions()}
-			{renderSearchTable()}
+			{renderSearchForm()}
 		</div>
 	);
 }

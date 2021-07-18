@@ -10,6 +10,8 @@ export default (state = initState, action) => {
 		}
 		case 'GET_ALL_MEDIA_SUCCESS': {
 			return { data: action.payload };
+		} case 'GET_MEDIA_SUCCESS': {
+			return { data: action.payload };
 		}
 		default: {
 			return state;
