@@ -4,6 +4,59 @@ module.exports.home = async (req, res) => {
 	res.send("Server")
 }
 
+module.exports.search = async (req, res) => {
+	let filters = 
+	[{col: "id", val: req.query.id || ""},
+	{col: "name", val: req.query.name || ""},
+	{col: "type_ID", val: req.query.typeID || ""},
+	{col: "format_ID", val: req.query.formatID || ""},
+	{col: "status_ID", val: req.query.statusID || ""},
+	]
+	let matchName = false;
+	let whereClause = "";
+
+	if (req.query.matchName && (req.query.matchName === "1" || req.query.matchName === "true"))
+		matchName = true;
+
+	if (req.query.id || req.query.name ||req.query.typeID || req.query.formatID ||req.query.statusID){
+		whereClause = "WHERE ";
+		let numOfStatements = 0;
+
+		for (f of filters){
+			if (f.val !== ""){
+				if(numOfStatements > 0)
+					whereClause += " AND ";
+					
+				if (f.col !== "name"){
+					whereClause += ` ${f.col}=${f.val} `;
+				}
+				else{
+					//if true, match exact name, else use LIKE for closest match
+					if (matchName)
+						whereClause += ` ${f.col} = "${f.val}" `;
+					else
+						whereClause += ` ${f.col} LIKE "%${f.val}%" `;
+				}
+				numOfStatements++;
+			}
+		}
+	}
+
+	let query = `SELECT id, name, releaseDate, useDate, type, format, status FROM media_items
+	NATURAL JOIN media_types
+	NATURAL JOIN media_formats
+	NATURAL JOIN media_statuses ` + whereClause + 
+	`ORDER BY id;`; 
+
+	console.log(query)
+
+	conn.query(query, (err, result) => {
+		if(err) return res.status(400).json({ message: 'Query error!' });
+		res.send({ message:"GET_ALL_MEDIA_SUCCESS", result });
+	});
+}
+
+
 module.exports.getAllMedia = async (req, res) => {
 	let query = `SELECT id, name, releaseDate, useDate, type, format, status FROM media_items
 	NATURAL JOIN media_types
