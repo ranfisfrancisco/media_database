@@ -19,6 +19,7 @@ const SearchPage = () => {
 	const mediaStatuses = useSelector(mediaStatusesSelector);
 
 	const NOT_SELECTED = -1;
+	const NOT_SELECTED_TEXT = "All"
 	const [typeFilter, setTypeFilter] = useState(NOT_SELECTED);
 	const [formatFilter, setFormatFilter] = useState(NOT_SELECTED);
 	const [statusFilter, setStatusFilter] = useState(NOT_SELECTED);
@@ -36,7 +37,7 @@ const SearchPage = () => {
 	}
 
     const filterTypeOnChange = (value) => {
-		if (value === "None"){
+		if (value === NOT_SELECTED_TEXT){
 			setTypeFilter(NOT_SELECTED);
 			return;
 		}
@@ -50,7 +51,7 @@ const SearchPage = () => {
     }
 
 	const filterFormatOnChange = (value) => {
-		if (value === "None"){
+		if (value === NOT_SELECTED_TEXT){
 			setFormatFilter(NOT_SELECTED);
 			return;
 		}
@@ -64,7 +65,7 @@ const SearchPage = () => {
     }
 
 	const filterStatusOnChange = (value) => {
-		if (value === "None"){
+		if (value === NOT_SELECTED_TEXT){
 			setStatusFilter(NOT_SELECTED);
 			return;
 		}
@@ -125,20 +126,20 @@ const SearchPage = () => {
         return (
 			<Form>
 				<Form.Item label='Filter by Type' name='typeFilter'>
-                    <Select defaultValue="None" style={{ width: 120 }} onChange={filterTypeOnChange}>
-						<Option key="None">None</Option>
+                    <Select defaultValue={NOT_SELECTED_TEXT} style={{ width: 120 }} onChange={filterTypeOnChange}>
+						<Option key={NOT_SELECTED_TEXT}>{NOT_SELECTED_TEXT}</Option>
                         { typeOptions }
                     </Select>
 				</Form.Item>
 				<Form.Item label='Filter by Format' name='formatFilter'>
-                    <Select defaultValue="None" style={{ width: 120 }} onChange={filterFormatOnChange}>
-						<Option key="None">None</Option>
+                    <Select defaultValue={NOT_SELECTED_TEXT} style={{ width: 120 }} onChange={filterFormatOnChange}>
+						<Option key={NOT_SELECTED_TEXT}>{NOT_SELECTED_TEXT}</Option>
                         { formatOptions }
                     </Select>
 				</Form.Item>
 				<Form.Item label='Filter by Status' name='statusFilter'>
-                    <Select defaultValue="None" style={{ width: 120 }} onChange={filterStatusOnChange}>
-						<Option key="None">None</Option>
+                    <Select defaultValue={NOT_SELECTED_TEXT} style={{ width: 120 }} onChange={filterStatusOnChange}>
+						<Option key={NOT_SELECTED_TEXT}>{NOT_SELECTED_TEXT}</Option>
                         { statusOptions }
                     </Select>
 				</Form.Item>
