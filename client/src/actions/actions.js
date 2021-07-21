@@ -20,7 +20,6 @@ export const searchForMedia = (id, name ,type_id, format_id, status_id, exactNam
 				paramString += `${p.col}=${p.val}&`
 			}
 		}
-		console.log(paramString)
 
 		response = await api.get('/media' + paramString);
 	} catch(error) {
@@ -29,7 +28,6 @@ export const searchForMedia = (id, name ,type_id, format_id, status_id, exactNam
 	}
 	if(response.data.message === 'GET_MEDIA_SUCCESS') {
 		dispatch({ type: 'GET_MEDIA_SUCCESS', payload: response.data.result });
-		console.log("Success")
 		return message.success('Got media!');
 	}
 	dispatch({ type: 'GET_MEDIA_FAILED' });
