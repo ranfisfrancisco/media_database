@@ -28,7 +28,7 @@ export const searchForMedia = (id, name ,type_id, format_id, status_id, exactNam
 	}
 	if(response.data.message === 'GET_MEDIA_SUCCESS') {
 		dispatch({ type: 'GET_MEDIA_SUCCESS', payload: response.data.result });
-		return message.success('Got media!');
+		return message.success('Got Result!');
 	}
 	dispatch({ type: 'GET_MEDIA_FAILED' });
 	return message.error('Query Error 2!');

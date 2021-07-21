@@ -12,7 +12,6 @@ module.exports.search = async (req, res) => {
 	{col: "format_ID", val: req.query.format_ID || ""},
 	{col: "status_ID", val: req.query.status_ID || ""},
 	]
-	console.log(filters);
 	let matchName = false;
 	let whereClause = "";
 
@@ -49,7 +48,7 @@ module.exports.search = async (req, res) => {
 	NATURAL JOIN media_statuses ` + whereClause + 
 	`ORDER BY id;`; 
 
-	console.log(query)
+	console.log(query);
 
 	conn.query(query, (err, result) => {
 		if(err) return res.status(400).json({ message: 'Query error!' });

@@ -78,6 +78,15 @@ const SearchPage = () => {
 		}
 	}
 
+	const rowSelection = {
+		onChange: (selectedRowKeys, selectedRows) => {
+			console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+		// getCheckboxProps: record => ({
+		// 	disabled: record.name === 'Disabled User', // Column configuration not to be checked
+		// 	name: record.name,
+		// })
+	}};
+
 	const renderSearchTable = () => {
 		let dataSource = search.data;
 		let columns = [
@@ -89,13 +98,13 @@ const SearchPage = () => {
             { title: 'Format', dataIndex: 'format' },
             { title: 'Status', dataIndex: 'status' },
 		];
-		return <Table dataSource={dataSource} columns={columns} />;
+		return <Table dataSource={dataSource} columns={columns} rowSelection={rowSelection} rowKey={record =>record.id}/>;
 	}
 
 	const renderIdSearch = () => {
 		return (
 				<Form.Item label='Search by ID:' name='id'>
-					<Input />
+					<Input  type="number"  />
 				</Form.Item>
 		);
 	}
@@ -103,7 +112,7 @@ const SearchPage = () => {
 	const renderNameSearch = () => {
 		return (
 				<Form.Item label='Search by Name:' name='name'>
-					<Input />
+					<Input  />
 				</Form.Item>
 		);
 	}
