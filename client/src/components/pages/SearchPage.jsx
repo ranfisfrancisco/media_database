@@ -23,6 +23,7 @@ const SearchPage = () => {
 	const [typeFilter, setTypeFilter] = useState(NOT_SELECTED);
 	const [formatFilter, setFormatFilter] = useState(NOT_SELECTED);
 	const [statusFilter, setStatusFilter] = useState(NOT_SELECTED);
+	const [selectedRows, setSelectedRows] = useState([]);
 
 	// const idOnFinished = (value) => {
 	// 	dispatch(searchId(value.id));
@@ -81,6 +82,7 @@ const SearchPage = () => {
 	const rowSelection = {
 		onChange: (selectedRowKeys, selectedRows) => {
 			console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+			setSelectedRows(selectedRows);
 		// getCheckboxProps: record => ({
 		// 	disabled: record.name === 'Disabled User', // Column configuration not to be checked
 		// 	name: record.name,
@@ -133,7 +135,7 @@ const SearchPage = () => {
         });
 
         return (
-			<Form>
+			<div>
 				<Form.Item label='Filter by Type' name='typeFilter'>
                     <Select defaultValue={NOT_SELECTED_TEXT} style={{ width: 120 }} onChange={filterTypeOnChange}>
 						<Option key={NOT_SELECTED_TEXT}>{NOT_SELECTED_TEXT}</Option>
@@ -152,7 +154,7 @@ const SearchPage = () => {
                         { statusOptions }
                     </Select>
 				</Form.Item>
-			</Form>
+			</div>
 		);
     }
 
