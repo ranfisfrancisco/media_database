@@ -12,11 +12,11 @@ module.exports.search = async (req, res) => {
 	{col: "format_ID", val: req.query.format_ID || ""},
 	{col: "status_ID", val: req.query.status_ID || ""},
 	]
-	let matchName = false;
+	let exactNameSearch = false;
 	let whereClause = "";
 
-	if (req.query.matchName && (req.query.matchName === "1" || req.query.matchName === "true"))
-		matchName = true;
+	if (req.query.exactNameSearch && (req.query.exactNameSearch === "1" || req.query.exactNameSearch === "true"))
+		exactNameSearch = true;
 
 	if (req.query.id || req.query.name ||req.query.type_ID || req.query.format_ID || req.query.status_ID){
 		whereClause = "WHERE ";
@@ -32,7 +32,7 @@ module.exports.search = async (req, res) => {
 				}
 				else{
 					//if true, match exact name, else use LIKE for closest match
-					if (matchName)
+					if (exactNameSearch)
 						whereClause += ` ${f.col} = "${f.val}" `;
 					else
 						whereClause += ` ${f.col} LIKE "%${f.val}%" `;

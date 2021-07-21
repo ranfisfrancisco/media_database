@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
 import React, { useEffect, useState } from 'react';
-import { Form, Input, Button, Table, Select } from 'antd';
+import { Form, Input, Button, Table, Select, Checkbox } from 'antd';
 import { searchForMedia, getAllMediaTypes, getAllMediaFormats, getAllMediaStatuses } from '../../actions/actions';
 
 const { Option } = Select;
@@ -20,21 +20,19 @@ const SearchPage = () => {
 
 	const NOT_SELECTED = -1;
 	const NOT_SELECTED_TEXT = "All"
+	const [exactNameSearch, setExactNameSearch] = useState(false);
 	const [typeFilter, setTypeFilter] = useState(NOT_SELECTED);
 	const [formatFilter, setFormatFilter] = useState(NOT_SELECTED);
 	const [statusFilter, setStatusFilter] = useState(NOT_SELECTED);
 	const [selectedRows, setSelectedRows] = useState([]);
 
-	// const idOnFinished = (value) => {
-	// 	dispatch(searchId(value.id));
-	// }
-
-	// const nameOnFinished = (value) => {
-	// 	dispatch(searchName(value.name));
-	// }
-
 	const searchOnFinish = (value) => {
-		dispatch(searchForMedia(value.id, value.name, typeFilter, formatFilter, statusFilter));
+		dispatch(searchForMedia(value.id, value.name, typeFilter, formatFilter, statusFilter, exactNameSearch));
+	}
+
+	const onSearchToggleChange = (e) => {
+		setExactNameSearch(e.target.checked)
+		console.log(exactNameSearch)
 	}
 
     const filterTypeOnChange = (value) => {
@@ -79,30 +77,6 @@ const SearchPage = () => {
 		}
 	}
 
-	const rowSelection = {
-		onChange: (selectedRowKeys, selectedRows) => {
-			console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
-			setSelectedRows(selectedRows);
-		// getCheckboxProps: record => ({
-		// 	disabled: record.name === 'Disabled User', // Column configuration not to be checked
-		// 	name: record.name,
-		// })
-	}};
-
-	const renderSearchTable = () => {
-		let dataSource = search.data;
-		let columns = [
-			{ title: 'ID', dataIndex: 'id' },
-			{ title: 'Name', dataIndex: 'name' },
-			{ title: 'Release Date', dataIndex: 'releaseDate' },
-			{ title: 'Use Date', dataIndex: 'useDate' },
-            { title: 'Type', dataIndex: 'type' },
-            { title: 'Format', dataIndex: 'format' },
-            { title: 'Status', dataIndex: 'status' },
-		];
-		return <Table dataSource={dataSource} columns={columns} rowSelection={rowSelection} rowKey={record =>record.id}/>;
-	}
-
 	const renderIdSearch = () => {
 		return (
 				<Form.Item label='Search by ID:' name='id'>
@@ -119,8 +93,13 @@ const SearchPage = () => {
 		);
 	}
 
-    //TODO: Load Types from database and load results into here
-    const renderFilterOptions = () => {
+	const renderSearchToggle = () => {
+		return (
+			<Checkbox onChange={onSearchToggleChange}>Find Exact Name</Checkbox>
+		);
+	}
+
+	const renderFilterOptions = () => {
 
         var typeOptions = mediaTypes.map(function(obj, index){
             return <Option key={ obj.type }>{ obj.type }</Option>;
@@ -158,6 +137,30 @@ const SearchPage = () => {
 		);
     }
 
+	const rowSelection = {
+		onChange: (selectedRowKeys, selectedRows) => {
+			console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+			setSelectedRows(selectedRows);
+		// getCheckboxProps: record => ({
+		// 	disabled: record.name === 'Disabled User', // Column configuration not to be checked
+		// 	name: record.name,
+		// })
+	}};
+
+	const renderSearchTable = () => {
+		let dataSource = search.data;
+		let columns = [
+			{ title: 'ID', dataIndex: 'id' },
+			{ title: 'Name', dataIndex: 'name' },
+			{ title: 'Release Date', dataIndex: 'releaseDate' },
+			{ title: 'Use Date', dataIndex: 'useDate' },
+            { title: 'Type', dataIndex: 'type' },
+            { title: 'Format', dataIndex: 'format' },
+            { title: 'Status', dataIndex: 'status' },
+		];
+		return <Table dataSource={dataSource} columns={columns} rowSelection={rowSelection} rowKey={record =>record.id}/>;
+	}
+
 	const renderSearchButton = () => {
 		return (
 				<Form.Item>
@@ -173,6 +176,7 @@ const SearchPage = () => {
 			<Form onFinish={searchOnFinish}>
 				{renderIdSearch()}
 				{renderNameSearch()}
+				{renderSearchToggle()}
 				{renderFilterOptions()}
 				{renderSearchButton()}
 				{renderSearchTable()}

@@ -12,6 +12,7 @@ export const searchForMedia = (id, name ,type_id, format_id, status_id, exactNam
 			{col: "type_ID", val:type_id},
 			{col: "format_ID", val:format_id},
 			{col: "status_ID", val:status_id},
+			{col: "exactNameSearch", val:exactNameSearch}
 		];
 		let paramString = "?";
 
