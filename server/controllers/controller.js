@@ -20,11 +20,11 @@ module.exports.search = async (req, res) => {
 
 	if (req.query.id || req.query.name ||req.query.type_ID || req.query.format_ID || req.query.status_ID){
 		whereClause = "WHERE ";
-		let numOfStatements = 0;
+		let statementCount = 0;
 
 		for (var f of filters){
 			if (f.val !== ""){
-				if(numOfStatements > 0)
+				if(statementCount > 0)
 					whereClause += " AND ";
 
 				if (f.col !== "name"){
@@ -37,7 +37,7 @@ module.exports.search = async (req, res) => {
 					else
 						whereClause += ` ${f.col} LIKE "%${f.val}%" `;
 				}
-				numOfStatements++;
+				statementCount++;
 			}
 		}
 	}
@@ -45,8 +45,9 @@ module.exports.search = async (req, res) => {
 	let query = `SELECT id, name, releaseDate, useDate, type, format, status FROM media_items
 	NATURAL JOIN media_types
 	NATURAL JOIN media_formats
-	NATURAL JOIN media_statuses ` + whereClause + 
-	`ORDER BY id;`; 
+	NATURAL JOIN media_statuses 
+	${whereClause}
+	ORDER BY id;`; 
 
 	console.log(query);
 
@@ -58,7 +59,7 @@ module.exports.search = async (req, res) => {
 
 module.exports.update = async (req, res) => {
 	let filters = 
-	[{col: "name", val: req.body.name || ""},
+	[{col: "name", val: (req.body.name) ? req.body.name.trim() : ""},
 	{col: "type_ID", val: req.body.type_ID || ""},
 	{col: "format_ID", val: req.body.format_ID || ""},
 	{col: "status_ID", val: req.body.status_ID || ""},
@@ -66,17 +67,43 @@ module.exports.update = async (req, res) => {
 
 	let idList = req.body.idList;
 
+	if (idList.length < 1){
+		return res.status(400).json({ message: 'Input error: did not provide list of ID update' });
+	}
+
 	if (req.body.name && idList.length > 1){
-		return res.status(400).json({ message: 'Query error: cannot change name of multiple items at the same time.' });
+		return res.status(400).json({ message: 'Input error: cannot change name of multiple items at the same time.' });
 	}
 
-	let query = ``; 
+	let setClause = '';
+	let statementCount = 0;
 
-	if(1){
-		console.log(idList)
-		res.send({ message:"UPDATE_MEDIA_SUCCESS" });
-		return;
+	for (var f of filters){
+		if (f.val !== ""){
+			if(statementCount > 0)
+				setClause += ", ";
+
+			setClause += `${f.col}=${f.val}`
+			statementCount++;
+		}
 	}
+
+	let idClause = '(';
+	let idCount = 0;
+	for (var id of idList){
+		if (idCount > 0)
+			idClause += ', '
+
+		idClause += `${id}`
+
+		idCount++;
+	}
+	idClause += ')'
+
+	let query = `UPDATE media_items
+	SET ${setClause}
+	WHERE id IN ${idClause};
+	`; 
 
 	conn.query(query, (err, result) => {
 		if(err) return res.status(400).json({ message: 'Query error' });
