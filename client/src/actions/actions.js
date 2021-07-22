@@ -44,7 +44,7 @@ export const updateMedia = (idList, name, typeID, formatID, statusID) => async (
 	try {
 		response = await api.post('/media', {
 			idList: idList,
-			name: name.trim(),
+			name: (name) ? name.trim() : name,
 			type_ID: typeID,
 			format_ID: formatID,
 			status_ID: statusID

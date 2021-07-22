@@ -63,7 +63,7 @@ module.exports.update = async (req, res) => {
 	{col: "status_ID", val: req.body.status_ID || ""},
 	];
 
-	let idList = req.body.idList;
+	let idList = (req.body.idList) ? req.body.idList : [];
 
 	if (idList.length < 1){
 		return res.status(400).json({ message: 'Input error: did not provide list of ID update' });
@@ -78,11 +78,12 @@ module.exports.update = async (req, res) => {
 
 	for (var f of filters){
 		if (f.val !== "" && f.val !== -1){
+			console.log(f)
 			if(statementCount > 0)
 				setClause += ", ";
 
 			if (f.col !== "name"){
-
+				setClause += `${f.col}=${f.val}`
 			} else {
 				setClause += `${f.col}="${f.val}"`
 			}

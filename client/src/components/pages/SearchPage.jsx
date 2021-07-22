@@ -11,6 +11,7 @@ const mediaFormatsSelector = (state) => state.mediaFormats.data;
 const mediaStatusesSelector = (state) => state.mediaStatuses.data;
 
 const SearchPage = () => {
+	
 
 	const dispatch = useDispatch();
 	const search = useSelector(searchSelector);
@@ -29,9 +30,11 @@ const SearchPage = () => {
 	const [formatUpdate, setFormatUpdate] = useState(NOT_SELECTED_ID);
 	const [statusUpdate, setStatusUpdate] = useState(NOT_SELECTED_ID);
 
-	const [selectedRows, setSelectedRows] = useState([]);
+	const [selectedRows, setSelectedRows] = useState([]); // Attatched to table to determine and read what the user has clicked on
+	const [selectedRowKeys, setSelectedRowKeys] = useState([]);
 
 	const searchFormOnFinish = (value) => {
+		setSelectedRows([]);
 		dispatch(searchForMedia(value.id, value.name, typeFilter, formatFilter, statusFilter, exactNameSearch));
 	}
 
@@ -265,15 +268,16 @@ const SearchPage = () => {
 	}
 
 	const rowSelection = {
-		onChange: (selectedRowKeys, selectedRows) => {
-			console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
-			setSelectedRows(selectedRows);
-
-		// getCheckboxProps: record => ({
-		// 	disabled: record.name === 'Disabled User', // Column configuration not to be checked
-		// 	name: record.name,
-		// })
+		selectedRowKeys,
+		onChange: (selectedRowKeys, rows) => {
+			setSelectedRowKeys(selectedRowKeys);
+			setSelectedRows(rows);
 	}};
+
+	const clearSelectedButtonOnClick = () =>{
+		setSelectedRowKeys([]);
+		setSelectedRows([]);
+	}
 
 	const renderSearchTable = () => {
 		let dataSource = search.data;
@@ -286,7 +290,12 @@ const SearchPage = () => {
             { title: 'Format', dataIndex: 'format' },
             { title: 'Status', dataIndex: 'status' },
 		];
-		return <Table dataSource={dataSource} columns={columns} rowSelection={rowSelection} rowKey={record =>record.id}/>;
+		return (
+		<div>
+			<Button onClick={clearSelectedButtonOnClick}>Clear Selected</Button>
+			<Table dataSource={dataSource} columns={columns} rowSelection={rowSelection} rowKey={record =>record.id}/>
+		</div>
+		);
 	}
 
     //load media types, statuses, formats once on page load

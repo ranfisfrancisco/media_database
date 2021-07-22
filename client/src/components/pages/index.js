@@ -35,7 +35,7 @@ const SelectPage = () => {
 	const renderMenu = () => (
 		<Menu mode='horizontal' onClick={handleClick} selectedKeys={[visibleContent]} theme='dark'>
 			<Menu.Item key='search' icon={<SearchOutlined />}>
-				Search
+				Search & Modify
 			</Menu.Item>
 		</Menu>
 	);
