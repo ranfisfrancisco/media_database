@@ -18,26 +18,26 @@ const SearchPage = () => {
 	const mediaFormats = useSelector(mediaFormatsSelector);
 	const mediaStatuses = useSelector(mediaStatusesSelector);
 
-	const NOT_SELECTED = -1;
+	const NOT_SELECTED_ID = -1;
 	const NOT_SELECTED_TEXT = "All"
 	const [exactNameSearch, setExactNameSearch] = useState(false);
-	const [typeFilter, setTypeFilter] = useState(NOT_SELECTED);
-	const [formatFilter, setFormatFilter] = useState(NOT_SELECTED);
-	const [statusFilter, setStatusFilter] = useState(NOT_SELECTED);
+
+	const [typeFilter, setTypeFilter] = useState(NOT_SELECTED_ID);
+	const [formatFilter, setFormatFilter] = useState(NOT_SELECTED_ID);
+	const [statusFilter, setStatusFilter] = useState(NOT_SELECTED_ID);
+	const [typeUpdate, setTypeUpdate] = useState(NOT_SELECTED_ID);
+	const [formatUpdate, setFormatUpdate] = useState(NOT_SELECTED_ID);
+	const [statusUpdate, setStatusUpdate] = useState(NOT_SELECTED_ID);
+
 	const [selectedRows, setSelectedRows] = useState([]);
 
-	const searchOnFinish = (value) => {
+	const searchFormOnFinish = (value) => {
 		dispatch(searchForMedia(value.id, value.name, typeFilter, formatFilter, statusFilter, exactNameSearch));
-	}
-
-	const onSearchToggleChange = (e) => {
-		setExactNameSearch(e.target.checked)
-		console.log(exactNameSearch)
 	}
 
     const filterTypeOnChange = (value) => {
 		if (value === NOT_SELECTED_TEXT){
-			setTypeFilter(NOT_SELECTED);
+			setTypeFilter(NOT_SELECTED_ID);
 			return;
 		}
 
@@ -51,7 +51,7 @@ const SearchPage = () => {
 
 	const filterFormatOnChange = (value) => {
 		if (value === NOT_SELECTED_TEXT){
-			setFormatFilter(NOT_SELECTED);
+			setFormatFilter(NOT_SELECTED_ID);
 			return;
 		}
 
@@ -65,7 +65,7 @@ const SearchPage = () => {
 
 	const filterStatusOnChange = (value) => {
 		if (value === NOT_SELECTED_TEXT){
-			setStatusFilter(NOT_SELECTED);
+			setStatusFilter(NOT_SELECTED_ID);
 			return;
 		}
 
@@ -77,7 +77,49 @@ const SearchPage = () => {
 		}
 	}
 
-	const renderIdSearch = () => {
+	const updateTypeOnChange = (value) => {
+		if (value === NOT_SELECTED_TEXT){
+			setTypeUpdate(NOT_SELECTED_ID);
+			return;
+		}
+
+		for (const option of mediaTypes){
+			if (value === option.type){
+				setTypeUpdate(option.type_id);
+				return;
+			}
+		}
+    }
+
+	const updateFormatOnChange = (value) => {
+		if (value === NOT_SELECTED_TEXT){
+			setFormatUpdate(NOT_SELECTED_ID);
+			return;
+		}
+
+		for (const option of mediaFormats){
+			if (value === option.format){
+				setFormatUpdate(option.format_id);
+				return;
+			}
+		}
+    }
+
+	const updateStatusOnChange = (value) => {
+		if (value === NOT_SELECTED_TEXT){
+			setStatusUpdate(NOT_SELECTED_ID);
+			return;
+		}
+
+		for (const option of mediaStatuses){
+			if (value === option.status){
+				setStatusUpdate(option.status_id);
+				return;
+			}
+		}
+	}
+
+	const renderIdEntry = () => {
 		return (
 				<Form.Item label='Search by ID:' name='id'>
 					<Input  type="number"  />
@@ -85,12 +127,16 @@ const SearchPage = () => {
 		);
 	}
 
-	const renderNameSearch = () => {
+	const renderNameEntry = (labelText) => {
 		return (
-				<Form.Item label='Search by Name:' name='name'>
+				<Form.Item label={labelText} name='name'>
 					<Input  />
 				</Form.Item>
 		);
+	}
+
+	const onSearchToggleChange = (e) => {
+		setExactNameSearch(e.target.checked)
 	}
 
 	const renderSearchToggle = () => {
@@ -99,8 +145,7 @@ const SearchPage = () => {
 		);
 	}
 
-	const renderFilterOptions = () => {
-
+	const renderSearchOptions = () => {
         var typeOptions = mediaTypes.map(function(obj, index){
             return <Option key={ obj.type }>{ obj.type }</Option>;
         });
@@ -117,7 +162,7 @@ const SearchPage = () => {
 			<div>
 				<Form.Item label='Filter by Type' name='typeFilter'>
                     <Select defaultValue={NOT_SELECTED_TEXT} style={{ width: 120 }} onChange={filterTypeOnChange}>
-						<Option key={NOT_SELECTED_TEXT}>{NOT_SELECTED_TEXT}</Option>
+						<Option key={NOT_SELECTED_TEXT} test={3}>{NOT_SELECTED_TEXT}</Option>
                         { typeOptions }
                     </Select>
 				</Form.Item>
@@ -137,10 +182,89 @@ const SearchPage = () => {
 		);
     }
 
+	const renderSubmitButton = (buttonText) => {
+		return (
+				<Form.Item>
+					<Button type='primary' htmlType='submit'>
+						{buttonText}
+					</Button>
+				</Form.Item>
+		);
+	}
+
+	const renderSearchForm = () => {
+		return(
+			<Form onFinish={searchFormOnFinish}>
+					{renderIdEntry()}
+					{renderNameEntry("Search by Name:")}
+					{renderSearchToggle()}
+					{renderSearchOptions()}
+					{renderSubmitButton("Search")}
+			</Form>
+		);
+	}
+
+	const updateFormOnFinish = (value) => {
+		if (selectedRows.length > 1 && value.name !== ""){
+			alert("You cannot change the names of multiple items to the same name!")
+			return;
+		}
+
+		//dispatch(updateMedia(allidshere, value.name, typeUpdate, formatUpdate, statusUpdate));
+	}
+
+	const renderUpdateOptions = () => {
+		var typeOptions = mediaTypes.map(function(obj, index){
+            return <Option key={ obj.type }>{ obj.type }</Option>;
+        });
+
+		var formatOptions = mediaFormats.map(function(obj, index){
+            return <Option key={ obj.format }>{ obj.format }</Option>;
+        });
+
+		var statusOptions = mediaStatuses.map(function(obj, index){
+            return <Option key={ obj.status }>{ obj.status }</Option>;
+        });
+
+        return (
+			<div>
+				<Form.Item label='Change Type' name='typeFilter'>
+                    <Select defaultValue={NOT_SELECTED_TEXT} style={{ width: 120 }} onChange={updateTypeOnChange}>
+						<Option key={NOT_SELECTED_TEXT}>No Change</Option>
+                        { typeOptions }
+                    </Select>
+				</Form.Item>
+				<Form.Item label='Change Format' name='formatFilter'>
+                    <Select defaultValue={NOT_SELECTED_TEXT} style={{ width: 120 }} onChange={updateFormatOnChange}>
+						<Option key={NOT_SELECTED_TEXT}>No Change</Option>
+                        { formatOptions }
+                    </Select>
+				</Form.Item>
+				<Form.Item label='Change Status' name='statusFilter'>
+                    <Select defaultValue={NOT_SELECTED_TEXT} style={{ width: 120 }} onChange={updateStatusOnChange}>
+						<Option key={NOT_SELECTED_TEXT}>No Change</Option>
+                        { statusOptions }
+                    </Select>
+				</Form.Item>
+			</div>
+		);
+	}
+
+	const renderUpdateForm = () => {
+		return (
+			<Form onFinish={updateFormOnFinish}>
+					{renderNameEntry("Change Name:")}
+					{renderUpdateOptions()}
+					{renderSubmitButton("Update Selected Items")}
+			</Form>
+		);
+	}
+
 	const rowSelection = {
 		onChange: (selectedRowKeys, selectedRows) => {
 			console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
 			setSelectedRows(selectedRows);
+
 		// getCheckboxProps: record => ({
 		// 	disabled: record.name === 'Disabled User', // Column configuration not to be checked
 		// 	name: record.name,
@@ -161,29 +285,6 @@ const SearchPage = () => {
 		return <Table dataSource={dataSource} columns={columns} rowSelection={rowSelection} rowKey={record =>record.id}/>;
 	}
 
-	const renderSearchButton = () => {
-		return (
-				<Form.Item>
-					<Button type='primary' htmlType='submit'>
-						Submit
-					</Button>
-				</Form.Item>
-		);
-	}
-
-	const renderSearchForm = () => {
-		return (
-			<Form onFinish={searchOnFinish}>
-				{renderIdSearch()}
-				{renderNameSearch()}
-				{renderSearchToggle()}
-				{renderFilterOptions()}
-				{renderSearchButton()}
-				{renderSearchTable()}
-			</Form>
-		);
-	}
-
     //load media types, statuses, formats once on page load
     useEffect(() => {
         dispatch(getAllMediaTypes());
@@ -194,6 +295,8 @@ const SearchPage = () => {
 	return (
 		<div className='reader-content-wrapper'>
 			{renderSearchForm()}
+			{renderUpdateForm()}
+			{renderSearchTable()}
 		</div>
 	);
 }

@@ -10,4 +10,6 @@ router.get('/media_types', controller.getAllTypes);
 router.get('/media_formats', controller.getAllFormats);
 router.get('/media_statuses', controller.getAllStatuses);
 
+router.post('/media', controller.update)
+
 module.exports = router;

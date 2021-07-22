@@ -56,6 +56,34 @@ module.exports.search = async (req, res) => {
 	});
 }
 
+module.exports.update = async (req, res) => {
+	let filters = 
+	[{col: "name", val: req.body.name || ""},
+	{col: "type_ID", val: req.body.type_ID || ""},
+	{col: "format_ID", val: req.body.format_ID || ""},
+	{col: "status_ID", val: req.body.status_ID || ""},
+	];
+
+	let idList = req.body.idList;
+
+	if (req.body.name && idList.length > 1){
+		return res.status(400).json({ message: 'Query error: cannot change name of multiple items at the same time.' });
+	}
+
+	let query = ``; 
+
+	if(1){
+		console.log(idList)
+		res.send({ message:"UPDATE_MEDIA_SUCCESS" });
+		return;
+	}
+
+	conn.query(query, (err, result) => {
+		if(err) return res.status(400).json({ message: 'Query error' });
+		res.send({ message:"UPDATE_MEDIA_SUCCESS", result });
+	});
+}
+
 module.exports.getAllTypes = async (req, res) => {
 	let query = `SELECT *
 	FROM media_types
