@@ -47,9 +47,7 @@ module.exports.search = async (req, res) => {
 	NATURAL JOIN media_formats
 	NATURAL JOIN media_statuses 
 	${whereClause}
-	ORDER BY id;`; 
-
-	console.log(query);
+	ORDER BY name;`; 
 
 	conn.query(query, (err, result) => {
 		if(err) return res.status(400).json({ message: 'Query error!' });
@@ -79,13 +77,20 @@ module.exports.update = async (req, res) => {
 	let statementCount = 0;
 
 	for (var f of filters){
-		if (f.val !== ""){
+		if (f.val !== "" && f.val !== -1){
 			if(statementCount > 0)
 				setClause += ", ";
 
-			setClause += `${f.col}=${f.val}`
+			if (f.col !== "name"){
+
+			} else {
+				setClause += `${f.col}="${f.val}"`
+			}
 			statementCount++;
 		}
+	}
+	if (statementCount === 0){
+		return res.status(400).json({ message: 'Input error: provided no columns to update' });
 	}
 
 	let idClause = '(';
@@ -104,6 +109,8 @@ module.exports.update = async (req, res) => {
 	SET ${setClause}
 	WHERE id IN ${idClause};
 	`; 
+
+	console.log(query)
 
 	conn.query(query, (err, result) => {
 		if(err) return res.status(400).json({ message: 'Query error' });

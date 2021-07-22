@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 import React, { useEffect, useState } from 'react';
 import { Form, Input, Button, Table, Select, Checkbox } from 'antd';
-import { searchForMedia, getAllMediaTypes, getAllMediaFormats, getAllMediaStatuses } from '../../actions/actions';
+import { searchForMedia, updateMedia, getAllMediaTypes, getAllMediaFormats, getAllMediaStatuses } from '../../actions/actions';
 
 const { Option } = Select;
 
@@ -162,7 +162,7 @@ const SearchPage = () => {
 			<div>
 				<Form.Item label='Filter by Type' name='typeFilter'>
                     <Select defaultValue={NOT_SELECTED_TEXT} style={{ width: 120 }} onChange={filterTypeOnChange}>
-						<Option key={NOT_SELECTED_TEXT} test={3}>{NOT_SELECTED_TEXT}</Option>
+						<Option key={NOT_SELECTED_TEXT}>{NOT_SELECTED_TEXT}</Option>
                         { typeOptions }
                     </Select>
 				</Form.Item>
@@ -210,7 +210,11 @@ const SearchPage = () => {
 			return;
 		}
 
-		//dispatch(updateMedia(allidshere, value.name, typeUpdate, formatUpdate, statusUpdate));
+		let selectedIDList = selectedRows.map(function(row){
+			return row.id;
+		})
+
+		dispatch(updateMedia(selectedIDList, value.name, typeUpdate, formatUpdate, statusUpdate));
 	}
 
 	const renderUpdateOptions = () => {
