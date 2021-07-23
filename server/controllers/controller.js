@@ -1,53 +1,68 @@
 const conn = require('../database/initConn');
 
+const processDateRange = (range) => {
+	if (!range || range.length !== 2)
+		return null;
+	return range;
+}
+
 module.exports.home = async (req, res) => {
 	res.send("Server")
 }
 
 module.exports.search = async (req, res) => {
 	let filters = 
-	[{col: "id", val: req.query.id || ""},
-	{col: "name", val: req.query.name || ""},
-	{col: "type_ID", val: req.query.type_ID || ""},
-	{col: "format_ID", val: req.query.format_ID || ""},
-	{col: "status_ID", val: req.query.status_ID || ""},
-	]
+	[
+		{col: "id", val: req.query.id || null},
+		{col: "name", val: req.query.name || null},
+		{col: "type_ID", val: req.query.type_ID || null},
+		{col: "format_ID", val: req.query.format_ID || null},
+		{col: "status_ID", val: req.query.status_ID || null},
+		{col: "use_date", val: processDateRange(req.query.use_date_range)},
+		{col: "release_date", val: processDateRange(req.query.release_date_range)
+	}];
+	console.log(filters)
 	let exactNameSearch = false;
 	let whereClause = "";
 
-	if (req.query.exactNameSearch && (req.query.exactNameSearch === "1" || req.query.exactNameSearch === "true"))
+	if (req.query.exact_name_search && (req.query.exact_name_search === "1" || req.query.exact_name_search === "true"))
 		exactNameSearch = true;
 
-	if (req.query.id || req.query.name ||req.query.type_ID || req.query.format_ID || req.query.status_ID){
-		whereClause = "WHERE ";
-		let statementCount = 0;
+	whereClause = "WHERE ";
+	let statementCount = 0;
 
-		for (var f of filters){
-			if (f.val !== ""){
-				if(statementCount > 0)
-					whereClause += " AND ";
+	for (var f of filters){
+		if (f.val !== null){
+			if(statementCount > 0)
+				whereClause += " AND ";
 
-				if (f.col === "name"){
-					//if true, match exact name, else use LIKE for closest match
-					if (exactNameSearch)
-						whereClause += ` ${f.col} = "${f.val}" `;
-					else
-						whereClause += ` ${f.col} LIKE "%${f.val}%" `;
-				}
-				else{
-					whereClause += ` ${f.col}=${f.val} `;
-				}
-				statementCount++;
+			if (f.col === "name"){
+				//if true, match exact name, else use LIKE for closest match
+				if (exactNameSearch)
+					whereClause += ` ${f.col} = "${f.val}" `;
+				else
+					whereClause += ` ${f.col} LIKE "%${f.val}%" `;
+			} else if (f.col === "use_date" || f.col === "release_date"){
+				whereClause += ` ${f.col} BETWEEN "${f.val[0]}" AND "${f.val[1]}"`;
 			}
+			else{
+				whereClause += ` ${f.col}=${f.val} `;
+			}
+			statementCount++;
 		}
 	}
 
-	let query = `SELECT id, name, releaseDate, useDate, type, format, status FROM media_items
+	if (statementCount === 0)
+		whereClause = "";
+
+	let query = `SELECT id, name, release_date, use_date, type, format, status FROM media_items
 	NATURAL JOIN media_types
 	NATURAL JOIN media_formats
 	NATURAL JOIN media_statuses 
 	${whereClause}
 	ORDER BY name;`; 
+
+	console.log(query)
 
 	conn.query(query, (err, result) => {
 		if(err) return res.status(400).json({ message: 'Query error!' });
@@ -57,10 +72,10 @@ module.exports.search = async (req, res) => {
 
 module.exports.update = async (req, res) => {
 	let filters = 
-	[{col: "name", val: (req.body.name) ? req.body.name.trim() : ""},
-	{col: "type_ID", val: req.body.type_ID || ""},
-	{col: "format_ID", val: req.body.format_ID || ""},
-	{col: "status_ID", val: req.body.status_ID || ""},
+	[{col: "name", val: (req.body.name) ? req.body.name.trim() : null},
+	{col: "type_ID", val: req.body.type_ID || null},
+	{col: "format_ID", val: req.body.format_ID || null},
+	{col: "status_ID", val: req.body.status_ID || null},
 	];
 
 	let idList = (req.body.idList) ? req.body.idList : [];
@@ -73,12 +88,11 @@ module.exports.update = async (req, res) => {
 		return res.status(400).json({ message: 'Input error: cannot change name of multiple items at the same time.' });
 	}
 
-	let setClause = '';
+	let setClause = "";
 	let statementCount = 0;
 
 	for (var f of filters){
-		if (f.val !== "" && f.val !== -1){
-			console.log(f)
+		if (f.val !== null){
 			if(statementCount > 0)
 				setClause += ", ";
 

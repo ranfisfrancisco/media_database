@@ -24,7 +24,7 @@ const SearchPage = () => {
 	const NOT_SELECTED_TEXT = "All"
 	const [exactNameSearch, setExactNameSearch] = useState(false);
 
-	const [usedDateRange, setUsedDateRange] = useState([]);
+	const [useDateRange, setUsedDateRange] = useState([]);
 	const [releaseDateRange, setReleaseDateRange] = useState([]);
 	const [typeFilter, setTypeFilter] = useState(NOT_SELECTED_ID);
 	const [formatFilter, setFormatFilter] = useState(NOT_SELECTED_ID);
@@ -38,9 +38,11 @@ const SearchPage = () => {
 
 	const searchFormOnFinish = (value) => {
 		setSelectedRows([]);
-		console.log(usedDateRange);
-		console.log(releaseDateRange);
-		dispatch(searchForMedia(value.id, value.name, typeFilter, formatFilter, statusFilter, exactNameSearch));
+		if (useDateRange[0] === "")
+			setUsedDateRange([]);
+		if (releaseDateRange[0] === "")
+			setReleaseDateRange([]);
+		dispatch(searchForMedia(value.id, value.name, useDateRange, releaseDateRange, typeFilter, formatFilter, statusFilter, exactNameSearch));
 	}
 
     const filterTypeOnChange = (value) => {
@@ -305,8 +307,8 @@ const SearchPage = () => {
 		let columns = [
 			{ title: 'ID', dataIndex: 'id' },
 			{ title: 'Name', dataIndex: 'name' },
-			{ title: 'Release Date', dataIndex: 'releaseDate' },
-			{ title: 'Use Date', dataIndex: 'useDate' },
+			{ title: 'Release Date', dataIndex: 'release_date' },
+			{ title: 'Use Date', dataIndex: 'use_date' },
             { title: 'Type', dataIndex: 'type' },
             { title: 'Format', dataIndex: 'format' },
             { title: 'Status', dataIndex: 'status' },

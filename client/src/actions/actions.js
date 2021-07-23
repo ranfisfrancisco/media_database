@@ -2,27 +2,22 @@ import { message } from 'antd';
 
 import api from './api/api';
 
-export const searchForMedia = (id, name ,typeID, formatID, statusID, exactNameSearch) => async (dispatch) => {
+export const searchForMedia = (id, name, useDateRange, releaseDateRange, typeID, formatID, statusID, exactNameSearch) => async (dispatch) => {
 	dispatch({ type: 'GET_ALL_MEDIA_REQUEST' });
 	let response;
 	try {
-		let params = [
-			{col: "id", val: id},
-			{col: "name", val:name},
-			{col: "type_ID", val:typeID},
-			{col: "format_ID", val:formatID},
-			{col: "status_ID", val:statusID},
-			{col: "exactNameSearch", val:exactNameSearch}
-		];
-		let paramString = "?";
-
-		for (var p of params){
-			if (p.val !== undefined && p.val !== -1 && p.val !== ""){
-				paramString += `${p.col}=${p.val}&`
+		response = await api.get('/media', {
+			params: {
+				id: id,
+				name: name,
+				use_date_range: useDateRange,
+				release_date_range: releaseDateRange,
+				type_ID: (typeID !== -1) ? typeID : "",
+				format_ID: (formatID !== -1) ? formatID : "",
+				status_ID: (statusID !== -1) ? statusID : "",
+				exact_name_search: exactNameSearch
 			}
-		}
-
-		response = await api.get('/media' + paramString);
+		});
 	} catch(error) {
 		dispatch({ type: 'GET_MEDIA_FAILED' });
 		return message.error('Query Error 1!');
@@ -45,9 +40,9 @@ export const updateMedia = (idList, name, typeID, formatID, statusID) => async (
 		response = await api.post('/media', {
 			idList: idList,
 			name: (name) ? name.trim() : name,
-			type_ID: typeID,
-			format_ID: formatID,
-			status_ID: statusID
+			type_ID: (typeID !== -1) ? typeID : "",
+			format_ID: (formatID !== -1) ? formatID : "",
+			status_ID: (statusID !== -1) ? statusID : ""
 		});
 	} catch(error) {
 		dispatch({ type: 'UPDATE_MEDIA_FAILED' });
