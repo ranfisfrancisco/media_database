@@ -27,15 +27,15 @@ module.exports.search = async (req, res) => {
 				if(statementCount > 0)
 					whereClause += " AND ";
 
-				if (f.col !== "name"){
-					whereClause += ` ${f.col}=${f.val} `;
-				}
-				else{
+				if (f.col === "name"){
 					//if true, match exact name, else use LIKE for closest match
 					if (exactNameSearch)
 						whereClause += ` ${f.col} = "${f.val}" `;
 					else
 						whereClause += ` ${f.col} LIKE "%${f.val}%" `;
+				}
+				else{
+					whereClause += ` ${f.col}=${f.val} `;
 				}
 				statementCount++;
 			}
@@ -110,8 +110,6 @@ module.exports.update = async (req, res) => {
 	SET ${setClause}
 	WHERE id IN ${idClause};
 	`; 
-
-	console.log(query)
 
 	conn.query(query, (err, result) => {
 		if(err) return res.status(400).json({ message: 'Query error' });

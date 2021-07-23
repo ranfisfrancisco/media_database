@@ -1,9 +1,10 @@
 import { useDispatch, useSelector } from 'react-redux';
 import React, { useEffect, useState } from 'react';
-import { Form, Input, Button, Table, Select, Checkbox } from 'antd';
+import { Form, Input, Button, Table, Select, Checkbox, DatePicker } from 'antd';
 import { searchForMedia, updateMedia, getAllMediaTypes, getAllMediaFormats, getAllMediaStatuses } from '../../actions/actions';
 
 const { Option } = Select;
+const { RangePicker } = DatePicker;
 
 const searchSelector = (state) => state.search;
 const mediaTypesSelector = (state) => state.mediaTypes.data;
@@ -23,6 +24,8 @@ const SearchPage = () => {
 	const NOT_SELECTED_TEXT = "All"
 	const [exactNameSearch, setExactNameSearch] = useState(false);
 
+	const [usedDateRange, setUsedDateRange] = useState([]);
+	const [releaseDateRange, setReleaseDateRange] = useState([]);
 	const [typeFilter, setTypeFilter] = useState(NOT_SELECTED_ID);
 	const [formatFilter, setFormatFilter] = useState(NOT_SELECTED_ID);
 	const [statusFilter, setStatusFilter] = useState(NOT_SELECTED_ID);
@@ -30,11 +33,13 @@ const SearchPage = () => {
 	const [formatUpdate, setFormatUpdate] = useState(NOT_SELECTED_ID);
 	const [statusUpdate, setStatusUpdate] = useState(NOT_SELECTED_ID);
 
-	const [selectedRows, setSelectedRows] = useState([]); // Attatched to table to determine and read what the user has clicked on
-	const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+	const [selectedRows, setSelectedRows] = useState([]); 
+	const [selectedRowKeys, setSelectedRowKeys] = useState([]); // Attatched to table to determine and read what the user has clicked on
 
 	const searchFormOnFinish = (value) => {
 		setSelectedRows([]);
+		console.log(usedDateRange);
+		console.log(releaseDateRange);
 		dispatch(searchForMedia(value.id, value.name, typeFilter, formatFilter, statusFilter, exactNameSearch));
 	}
 
@@ -138,6 +143,14 @@ const SearchPage = () => {
 		);
 	}
 
+	const usedDateRangePickerOnChange = (date, dateString) => {
+		setUsedDateRange([dateString[0], dateString[1]]);
+	}
+
+	const releaseDateRangePickerOnChange = (date, dateString) => {
+		setReleaseDateRange([dateString[0], dateString[1]]);
+	}
+
 	const onSearchToggleChange = (e) => {
 		setExactNameSearch(e.target.checked)
 	}
@@ -163,6 +176,14 @@ const SearchPage = () => {
 
         return (
 			<div>
+				<label>Use Date</label>
+				<Form.Item>
+					<RangePicker onChange={usedDateRangePickerOnChange}/>
+				</Form.Item>
+				<label>Release Date</label>
+				<Form.Item>
+					<RangePicker onChange={releaseDateRangePickerOnChange}/>
+				</Form.Item>
 				<Form.Item label='Filter by Type' name='typeFilter'>
                     <Select defaultValue={NOT_SELECTED_TEXT} style={{ width: 120 }} onChange={filterTypeOnChange}>
 						<Option key={NOT_SELECTED_TEXT}>{NOT_SELECTED_TEXT}</Option>
@@ -274,7 +295,7 @@ const SearchPage = () => {
 			setSelectedRows(rows);
 	}};
 
-	const clearSelectedButtonOnClick = () =>{
+	const deselectButtonOnClick = () =>{
 		setSelectedRowKeys([]);
 		setSelectedRows([]);
 	}
@@ -292,7 +313,7 @@ const SearchPage = () => {
 		];
 		return (
 		<div>
-			<Button onClick={clearSelectedButtonOnClick}>Clear Selected</Button>
+			<Button onClick={deselectButtonOnClick}>Deselect</Button>
 			<Table dataSource={dataSource} columns={columns} rowSelection={rowSelection} rowKey={record =>record.id}/>
 		</div>
 		);
