@@ -25,12 +25,14 @@ const SearchPage = () => {
 	const [exactNameSearch, setExactNameSearch] = useState(false);
 
 	const [nameSearch, setNameSearch] = useState([]);
+	const [idSearch, setIdSearch] = useState([]);
 	const [useDateSearchRange, setUsedDateSearchRange] = useState([]);
 	const [releaseDateSearchRange, setReleaseDateSearchRange] = useState([]);
 	const [typeFilter, setTypeFilter] = useState(NOT_SELECTED_ID);
 	const [formatFilter, setFormatFilter] = useState(NOT_SELECTED_ID);
 	const [statusFilter, setStatusFilter] = useState(NOT_SELECTED_ID);
 
+	const [nameUpdate, setNameUpdate] = useState([]);
 	const [useDateUpdate, setUseDateUpdate] = useState([]);
 	const [releaseDateUpdate, setReleaseDateUpdate] = useState([]);
 	const [typeUpdate, setTypeUpdate] = useState(NOT_SELECTED_ID);
@@ -41,12 +43,14 @@ const SearchPage = () => {
 	const [selectedRowKeys, setSelectedRowKeys] = useState([]); // Attatched to table to determine and read what the user has clicked on
 
 	const searchFormOnFinish = (value) => {
-		setSelectedRows([]);
+		deselectButtonOnClick();
+
 		if (useDateSearchRange[0] === "")
 			setUsedDateSearchRange([]);
 		if (releaseDateSearchRange[0] === "")
 			setReleaseDateSearchRange([]);
-		dispatch(searchForMedia(value.id, value.name, useDateSearchRange, releaseDateSearchRange, typeFilter, formatFilter, statusFilter, exactNameSearch));
+
+		dispatch(searchForMedia(idSearch, nameSearch, useDateSearchRange, releaseDateSearchRange, typeFilter, formatFilter, statusFilter, exactNameSearch));
 	}
 
     const filterTypeOnChange = (value) => {
@@ -91,40 +95,6 @@ const SearchPage = () => {
 		}
 	}
 
-	const renderIdEntry = () => {
-		return (
-				<Form.Item label='Search by ID:' name='id'>
-					<Input  type="number"  />
-				</Form.Item>
-		);
-	}
-
-	const renderNameEntry = (labelText) => {
-		return (
-				<Form.Item label={labelText} name='name'>
-					<Input  />
-				</Form.Item>
-		);
-	}
-
-	const usedDateRangePickerOnChange = (date, dateString) => {
-		setUsedDateSearchRange([dateString[0], dateString[1]]);
-	}
-
-	const releaseDateRangePickerOnChange = (date, dateString) => {
-		setReleaseDateSearchRange([dateString[0], dateString[1]]);
-	}
-
-	const onSearchToggleChange = (e) => {
-		setExactNameSearch(e.target.checked)
-	}
-
-	const renderSearchToggle = () => {
-		return (
-			<Checkbox onChange={onSearchToggleChange}>Find Exact Name</Checkbox>
-		);
-	}
-
 	const renderSearchOptions = () => {
         var typeOptions = mediaTypes.map(function(obj, index){
             return <Option key={ obj.type }>{ obj.type }</Option>;
@@ -140,19 +110,28 @@ const SearchPage = () => {
 
         return (
 			<div>
-				{renderIdEntry()}
-				{renderNameEntry("Search by Name:")}
-				<Form.Item>
-					{renderSearchToggle()}
+				<Form.Item label='Search by ID:' name='id' onInput={(e)=>{setIdSearch(e.target.value)}}>
+					<Input  type="number"  />
 				</Form.Item>
+
+				<Form.Item label="Search by Name" name='name' onInput={(e)=>{setNameSearch(e.target.value)}}>
+					<Input  />
+				</Form.Item>
+
+				<Form.Item>
+					<Checkbox onChange={(e) => {setExactNameSearch(e.target.checked)}}>Find Exact Name</Checkbox>
+				</Form.Item>
+
 				<label>Use Date</label>
 				<Form.Item>
-					<RangePicker onChange={usedDateRangePickerOnChange}/>
+					<RangePicker onChange={(date, dateString) => {setUsedDateSearchRange([dateString[0], dateString[1]])}}/>
 				</Form.Item>
+
 				<label>Release Date</label>
 				<Form.Item>
-					<RangePicker onChange={releaseDateRangePickerOnChange}/>
+					<RangePicker onChange={(date, dateString) => {setReleaseDateSearchRange([dateString[0], dateString[1]])}}/>
 				</Form.Item>
+
 				<Form.Item label='Filter by Type' name='typeFilter'>
                     <Select defaultValue={NOT_SELECTED_TEXT} style={{ width: 120 }} onChange={filterTypeOnChange}>
 						<Option key={NOT_SELECTED_TEXT}>{NOT_SELECTED_TEXT}</Option>
@@ -175,7 +154,7 @@ const SearchPage = () => {
 		);
     }
 
-	const renderSubmitButton = (buttonText) => {
+	const renderFormSubmitButton = (buttonText) => {
 		return (
 				<Form.Item>
 					<Button type='primary' htmlType='submit'>
@@ -189,7 +168,7 @@ const SearchPage = () => {
 		return(
 			<Form onFinish={searchFormOnFinish}>
 					{renderSearchOptions()}
-					{renderSubmitButton("Search")}
+					{renderFormSubmitButton("Search")}
 			</Form>
 		);
 	}
@@ -210,6 +189,7 @@ const SearchPage = () => {
 		})
 
 		dispatch(updateMedia(selectedIDList, value.name, useDateUpdate, releaseDateUpdate, typeUpdate, formatUpdate, statusUpdate));
+		dispatch(searchForMedia(idSearch, nameSearch, useDateSearchRange, releaseDateSearchRange, typeFilter, formatFilter, statusFilter, exactNameSearch));
 	}
 
 	const updateTypeOnChange = (value) => {
@@ -254,14 +234,6 @@ const SearchPage = () => {
 		}
 	}
 
-	const usedDatePickerUpdateOnChange = (date, dateString) => {
-		setUseDateUpdate(dateString);
-	}
-
-	const releaseDatePickerUpdateOnChange = (date, dateString) => {
-		setReleaseDateUpdate(dateString);
-	}
-
 	const renderUpdateOptions = () => {
 		var typeOptions = mediaTypes.map(function(obj, index){
             return <Option key={ obj.type }>{ obj.type }</Option>;
@@ -277,14 +249,16 @@ const SearchPage = () => {
 
         return (
 			<div>
-				{renderNameEntry("Change Name:")}
+				<Form.Item label="Update Name" name='name' onInput={(e)=>{setNameUpdate(e.target.value)}}>
+					<Input  />
+				</Form.Item>
 				<label>Update Use Date</label>
 				<Form.Item>
-					<DatePicker onChange={usedDatePickerUpdateOnChange}/>
+					<DatePicker onChange={(date, dateString) => {setUseDateUpdate(dateString)}}/>
 				</Form.Item>
 				<label>Update Release Date</label>
 				<Form.Item>
-					<DatePicker onChange={releaseDatePickerUpdateOnChange}/>
+					<DatePicker onChange={(date, dateString) => {setReleaseDateUpdate(dateString)}}/>
 				</Form.Item>
 				<Form.Item label='Change Type' name='typeFilter'>
                     <Select defaultValue={NOT_SELECTED_TEXT} style={{ width: 120 }} onChange={updateTypeOnChange}>
@@ -312,7 +286,7 @@ const SearchPage = () => {
 		return (
 			<Form onFinish={updateFormOnFinish}>
 					{renderUpdateOptions()}
-					{renderSubmitButton("Update Selected Items")}
+					{renderFormSubmitButton("Update Selected Items")}
 			</Form>
 		);
 	}
