@@ -24,11 +24,15 @@ const SearchPage = () => {
 	const NOT_SELECTED_TEXT = "All"
 	const [exactNameSearch, setExactNameSearch] = useState(false);
 
-	const [useDateRange, setUsedDateRange] = useState([]);
-	const [releaseDateRange, setReleaseDateRange] = useState([]);
+	const [nameSearch, setNameSearch] = useState([]);
+	const [useDateSearchRange, setUsedDateSearchRange] = useState([]);
+	const [releaseDateSearchRange, setReleaseDateSearchRange] = useState([]);
 	const [typeFilter, setTypeFilter] = useState(NOT_SELECTED_ID);
 	const [formatFilter, setFormatFilter] = useState(NOT_SELECTED_ID);
 	const [statusFilter, setStatusFilter] = useState(NOT_SELECTED_ID);
+
+	const [useDateUpdate, setUseDateUpdate] = useState([]);
+	const [releaseDateUpdate, setReleaseDateUpdate] = useState([]);
 	const [typeUpdate, setTypeUpdate] = useState(NOT_SELECTED_ID);
 	const [formatUpdate, setFormatUpdate] = useState(NOT_SELECTED_ID);
 	const [statusUpdate, setStatusUpdate] = useState(NOT_SELECTED_ID);
@@ -38,11 +42,11 @@ const SearchPage = () => {
 
 	const searchFormOnFinish = (value) => {
 		setSelectedRows([]);
-		if (useDateRange[0] === "")
-			setUsedDateRange([]);
-		if (releaseDateRange[0] === "")
-			setReleaseDateRange([]);
-		dispatch(searchForMedia(value.id, value.name, useDateRange, releaseDateRange, typeFilter, formatFilter, statusFilter, exactNameSearch));
+		if (useDateSearchRange[0] === "")
+			setUsedDateSearchRange([]);
+		if (releaseDateSearchRange[0] === "")
+			setReleaseDateSearchRange([]);
+		dispatch(searchForMedia(value.id, value.name, useDateSearchRange, releaseDateSearchRange, typeFilter, formatFilter, statusFilter, exactNameSearch));
 	}
 
     const filterTypeOnChange = (value) => {
@@ -87,48 +91,6 @@ const SearchPage = () => {
 		}
 	}
 
-	const updateTypeOnChange = (value) => {
-		if (value === NOT_SELECTED_TEXT){
-			setTypeUpdate(NOT_SELECTED_ID);
-			return;
-		}
-
-		for (const option of mediaTypes){
-			if (value === option.type){
-				setTypeUpdate(option.type_id);
-				return;
-			}
-		}
-    }
-
-	const updateFormatOnChange = (value) => {
-		if (value === NOT_SELECTED_TEXT){
-			setFormatUpdate(NOT_SELECTED_ID);
-			return;
-		}
-
-		for (const option of mediaFormats){
-			if (value === option.format){
-				setFormatUpdate(option.format_id);
-				return;
-			}
-		}
-    }
-
-	const updateStatusOnChange = (value) => {
-		if (value === NOT_SELECTED_TEXT){
-			setStatusUpdate(NOT_SELECTED_ID);
-			return;
-		}
-
-		for (const option of mediaStatuses){
-			if (value === option.status){
-				setStatusUpdate(option.status_id);
-				return;
-			}
-		}
-	}
-
 	const renderIdEntry = () => {
 		return (
 				<Form.Item label='Search by ID:' name='id'>
@@ -146,11 +108,11 @@ const SearchPage = () => {
 	}
 
 	const usedDateRangePickerOnChange = (date, dateString) => {
-		setUsedDateRange([dateString[0], dateString[1]]);
+		setUsedDateSearchRange([dateString[0], dateString[1]]);
 	}
 
 	const releaseDateRangePickerOnChange = (date, dateString) => {
-		setReleaseDateRange([dateString[0], dateString[1]]);
+		setReleaseDateSearchRange([dateString[0], dateString[1]]);
 	}
 
 	const onSearchToggleChange = (e) => {
@@ -178,6 +140,11 @@ const SearchPage = () => {
 
         return (
 			<div>
+				{renderIdEntry()}
+				{renderNameEntry("Search by Name:")}
+				<Form.Item>
+					{renderSearchToggle()}
+				</Form.Item>
 				<label>Use Date</label>
 				<Form.Item>
 					<RangePicker onChange={usedDateRangePickerOnChange}/>
@@ -221,9 +188,6 @@ const SearchPage = () => {
 	const renderSearchForm = () => {
 		return(
 			<Form onFinish={searchFormOnFinish}>
-					{renderIdEntry()}
-					{renderNameEntry("Search by Name:")}
-					{renderSearchToggle()}
 					{renderSearchOptions()}
 					{renderSubmitButton("Search")}
 			</Form>
@@ -236,11 +200,66 @@ const SearchPage = () => {
 			return;
 		}
 
+		if (selectedRows.length === 0){
+			alert("Must select an item to update!")
+			return;
+		}
+
 		let selectedIDList = selectedRows.map(function(row){
 			return row.id;
 		})
 
-		dispatch(updateMedia(selectedIDList, value.name, typeUpdate, formatUpdate, statusUpdate));
+		dispatch(updateMedia(selectedIDList, value.name, useDateUpdate, releaseDateUpdate, typeUpdate, formatUpdate, statusUpdate));
+	}
+
+	const updateTypeOnChange = (value) => {
+		if (value === NOT_SELECTED_TEXT){
+			setTypeUpdate(NOT_SELECTED_ID);
+			return;
+		}
+
+		for (const option of mediaTypes){
+			if (value === option.type){
+				setTypeUpdate(option.type_id);
+				return;
+			}
+		}
+    }
+
+	const updateFormatOnChange = (value) => {
+		if (value === NOT_SELECTED_TEXT){
+			setFormatUpdate(NOT_SELECTED_ID);
+			return;
+		}
+
+		for (const option of mediaFormats){
+			if (value === option.format){
+				setFormatUpdate(option.format_id);
+				return;
+			}
+		}
+    }
+
+	const updateStatusOnChange = (value) => {
+		if (value === NOT_SELECTED_TEXT){
+			setStatusUpdate(NOT_SELECTED_ID);
+			return;
+		}
+
+		for (const option of mediaStatuses){
+			if (value === option.status){
+				setStatusUpdate(option.status_id);
+				return;
+			}
+		}
+	}
+
+	const usedDatePickerUpdateOnChange = (date, dateString) => {
+		setUseDateUpdate(dateString);
+	}
+
+	const releaseDatePickerUpdateOnChange = (date, dateString) => {
+		setReleaseDateUpdate(dateString);
 	}
 
 	const renderUpdateOptions = () => {
@@ -258,6 +277,15 @@ const SearchPage = () => {
 
         return (
 			<div>
+				{renderNameEntry("Change Name:")}
+				<label>Update Use Date</label>
+				<Form.Item>
+					<DatePicker onChange={usedDatePickerUpdateOnChange}/>
+				</Form.Item>
+				<label>Update Release Date</label>
+				<Form.Item>
+					<DatePicker onChange={releaseDatePickerUpdateOnChange}/>
+				</Form.Item>
 				<Form.Item label='Change Type' name='typeFilter'>
                     <Select defaultValue={NOT_SELECTED_TEXT} style={{ width: 120 }} onChange={updateTypeOnChange}>
 						<Option key={NOT_SELECTED_TEXT}>No Change</Option>
@@ -283,7 +311,6 @@ const SearchPage = () => {
 	const renderUpdateForm = () => {
 		return (
 			<Form onFinish={updateFormOnFinish}>
-					{renderNameEntry("Change Name:")}
 					{renderUpdateOptions()}
 					{renderSubmitButton("Update Selected Items")}
 			</Form>
@@ -315,7 +342,7 @@ const SearchPage = () => {
 		];
 		return (
 		<div>
-			<Button onClick={deselectButtonOnClick}>Deselect</Button>
+			<Button onClick={deselectButtonOnClick}>Deselect All</Button>
 			<Table dataSource={dataSource} columns={columns} rowSelection={rowSelection} rowKey={record =>record.id}/>
 		</div>
 		);

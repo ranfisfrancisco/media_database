@@ -12,9 +12,9 @@ export const searchForMedia = (id, name, useDateRange, releaseDateRange, typeID,
 				name: name,
 				use_date_range: useDateRange,
 				release_date_range: releaseDateRange,
-				type_ID: (typeID !== -1) ? typeID : "",
-				format_ID: (formatID !== -1) ? formatID : "",
-				status_ID: (statusID !== -1) ? statusID : "",
+				type_ID: (typeID !== -1) ? typeID : null,
+				format_ID: (formatID !== -1) ? formatID : null,
+				status_ID: (statusID !== -1) ? statusID : null,
 				exact_name_search: exactNameSearch
 			}
 		});
@@ -30,8 +30,8 @@ export const searchForMedia = (id, name, useDateRange, releaseDateRange, typeID,
 	return message.error('Query Error 2!');
 }
 
-export const updateMedia = (idList, name, typeID, formatID, statusID) => async (dispatch) => {
-	console.log(idList, name, typeID, formatID, statusID)
+export const updateMedia = (idList, name, useDate, releaseDate, typeID, formatID, statusID) => async (dispatch) => {
+	console.log(idList, name, useDate, releaseDate, typeID, formatID, statusID)
 
 	dispatch({ type: 'UPDATE_MEDIA_REQUEST' });
 	let response;
@@ -39,10 +39,12 @@ export const updateMedia = (idList, name, typeID, formatID, statusID) => async (
 	try {
 		response = await api.post('/media', {
 			idList: idList,
-			name: (name) ? name.trim() : name,
-			type_ID: (typeID !== -1) ? typeID : "",
-			format_ID: (formatID !== -1) ? formatID : "",
-			status_ID: (statusID !== -1) ? statusID : ""
+			name: (typeof(name) === 'string') ? name.trim() : name,
+			use_date: (typeof(useDate) === 'string') ? useDate: null,
+			release_date: (typeof(releaseDate) === 'string') ? releaseDate: null,
+			type_ID: (typeID !== -1) ? typeID : null,
+			format_ID: (formatID !== -1) ? formatID : null,
+			status_ID: (statusID !== -1) ? statusID : null
 		});
 	} catch(error) {
 		dispatch({ type: 'UPDATE_MEDIA_FAILED' });

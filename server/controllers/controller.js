@@ -62,8 +62,6 @@ module.exports.search = async (req, res) => {
 	${whereClause}
 	ORDER BY name;`; 
 
-	console.log(query)
-
 	conn.query(query, (err, result) => {
 		if(err) return res.status(400).json({ message: 'Query error!' });
 		res.send({ message:"GET_MEDIA_SUCCESS", result });
@@ -76,7 +74,10 @@ module.exports.update = async (req, res) => {
 	{col: "type_ID", val: req.body.type_ID || null},
 	{col: "format_ID", val: req.body.format_ID || null},
 	{col: "status_ID", val: req.body.status_ID || null},
+	{col: "use_date", val: req.body.use_date},
+	{col: "release_date", val: req.body.release_date},
 	];
+	console.log(filters)
 
 	let idList = (req.body.idList) ? req.body.idList : [];
 
@@ -96,14 +97,18 @@ module.exports.update = async (req, res) => {
 			if(statementCount > 0)
 				setClause += ", ";
 
-			if (f.col !== "name"){
-				setClause += `${f.col}=${f.val}`
-			} else {
+			if (f.col === "name"){
 				setClause += `${f.col}="${f.val}"`
+			} else if (f.col === "use_date" || f.col === "release_date"){
+				setClause += `${f.col}="${f.val}"`
+			} 
+			else {
+				setClause += `${f.col}=${f.val}`
 			}
 			statementCount++;
 		}
 	}
+
 	if (statementCount === 0){
 		return res.status(400).json({ message: 'Input error: provided no columns to update' });
 	}
@@ -124,6 +129,8 @@ module.exports.update = async (req, res) => {
 	SET ${setClause}
 	WHERE id IN ${idClause};
 	`; 
+
+	console.log(query)
 
 	conn.query(query, (err, result) => {
 		if(err) return res.status(400).json({ message: 'Query error' });
