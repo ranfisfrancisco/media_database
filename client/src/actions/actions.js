@@ -31,8 +31,6 @@ export const searchForMedia = (id, name, useDateRange, releaseDateRange, typeID,
 }
 
 export const updateMedia = (idList, name, useDate, releaseDate, typeID, formatID, statusID) => async (dispatch) => {
-	console.log(idList, name, useDate, releaseDate, typeID, formatID, statusID)
-
 	dispatch({ type: 'UPDATE_MEDIA_REQUEST' });
 	let response;
 
@@ -40,8 +38,8 @@ export const updateMedia = (idList, name, useDate, releaseDate, typeID, formatID
 		response = await api.post('/media', {
 			idList: idList,
 			name: (typeof(name) === 'string') ? name.trim() : name,
-			use_date: (typeof(useDate) === 'string') ? useDate: null,
-			release_date: (typeof(releaseDate) === 'string') ? releaseDate: null,
+			use_date: (typeof(useDate) === 'string' && useDate.trim() !== "") ? useDate: null,
+			release_date: (typeof(releaseDate) === 'string' && releaseDate.trim() !== "") ? releaseDate: null,
 			type_ID: (typeID !== -1) ? typeID : null,
 			format_ID: (formatID !== -1) ? formatID : null,
 			status_ID: (statusID !== -1) ? statusID : null
@@ -56,6 +54,27 @@ export const updateMedia = (idList, name, useDate, releaseDate, typeID, formatID
 		return message.success('Updated!');
 	}
 	dispatch({ type: 'UPDATE_MEDIA_FAILED' });
+	return message.error('Query Error 2!');
+}
+
+export const deleteMedia = (idList) => async (dispatch) => {
+	dispatch({ type: 'DELETE_MEDIA_REQUEST' });
+	let response;
+
+	try {
+		response = await api.delete('/media', {data: {
+			idList: idList}
+		});
+	} catch(error) {
+		dispatch({ type: 'DELETE_MEDIA_FAILED' });
+		console.log(error.message);
+		return message.error(error.message);
+	}
+	if(response.data.message === 'DELETE_MEDIA_SUCCESS') {
+		dispatch({ type: 'DELETE_MEDIA_SUCCESS', payload: response.data.result });
+		return message.success('Deleted!');
+	}
+	dispatch({ type: 'DELETE_MEDIA_FAILED' });
 	return message.error('Query Error 2!');
 }
 

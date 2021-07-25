@@ -10,7 +10,7 @@ module.exports.home = async (req, res) => {
 	res.send("Server")
 }
 
-module.exports.search = async (req, res) => {
+module.exports.searchMediaItems = async (req, res) => {
 	let filters = 
 	[
 		{col: "id", val: req.query.id || null},
@@ -21,7 +21,7 @@ module.exports.search = async (req, res) => {
 		{col: "use_date", val: processDateRange(req.query.use_date_range)},
 		{col: "release_date", val: processDateRange(req.query.release_date_range)
 	}];
-	console.log(filters)
+
 	let exactNameSearch = false;
 	let whereClause = "";
 
@@ -68,7 +68,7 @@ module.exports.search = async (req, res) => {
 	});
 }
 
-module.exports.update = async (req, res) => {
+module.exports.updateMediaItems = async (req, res) => {
 	let filters = 
 	[{col: "name", val: (req.body.name) ? req.body.name.trim() : null},
 	{col: "type_ID", val: req.body.type_ID || null},
@@ -77,7 +77,6 @@ module.exports.update = async (req, res) => {
 	{col: "use_date", val: req.body.use_date},
 	{col: "release_date", val: req.body.release_date},
 	];
-	console.log(filters)
 
 	let idList = (req.body.idList) ? req.body.idList : [];
 
@@ -130,11 +129,41 @@ module.exports.update = async (req, res) => {
 	WHERE id IN ${idClause};
 	`; 
 
+	conn.query(query, (err, result) => {
+		if(err) return res.status(400).json({ message: 'Query error' });
+		res.send({ message:"UPDATE_MEDIA_SUCCESS", result });
+	});
+}
+
+module.exports.deleteMediaItems = async (req, res) => {
+	let idList = (req.body.idList) ? req.body.idList : [];
+
+	console.log(idList)
+	if (idList.length < 1){
+		return res.status(400).json({ message: 'Input error: did not provide list of ID to delete' });
+	}
+	console.log(idList)
+
+	let idClause = '(';
+	let idCount = 0;
+	for (var id of idList){
+		if (idCount > 0)
+			idClause += ', '
+
+		idClause += `${id}`
+
+		idCount++;
+	}
+	idClause += ')'
+
+	let query = `DELETE FROM media_items
+	WHERE id IN ${idClause};`; 
+
 	console.log(query)
 
 	conn.query(query, (err, result) => {
 		if(err) return res.status(400).json({ message: 'Query error' });
-		res.send({ message:"UPDATE_MEDIA_SUCCESS", result });
+		res.send({ message:"DELETE_MEDIA_SUCCESS", result });
 	});
 }
 

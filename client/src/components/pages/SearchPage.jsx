@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 import React, { useEffect, useState } from 'react';
 import { Form, Input, Button, Table, Select, Checkbox, DatePicker } from 'antd';
-import { searchForMedia, updateMedia, getAllMediaTypes, getAllMediaFormats, getAllMediaStatuses } from '../../actions/actions';
+import { searchForMedia, updateMedia, deleteMedia, getAllMediaTypes, getAllMediaFormats, getAllMediaStatuses } from '../../actions/actions';
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
@@ -24,17 +24,17 @@ const SearchPage = () => {
 	const NOT_SELECTED_TEXT = "All"
 	const [exactNameSearch, setExactNameSearch] = useState(false);
 
-	const [nameSearch, setNameSearch] = useState([]);
-	const [idSearch, setIdSearch] = useState([]);
-	const [useDateSearchRange, setUsedDateSearchRange] = useState([]);
-	const [releaseDateSearchRange, setReleaseDateSearchRange] = useState([]);
+	const [nameSearch, setNameSearch] = useState("");
+	const [idSearch, setIdSearch] = useState("");
+	const [useDateSearchRange, setUsedDateSearchRange] = useState("");
+	const [releaseDateSearchRange, setReleaseDateSearchRange] = useState("");
 	const [typeFilter, setTypeFilter] = useState(NOT_SELECTED_ID);
 	const [formatFilter, setFormatFilter] = useState(NOT_SELECTED_ID);
 	const [statusFilter, setStatusFilter] = useState(NOT_SELECTED_ID);
 
-	const [nameUpdate, setNameUpdate] = useState([]);
-	const [useDateUpdate, setUseDateUpdate] = useState([]);
-	const [releaseDateUpdate, setReleaseDateUpdate] = useState([]);
+	const [nameUpdate, setNameUpdate] = useState("");
+	const [useDateUpdate, setUseDateUpdate] = useState("");
+	const [releaseDateUpdate, setReleaseDateUpdate] = useState("");
 	const [typeUpdate, setTypeUpdate] = useState(NOT_SELECTED_ID);
 	const [formatUpdate, setFormatUpdate] = useState(NOT_SELECTED_ID);
 	const [statusUpdate, setStatusUpdate] = useState(NOT_SELECTED_ID);
@@ -188,7 +188,12 @@ const SearchPage = () => {
 			return row.id;
 		})
 
-		dispatch(updateMedia(selectedIDList, value.name, useDateUpdate, releaseDateUpdate, typeUpdate, formatUpdate, statusUpdate));
+		if (nameUpdate === "" && useDateUpdate === "" && releaseDateUpdate === "" && typeUpdate === -1 && formatUpdate === -1 && statusUpdate === -1){
+			alert("Must provide something to update!")
+			return;
+		}
+
+		dispatch(updateMedia(selectedIDList, nameUpdate, useDateUpdate, releaseDateUpdate, typeUpdate, formatUpdate, statusUpdate));
 		dispatch(searchForMedia(idSearch, nameSearch, useDateSearchRange, releaseDateSearchRange, typeFilter, formatFilter, statusFilter, exactNameSearch));
 	}
 
@@ -298,6 +303,32 @@ const SearchPage = () => {
 			setSelectedRows(rows);
 	}};
 
+	const deleteButtonOnClick = () => {
+		if (selectedRows.length === 0){
+			alert("Must select an item to delete!")
+			return;
+		}
+
+		if (!window.confirm('Are you sure you wish to delete this item?')) {
+			return;
+		}
+
+		let selectedIDList = selectedRows.map(function(row){
+			return row.id;
+		});
+
+		dispatch(deleteMedia(selectedIDList));
+		dispatch(searchForMedia(idSearch, nameSearch, useDateSearchRange, releaseDateSearchRange, typeFilter, formatFilter, statusFilter, exactNameSearch));
+	}
+
+	const renderDeleteButton = () => {
+		return (
+			<Form.Item>
+				<Button onClick={deleteButtonOnClick}>Delete All Selected</Button>
+			</Form.Item>
+		);
+	}
+
 	const deselectButtonOnClick = () =>{
 		setSelectedRowKeys([]);
 		setSelectedRows([]);
@@ -333,6 +364,7 @@ const SearchPage = () => {
 		<div className='reader-content-wrapper'>
 			{renderSearchForm()}
 			{renderUpdateForm()}
+			{renderDeleteButton()}
 			{renderSearchTable()}
 		</div>
 	);
