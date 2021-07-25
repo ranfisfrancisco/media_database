@@ -3,7 +3,6 @@ import { message } from 'antd';
 import api from './api/api';
 
 export const searchForMedia = (id, name, useDateRange, releaseDateRange, typeID, formatID, statusID, exactNameSearch) => async (dispatch) => {
-	console.log(useDateRange);
 	dispatch({ type: 'GET_ALL_MEDIA_REQUEST' });
 	let response;
 	try {

@@ -21,7 +21,6 @@ const SearchPage = () => {
 
 	const NOT_SELECTED_ID = -1;
 	const NOT_SELECTED_TEXT = "All"
-	const [exactNameSearch, setExactNameSearch] = useState(false);
 
 	const [searchForm] = Form.useForm();
 	const [updateForm] = Form.useForm();
@@ -34,8 +33,8 @@ const SearchPage = () => {
 	};
 
 	const processDateRange = (dateRange) => {
-		if (dateRange === undefined){
-			return "";
+		if (dateRange === undefined || dateRange === null){
+			return null;
 		} 
 		return returnMomentDateRangeStrings(dateRange[0], dateRange[1]);
 	}
@@ -44,8 +43,6 @@ const SearchPage = () => {
 		if (value === undefined || value === NOT_SELECTED_TEXT || value === null){
 			return NOT_SELECTED_ID;
 		}
-
-		console.log(options)
 
 		for (const option of options){
 			if (value === option.option){
@@ -58,9 +55,20 @@ const SearchPage = () => {
 	}
 
 	const searchFormOnFinish = () => {
-		dispatch(searchForMedia(searchForm.getFieldValue("id"), searchForm.getFieldValue("name"), searchForm.getFieldValue("useDate"),searchForm.getFieldValue("releaseDate"),
-			valueToColID(searchForm.getFieldValue("typeFilter", mediaTypes), valueToColID(searchForm.getFieldValue("formatFilter"), mediaFormats),
-			 valueToColID(searchForm.getFieldValue("statusFilter"), mediaStatuses), searchForm.getFieldValue("exactNameSearch"))));
+		let id = searchForm.getFieldValue("id")
+		let name = searchForm.getFieldValue("name")
+		let useDateRange = processDateRange(searchForm.getFieldValue("useDate"));
+		let releaseDateRange = processDateRange(searchForm.getFieldValue("releaseDate"));
+		let typeFilter =  valueToColID(searchForm.getFieldValue("typeFilter"), mediaTypes);
+		let formatFilter = valueToColID(searchForm.getFieldValue("formatFilter"), mediaFormats);
+		let statusFilter = valueToColID(searchForm.getFieldValue("statusFilter"), mediaStatuses);
+		let exactNameSearch = searchForm.getFieldValue("exactNameSearch");
+
+		dispatch(searchForMedia(id, name, useDateRange, releaseDateRange, typeFilter,
+		  formatFilter, statusFilter, exactNameSearch));
+
+		console.log(id, name, useDateRange, releaseDateRange, typeFilter,
+		 	formatFilter, statusFilter, exactNameSearch);
 
 		deselectRows();
 	}
