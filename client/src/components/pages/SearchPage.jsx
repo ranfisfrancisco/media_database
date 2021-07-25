@@ -260,7 +260,9 @@ const SearchPage = () => {
 	const renderDeleteButton = () => {
 		return (
 			<Form.Item>
-				<Button onClick={deleteButtonOnClick}>Delete All Selected</Button>
+				<Button onClick={deleteButtonOnClick} style={{ background:  "#f0222c", borderColor: "yellow" }}>
+					Delete All Selected Items
+				</Button>
 			</Form.Item>
 		);
 	}
@@ -291,7 +293,7 @@ const SearchPage = () => {
 		return (
 		<div>
 			<Button onClick={deselectRows}>Deselect All</Button>
-			<Table dataSource={dataSource} columns={columns} rowSelection={rowSelection} rowKey={record =>record.id}/>
+			<Table dataSource={dataSource} columns={columns} rowSelection={rowSelection} rowKey={record =>record.id} />
 		</div>
 		);
 	}
