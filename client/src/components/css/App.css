@@ -12,8 +12,8 @@
 	margin-top: 15%;
 }
 
-.reader-content-wrapper, .admin-content-wrapper {
-	width: 40%;
+.search-content-wrapper {
+	width: 75%;
 	margin: auto;
 	margin-top: 5%;
 }
@@ -22,4 +22,16 @@
 	display: flex;
 	justify-content: center;
 	margin: 5px;
+}
+
+.entry-form {
+    width: 30%;
+    float: left;
+    padding: 20px;
+}
+
+.result-table {
+	width: 70%;
+    float: left;
+    padding: 20px;
 }

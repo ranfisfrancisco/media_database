@@ -1,18 +1,18 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { Form, Input, Button, Table } from 'antd';
 
-import { getAllAMedia } from '../../actions/actions';
+import { searchForMedia } from '../../actions/actions';
 
 const searchSelector = (state) => state.search;
 
-const GetAllPage = () => {
+const CreatePage = () => {
 
 	const dispatch = useDispatch();
 	const search = useSelector(searchSelector);
 
 	const getAllAMediaOnFinish = () => {
 		console.log("Running button")
-		dispatch(getAllAMedia());
+		dispatch(searchForMedia());
 	}
 
 	const renderForm = () => {
@@ -46,4 +46,4 @@ const GetAllPage = () => {
 	);
 }
 
-export default GetAllPage;
+export default CreatePage;

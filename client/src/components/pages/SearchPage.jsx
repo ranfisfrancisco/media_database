@@ -28,6 +28,8 @@ const SearchPage = () => {
 	const [selectedRows, setSelectedRows] = useState([]); 
 	const [selectedRowKeys, setSelectedRowKeys] = useState([]); // Attatched to table to determine and read what the user has clicked on
 
+	const REFRESH_WAIT_TIME = 1000;
+
 	const returnMomentDateRangeStrings = (start, finish) => {
 		return [start.format('YYYY-MM-DD'), finish.format('YYYY-MM-DD')];
 	};
@@ -149,7 +151,6 @@ const SearchPage = () => {
 		let typeFilter =  valueToColID(updateForm.getFieldValue("typeFilter"), mediaTypes);
 		let formatFilter = valueToColID(updateForm.getFieldValue("formatFilter"), mediaFormats);
 		let statusFilter = valueToColID(updateForm.getFieldValue("statusFilter"), mediaStatuses);
-		console.log(name, useDate, releaseDate, typeFilter, formatFilter, statusFilter);
 	
 		if (selectedRows.length > 1 && name !== ""){
 			alert("You cannot change the names of multiple items to the same name!")
@@ -172,8 +173,9 @@ const SearchPage = () => {
 
 		dispatch(updateMedia(selectedIDList, name, useDate, releaseDate, typeFilter, formatFilter, statusFilter));
 		setTimeout(function () {
-		}, 1000);
-		submitSearch();
+			submitSearch();
+		}, REFRESH_WAIT_TIME);
+		updateForm.resetFields()
 	}
 
 	const renderUpdateForm = () => {
@@ -250,8 +252,9 @@ const SearchPage = () => {
 
 		dispatch(deleteMedia(selectedIDList));
 		setTimeout(function () {
-		}, 1000);
-		submitSearch();
+			submitSearch();
+		}, REFRESH_WAIT_TIME);
+		
 	}
 
 	const renderDeleteButton = () => {
@@ -301,11 +304,15 @@ const SearchPage = () => {
     }, []);
 
 	return (
-		<div className='reader-content-wrapper'>
-			{renderSearchForm()}
-			{renderUpdateForm()}
-			{renderDeleteButton()}
-			{renderSearchTable()}
+		<div className='search-content-wrapper'>
+			<div className='entry-form'>
+				{renderSearchForm()}
+				{renderUpdateForm()}
+				{renderDeleteButton()}
+			</div>
+			<div className='result-table'>
+				{renderSearchTable()}
+			</div>
 		</div>
 	);
 }
