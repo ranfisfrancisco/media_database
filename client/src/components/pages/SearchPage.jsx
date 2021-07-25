@@ -24,21 +24,7 @@ const SearchPage = () => {
 	const [exactNameSearch, setExactNameSearch] = useState(false);
 
 	const [searchForm] = Form.useForm();
-
-	const [nameSearch, setNameSearch] = useState("");
-	const [idSearch, setIdSearch] = useState("");
-	const [useDateSearchRange, setUsedDateSearchRange] = useState(["",""]);
-	const [releaseDateSearchRange, setReleaseDateSearchRange] = useState(["",""]);
-	const [typeFilter, setTypeFilter] = useState(NOT_SELECTED_TEXT);
-	const [formatFilter, setFormatFilter] = useState(NOT_SELECTED_TEXT);
-	const [statusFilter, setStatusFilter] = useState(NOT_SELECTED_TEXT);
-
-	const [nameUpdate, setNameUpdate] = useState("");
-	const [useDateUpdate, setUseDateUpdate] = useState("");
-	const [releaseDateUpdate, setReleaseDateUpdate] = useState("");
-	const [typeUpdate, setTypeUpdate] = useState(NOT_SELECTED_TEXT);
-	const [formatUpdate, setFormatUpdate] = useState(NOT_SELECTED_TEXT);
-	const [statusUpdate, setStatusUpdate] = useState(NOT_SELECTED_TEXT);
+	const [updateForm] = Form.useForm();
 
 	const [selectedRows, setSelectedRows] = useState([]); 
 	const [selectedRowKeys, setSelectedRowKeys] = useState([]); // Attatched to table to determine and read what the user has clicked on
@@ -48,16 +34,18 @@ const SearchPage = () => {
 	};
 
 	const processDateRange = (dateRange) => {
-		if (dateRange[0] === "" || dateRange[1] === ""){
+		if (dateRange === undefined){
 			return "";
 		} 
 		return returnMomentDateRangeStrings(dateRange[0], dateRange[1]);
 	}
 
 	const valueToColID = (value, options) => {
-		if (value === NOT_SELECTED_TEXT || value === null){
+		if (value === undefined || value === NOT_SELECTED_TEXT || value === null){
 			return NOT_SELECTED_ID;
 		}
+
+		console.log(options)
 
 		for (const option of options){
 			if (value === option.option){
@@ -69,24 +57,16 @@ const SearchPage = () => {
 		return NOT_SELECTED_ID;
 	}
 
-	const searchFormOnFinish = (value) => {
-		console.log(value)
-		dispatch(searchForMedia(idSearch, nameSearch, processDateRange(useDateSearchRange), processDateRange(releaseDateSearchRange),
-		valueToColID(typeFilter, mediaTypes), valueToColID(formatFilter, mediaFormats), valueToColID(statusFilter, mediaStatuses), exactNameSearch));
+	const searchFormOnFinish = () => {
+		dispatch(searchForMedia(searchForm.getFieldValue("id"), searchForm.getFieldValue("name"), searchForm.getFieldValue("useDate"),searchForm.getFieldValue("releaseDate"),
+			valueToColID(searchForm.getFieldValue("typeFilter", mediaTypes), valueToColID(searchForm.getFieldValue("formatFilter"), mediaFormats),
+			 valueToColID(searchForm.getFieldValue("statusFilter"), mediaStatuses), searchForm.getFieldValue("exactNameSearch"))));
+
 		deselectRows();
 	}
 
 	const clearSelectForm = () => {
-		searchForm.resetFields(); //do i even need states anymore???
-
-		setNameSearch("");
-		setIdSearch("");
-		setUsedDateSearchRange(["",""]);
-		setReleaseDateSearchRange(["",""]);
-
-		setTypeFilter(NOT_SELECTED_TEXT);
-		setFormatFilter(NOT_SELECTED_TEXT);
-		setStatusFilter(NOT_SELECTED_TEXT);
+		searchForm.resetFields();
 	}
 
 	const renderSearchForm = () => {
@@ -105,41 +85,41 @@ const SearchPage = () => {
         return (
 			<Form onFinish={searchFormOnFinish} id="search-form" form={searchForm}>
 				<Form.Item label='Search by ID:'  name='id'>
-					<Input type="number" name='id' value={idSearch} onInput={(e)=>{setIdSearch(e.target.value)}} />
+					<Input type="number" name='id' />
 				</Form.Item>
 
 				<Form.Item label="Search by Name" name='name'>
-					<Input  value={nameSearch} onInput={(e)=>{setNameSearch(e.target.value)}} />
+					<Input  />
 				</Form.Item>
 
 				<Form.Item name='exactNameSearch' valuePropName='checked'>
-					<Checkbox onChange={(e) => {setExactNameSearch(e.target.checked)}}>Find Exact Name</Checkbox>
+					<Checkbox >Find Exact Name</Checkbox>
 				</Form.Item>
 
 				<label>Use Date</label>
 				<Form.Item name='useDate'>
-					<RangePicker value={useDateSearchRange !== "" ? useDateSearchRange : ""} onChange={(dateRange) => {setUsedDateSearchRange(dateRange)}}/>
+					<RangePicker/>
 				</Form.Item>
 
 				<label>Release Date</label>
 				<Form.Item name='releaseDate'>
-					<RangePicker value={releaseDateSearchRange !== "" ? releaseDateSearchRange : ""} onChange={(dateRange) => {setReleaseDateSearchRange(dateRange)}}/>
+					<RangePicker/>
 				</Form.Item>
 
 				<Form.Item label='Filter by Type' name='typeFilter'>
-                    <Select defaultValue={NOT_SELECTED_TEXT} value={typeFilter} style={{ width: 120 }} onChange={(value) => {setTypeFilter(value)}}>
+                    <Select defaultValue={NOT_SELECTED_TEXT} style={{ width: 120 }}>
 						<Option key={NOT_SELECTED_TEXT}>{NOT_SELECTED_TEXT}</Option>
                         { typeOptions }
                     </Select>
 				</Form.Item>
 				<Form.Item label='Filter by Format' name='formatFilter'>
-                    <Select defaultValue={NOT_SELECTED_TEXT} value={formatFilter} style={{ width: 120 }} onChange={(value) => {setFormatFilter(value)}}>
+					<Select defaultValue={NOT_SELECTED_TEXT} style={{ width: 120 }}>
 						<Option key={NOT_SELECTED_TEXT}>{NOT_SELECTED_TEXT}</Option>
                         { formatOptions }
                     </Select>
 				</Form.Item>
 				<Form.Item label='Filter by Status' name='statusFilter'>
-                    <Select defaultValue={NOT_SELECTED_TEXT} value={statusFilter}  style={{ width: 120 }} onChange={(value) => {setStatusFilter(value)}}>
+					<Select defaultValue={NOT_SELECTED_TEXT} style={{ width: 120 }}>
 						<Option key={NOT_SELECTED_TEXT}>{NOT_SELECTED_TEXT}</Option>
                         { statusOptions }
                     </Select>
@@ -158,83 +138,31 @@ const SearchPage = () => {
 		);
     }
 
-	const renderFormSubmitButton = (buttonText) => {
-		return (
-				<Form.Item>
-					<Button type='primary' htmlType='submit'>
-						{buttonText}
-					</Button>
-				</Form.Item>
-		);
-	}
-
 	const updateFormOnFinish = (value) => {
-		if (selectedRows.length > 1 && value.name !== ""){
-			alert("You cannot change the names of multiple items to the same name!")
-			return;
-		}
+		// if (selectedRows.length > 1 && value.name !== ""){
+		// 	alert("You cannot change the names of multiple items to the same name!")
+		// 	return;
+		// }
 
-		if (selectedRows.length === 0){
-			alert("Must select an item to update!")
-			return;
-		}
+		// if (selectedRows.length === 0){
+		// 	alert("Must select an item to update!")
+		// 	return;
+		// }
 
-		let selectedIDList = selectedRows.map(function(row){
-			return row.id;
-		})
+		// let selectedIDList = selectedRows.map(function(row){
+		// 	return row.id;
+		// })
 
-		if (nameUpdate === "" && useDateUpdate === "" && releaseDateUpdate === "" && typeUpdate === -1 && formatUpdate === -1 && statusUpdate === -1){
-			alert("Must provide something to update!")
-			return;
-		}
+		// if (nameUpdate === "" && useDateUpdate === "" && releaseDateUpdate === "" && typeUpdate === -1 && formatUpdate === -1 && statusUpdate === -1){
+		// 	alert("Must provide something to update!")
+		// 	return;
+		// }
 
-		dispatch(updateMedia(selectedIDList, nameUpdate, useDateUpdate, releaseDateUpdate, typeUpdate, formatUpdate, statusUpdate));
-		dispatch(searchForMedia(idSearch, nameSearch, useDateSearchRange, releaseDateSearchRange, typeFilter, formatFilter, statusFilter, exactNameSearch));
+		// dispatch(updateMedia(selectedIDList, nameUpdate, useDateUpdate, releaseDateUpdate, typeUpdate, formatUpdate, statusUpdate));
+		// dispatch(searchForMedia(idSearch, nameSearch, useDateSearchRange, releaseDateSearchRange, typeFilter, formatFilter, statusFilter, exactNameSearch));
 	}
 
-	const updateTypeOnChange = (value) => {
-		if (value === NOT_SELECTED_TEXT){
-			setTypeUpdate(NOT_SELECTED_ID);
-			return;
-		}
-
-		for (const option of mediaTypes){
-			if (value === option.type){
-				setTypeUpdate(option.type_id);
-				return;
-			}
-		}
-    }
-
-	const updateFormatOnChange = (value) => {
-		if (value === NOT_SELECTED_TEXT){
-			setFormatUpdate(NOT_SELECTED_ID);
-			return;
-		}
-
-		for (const option of mediaFormats){
-			if (value === option.format){
-				setFormatUpdate(option.format_id);
-				return;
-			}
-		}
-    }
-
-	const updateStatusOnChange = (value) => {
-		if (value === NOT_SELECTED_TEXT){
-			setStatusUpdate(NOT_SELECTED_ID);
-			return;
-		}
-
-		for (const option of mediaStatuses){
-			if (value === option.status){
-				setStatusUpdate(option.status_id);
-				return;
-			}
-		}
-	}
-
-	const renderUpdateOptions = () => {
+	const renderUpdateForm = () => {
 		var typeOptions = mediaTypes.map(function(obj, index){
             return <Option key={ obj.option }>{ obj.option }</Option>;
         });
@@ -248,72 +176,68 @@ const SearchPage = () => {
         });
 
         return (
-			<div>
-				<Form.Item label="Update Name" name='name' onInput={(e)=>{setNameUpdate(e.target.value)}}>
+			<Form onFinish={updateFormOnFinish}>
+				<Form.Item label="Update Name" name='name'>
 					<Input  />
 				</Form.Item>
 				<label>Update Use Date</label>
 				<Form.Item>
-					<DatePicker onChange={(date, dateString) => {setUseDateUpdate(dateString)}}/>
+					<DatePicker/>
 				</Form.Item>
 				<label>Update Release Date</label>
 				<Form.Item>
-					<DatePicker onChange={(date, dateString) => {setReleaseDateUpdate(dateString)}}/>
+					<DatePicker/>
 				</Form.Item>
 				<Form.Item label='Change Type' name='typeFilter'>
-                    <Select defaultValue={NOT_SELECTED_TEXT} style={{ width: 120 }} onChange={updateTypeOnChange}>
+                    <Select defaultValue={NOT_SELECTED_TEXT} style={{ width: 120 }}>
 						<Option key={NOT_SELECTED_TEXT}>No Change</Option>
                         { typeOptions }
                     </Select>
 				</Form.Item>
 				<Form.Item label='Change Format' name='formatFilter'>
-                    <Select defaultValue={NOT_SELECTED_TEXT} style={{ width: 120 }} onChange={updateFormatOnChange}>
+					<Select defaultValue={NOT_SELECTED_TEXT} style={{ width: 120 }}>
 						<Option key={NOT_SELECTED_TEXT}>No Change</Option>
                         { formatOptions }
                     </Select>
 				</Form.Item>
 				<Form.Item label='Change Status' name='statusFilter'>
-                    <Select defaultValue={NOT_SELECTED_TEXT} style={{ width: 120 }} onChange={updateStatusOnChange}>
+					<Select defaultValue={NOT_SELECTED_TEXT} style={{ width: 120 }}>
 						<Option key={NOT_SELECTED_TEXT}>No Change</Option>
                         { statusOptions }
                     </Select>
 				</Form.Item>
-			</div>
-		);
-	}
-
-	const renderUpdateForm = () => {
-		return (
-			<Form onFinish={updateFormOnFinish}>
-					{renderUpdateOptions()}
-					{renderFormSubmitButton("Update Selected Items")}
+				<Form.Item>
+					<Button type='primary' htmlType='submit'>
+						Update
+					</Button>
+				</Form.Item>
 			</Form>
 		);
 	}
 
-	const rowSelection = {
-		selectedRowKeys,
-		onChange: (selectedRowKeys, rows) => {
-			setSelectedRowKeys(selectedRowKeys);
-			setSelectedRows(rows);
-	}};
+	// const rowSelection = {
+	// 	selectedRowKeys,
+	// 	onChange: (selectedRowKeys, rows) => {
+	// 		setSelectedRowKeys(selectedRowKeys);
+	// 		setSelectedRows(rows);
+	// }};
 
 	const deleteButtonOnClick = () => {
-		if (selectedRows.length === 0){
-			alert("Must select an item to delete!")
-			return;
-		}
+		// if (selectedRows.length === 0){
+		// 	alert("Must select an item to delete!")
+		// 	return;
+		// }
 
-		if (!window.confirm('Are you sure you wish to delete this item?')) {
-			return;
-		}
+		// if (!window.confirm('Are you sure you wish to delete this item?')) {
+		// 	return;
+		// }
 
-		let selectedIDList = selectedRows.map(function(row){
-			return row.id;
-		});
+		// let selectedIDList = selectedRows.map(function(row){
+		// 	return row.id;
+		// });
 
-		dispatch(deleteMedia(selectedIDList));
-		dispatch(searchForMedia(idSearch, nameSearch, useDateSearchRange, releaseDateSearchRange, typeFilter, formatFilter, statusFilter, exactNameSearch));
+		//dispatch(deleteMedia(selectedIDList));
+		//dispatch(searchForMedia(idSearch, nameSearch, useDateSearchRange, releaseDateSearchRange, typeFilter, formatFilter, statusFilter, exactNameSearch));
 	}
 
 	const renderDeleteButton = () => {
@@ -328,6 +252,13 @@ const SearchPage = () => {
 		setSelectedRowKeys([]);
 		setSelectedRows([]);
 	}
+
+	const rowSelection = {
+		selectedRowKeys,
+		onChange: (selectedRowKeys, rows) => {
+			setSelectedRowKeys(selectedRowKeys);
+			setSelectedRows(rows);
+	}};
 
 	const renderSearchTable = () => {
 		let dataSource = searchResult.data;
