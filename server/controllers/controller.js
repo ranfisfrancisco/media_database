@@ -62,8 +62,6 @@ module.exports.searchMediaItems = async (req, res) => {
 	${whereClause}
 	ORDER BY name;`; 
 
-	console.log(query)
-
 	conn.query(query, (err, result) => {
 		if(err) return res.status(400).json({ message: 'Query error!' });
 		res.send({ message:"GET_MEDIA_SUCCESS", result });
@@ -130,6 +128,8 @@ module.exports.updateMediaItems = async (req, res) => {
 	SET ${setClause}
 	WHERE id IN ${idClause};
 	`; 
+
+	console.log(query)
 
 	conn.query(query, (err, result) => {
 		if(err) return res.status(400).json({ message: 'Query error' });

@@ -54,11 +54,11 @@ const SearchPage = () => {
 		return NOT_SELECTED_ID;
 	}
 
-	const searchFormOnFinish = () => {
+	const submitSearch = () => {
 		let id = searchForm.getFieldValue("id")
 		let name = searchForm.getFieldValue("name")
-		let useDateRange = processDateRange(searchForm.getFieldValue("useDate"));
-		let releaseDateRange = processDateRange(searchForm.getFieldValue("releaseDate"));
+		let useDateRange = processDateRange(searchForm.getFieldValue("useDateRange"));
+		let releaseDateRange = processDateRange(searchForm.getFieldValue("releaseDateRange"));
 		let typeFilter =  valueToColID(searchForm.getFieldValue("typeFilter"), mediaTypes);
 		let formatFilter = valueToColID(searchForm.getFieldValue("formatFilter"), mediaFormats);
 		let statusFilter = valueToColID(searchForm.getFieldValue("statusFilter"), mediaStatuses);
@@ -66,15 +66,11 @@ const SearchPage = () => {
 
 		dispatch(searchForMedia(id, name, useDateRange, releaseDateRange, typeFilter,
 		  formatFilter, statusFilter, exactNameSearch));
-
-		console.log(id, name, useDateRange, releaseDateRange, typeFilter,
-		 	formatFilter, statusFilter, exactNameSearch);
-
-		deselectRows();
 	}
 
-	const clearSelectForm = () => {
-		searchForm.resetFields();
+	const searchFormOnFinish = () => {
+		submitSearch();
+		deselectRows();
 	}
 
 	const renderSearchForm = () => {
@@ -93,7 +89,7 @@ const SearchPage = () => {
         return (
 			<Form onFinish={searchFormOnFinish} id="search-form" form={searchForm}>
 				<Form.Item label='Search by ID:'  name='id'>
-					<Input type="number" name='id' />
+					<Input type="number"  />
 				</Form.Item>
 
 				<Form.Item label="Search by Name" name='name'>
@@ -105,12 +101,12 @@ const SearchPage = () => {
 				</Form.Item>
 
 				<label>Use Date</label>
-				<Form.Item name='useDate'>
+				<Form.Item name='useDateRange'>
 					<RangePicker/>
 				</Form.Item>
 
 				<label>Release Date</label>
-				<Form.Item name='releaseDate'>
+				<Form.Item name='releaseDateRange'>
 					<RangePicker/>
 				</Form.Item>
 
@@ -133,8 +129,8 @@ const SearchPage = () => {
                     </Select>
 				</Form.Item>
 				<Form.Item>
-					<Button onClick={clearSelectForm}>
-						Clear Search Options
+					<Button onClick={searchForm.resetFields()}>
+						Clear Search Form
 					</Button>
 				</Form.Item>
 				<Form.Item>
@@ -146,28 +142,38 @@ const SearchPage = () => {
 		);
     }
 
-	const updateFormOnFinish = (value) => {
-		// if (selectedRows.length > 1 && value.name !== ""){
-		// 	alert("You cannot change the names of multiple items to the same name!")
-		// 	return;
-		// }
+	const updateFormOnFinish = () => {
+		let name = updateForm.getFieldValue("name")
+		let useDate = (updateForm.getFieldValue("useDate")) ? updateForm.getFieldValue("useDate").format('YYYY-MM-DD') : null
+		let releaseDate = (updateForm.getFieldValue("releaseDate")) ? updateForm.getFieldValue("releaseDate").format('YYYY-MM-DD') : null
+		let typeFilter =  valueToColID(updateForm.getFieldValue("typeFilter"), mediaTypes);
+		let formatFilter = valueToColID(updateForm.getFieldValue("formatFilter"), mediaFormats);
+		let statusFilter = valueToColID(updateForm.getFieldValue("statusFilter"), mediaStatuses);
+		console.log(name, useDate, releaseDate, typeFilter, formatFilter, statusFilter);
+	
+		if (selectedRows.length > 1 && name !== ""){
+			alert("You cannot change the names of multiple items to the same name!")
+			return;
+		}
 
-		// if (selectedRows.length === 0){
-		// 	alert("Must select an item to update!")
-		// 	return;
-		// }
+		if (selectedRows.length === 0){
+			alert("Must select an item to update!")
+			return;
+		}
 
-		// let selectedIDList = selectedRows.map(function(row){
-		// 	return row.id;
-		// })
+		let selectedIDList = selectedRows.map(function(row){
+			return row.id;
+		})
 
-		// if (nameUpdate === "" && useDateUpdate === "" && releaseDateUpdate === "" && typeUpdate === -1 && formatUpdate === -1 && statusUpdate === -1){
-		// 	alert("Must provide something to update!")
-		// 	return;
-		// }
+		if (name === "" && useDate === "" && releaseDate === "" && typeFilter === -1 && formatFilter === -1 && statusFilter === -1){
+			alert("Must provide something to update!")
+			return;
+		}
 
-		// dispatch(updateMedia(selectedIDList, nameUpdate, useDateUpdate, releaseDateUpdate, typeUpdate, formatUpdate, statusUpdate));
-		// dispatch(searchForMedia(idSearch, nameSearch, useDateSearchRange, releaseDateSearchRange, typeFilter, formatFilter, statusFilter, exactNameSearch));
+		dispatch(updateMedia(selectedIDList, name, useDate, releaseDate, typeFilter, formatFilter, statusFilter));
+		setTimeout(function () {
+		}, 1000);
+		submitSearch();
 	}
 
 	const renderUpdateForm = () => {
@@ -184,16 +190,16 @@ const SearchPage = () => {
         });
 
         return (
-			<Form onFinish={updateFormOnFinish}>
-				<Form.Item label="Update Name" name='name'>
+			<Form form={updateForm} onFinish={updateFormOnFinish} id="update-form" >
+				<Form.Item label="Update Name" name="name">
 					<Input  />
 				</Form.Item>
 				<label>Update Use Date</label>
-				<Form.Item>
+				<Form.Item name="useDate">
 					<DatePicker/>
 				</Form.Item>
 				<label>Update Release Date</label>
-				<Form.Item>
+				<Form.Item name="releaseDate">
 					<DatePicker/>
 				</Form.Item>
 				<Form.Item label='Change Type' name='typeFilter'>
@@ -215,6 +221,11 @@ const SearchPage = () => {
                     </Select>
 				</Form.Item>
 				<Form.Item>
+					<Button onClick={updateForm.resetFields()}>
+						Clear Update Form
+					</Button>
+				</Form.Item>
+				<Form.Item>
 					<Button type='primary' htmlType='submit'>
 						Update
 					</Button>
@@ -222,13 +233,6 @@ const SearchPage = () => {
 			</Form>
 		);
 	}
-
-	// const rowSelection = {
-	// 	selectedRowKeys,
-	// 	onChange: (selectedRowKeys, rows) => {
-	// 		setSelectedRowKeys(selectedRowKeys);
-	// 		setSelectedRows(rows);
-	// }};
 
 	const deleteButtonOnClick = () => {
 		// if (selectedRows.length === 0){
