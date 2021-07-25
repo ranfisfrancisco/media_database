@@ -129,7 +129,7 @@ const SearchPage = () => {
                     </Select>
 				</Form.Item>
 				<Form.Item>
-					<Button onClick={searchForm.resetFields()}>
+					<Button onClick={() => {searchForm.resetFields()}}>
 						Clear Search Form
 					</Button>
 				</Form.Item>
@@ -221,7 +221,7 @@ const SearchPage = () => {
                     </Select>
 				</Form.Item>
 				<Form.Item>
-					<Button onClick={updateForm.resetFields()}>
+					<Button onClick={() => {updateForm.resetFields()}}>
 						Clear Update Form
 					</Button>
 				</Form.Item>
