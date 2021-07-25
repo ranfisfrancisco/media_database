@@ -235,21 +235,23 @@ const SearchPage = () => {
 	}
 
 	const deleteButtonOnClick = () => {
-		// if (selectedRows.length === 0){
-		// 	alert("Must select an item to delete!")
-		// 	return;
-		// }
+		if (selectedRows.length === 0){
+			alert("Must select an item to delete!")
+			return;
+		}
 
-		// if (!window.confirm('Are you sure you wish to delete this item?')) {
-		// 	return;
-		// }
+		if (!window.confirm('Are you sure you wish to delete this item?')) {
+			return;
+		}
 
-		// let selectedIDList = selectedRows.map(function(row){
-		// 	return row.id;
-		// });
+		let selectedIDList = selectedRows.map(function(row){
+			return row.id;
+		});
 
-		//dispatch(deleteMedia(selectedIDList));
-		//dispatch(searchForMedia(idSearch, nameSearch, useDateSearchRange, releaseDateSearchRange, typeFilter, formatFilter, statusFilter, exactNameSearch));
+		dispatch(deleteMedia(selectedIDList));
+		setTimeout(function () {
+		}, 1000);
+		submitSearch();
 	}
 
 	const renderDeleteButton = () => {
