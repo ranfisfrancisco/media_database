@@ -23,6 +23,8 @@ const SearchPage = () => {
 	const NOT_SELECTED_TEXT = "All"
 	const [exactNameSearch, setExactNameSearch] = useState(false);
 
+	const [searchForm] = Form.useForm();
+
 	const [nameSearch, setNameSearch] = useState("");
 	const [idSearch, setIdSearch] = useState("");
 	const [useDateSearchRange, setUsedDateSearchRange] = useState(["",""]);
@@ -53,7 +55,7 @@ const SearchPage = () => {
 	}
 
 	const valueToColID = (value, options) => {
-		if (value === NOT_SELECTED_TEXT){
+		if (value === NOT_SELECTED_TEXT || value === null){
 			return NOT_SELECTED_ID;
 		}
 
@@ -68,22 +70,23 @@ const SearchPage = () => {
 	}
 
 	const searchFormOnFinish = (value) => {
+		console.log(value)
 		dispatch(searchForMedia(idSearch, nameSearch, processDateRange(useDateSearchRange), processDateRange(releaseDateSearchRange),
 		valueToColID(typeFilter, mediaTypes), valueToColID(formatFilter, mediaFormats), valueToColID(statusFilter, mediaStatuses), exactNameSearch));
 		deselectRows();
 	}
 
 	const clearSelectForm = () => {
+		searchForm.resetFields(); //do i even need states anymore???
+
 		setNameSearch("");
 		setIdSearch("");
 		setUsedDateSearchRange(["",""]);
 		setReleaseDateSearchRange(["",""]);
-		// setExactNameSearch(false);
-		// setTypeFilter(null);
-		// setFormatFilter(null);
-		// setStatusFilter(null);
 
-		console.log(typeFilter, formatFilter, statusFilter)
+		setTypeFilter(NOT_SELECTED_TEXT);
+		setFormatFilter(NOT_SELECTED_TEXT);
+		setStatusFilter(NOT_SELECTED_TEXT);
 	}
 
 	const renderSearchForm = () => {
@@ -100,31 +103,31 @@ const SearchPage = () => {
         });
 
         return (
-			<Form onFinish={searchFormOnFinish}>
-				<Form.Item label='Search by ID:'  >
+			<Form onFinish={searchFormOnFinish} id="search-form" form={searchForm}>
+				<Form.Item label='Search by ID:'  name='id'>
 					<Input type="number" name='id' value={idSearch} onInput={(e)=>{setIdSearch(e.target.value)}} />
 				</Form.Item>
 
-				<Form.Item label="Search by Name">
-					<Input name='nameSearch' value={nameSearch} onInput={(e)=>{setNameSearch(e.target.value)}} />
+				<Form.Item label="Search by Name" name='name'>
+					<Input  value={nameSearch} onInput={(e)=>{setNameSearch(e.target.value)}} />
 				</Form.Item>
 
-				<Form.Item>
-					<Checkbox  onChange={(e) => {setExactNameSearch(e.target.checked)}}>Find Exact Name</Checkbox>
+				<Form.Item name='exactNameSearch' valuePropName='checked'>
+					<Checkbox onChange={(e) => {setExactNameSearch(e.target.checked)}}>Find Exact Name</Checkbox>
 				</Form.Item>
 
 				<label>Use Date</label>
-				<Form.Item>
+				<Form.Item name='useDate'>
 					<RangePicker value={useDateSearchRange !== "" ? useDateSearchRange : ""} onChange={(dateRange) => {setUsedDateSearchRange(dateRange)}}/>
 				</Form.Item>
 
 				<label>Release Date</label>
-				<Form.Item>
+				<Form.Item name='releaseDate'>
 					<RangePicker value={releaseDateSearchRange !== "" ? releaseDateSearchRange : ""} onChange={(dateRange) => {setReleaseDateSearchRange(dateRange)}}/>
 				</Form.Item>
 
 				<Form.Item label='Filter by Type' name='typeFilter'>
-                    <Select defaultValue={typeFilter} value={typeFilter} style={{ width: 120 }} onChange={(value) => {setTypeFilter(value)}}>
+                    <Select defaultValue={NOT_SELECTED_TEXT} value={typeFilter} style={{ width: 120 }} onChange={(value) => {setTypeFilter(value)}}>
 						<Option key={NOT_SELECTED_TEXT}>{NOT_SELECTED_TEXT}</Option>
                         { typeOptions }
                     </Select>
