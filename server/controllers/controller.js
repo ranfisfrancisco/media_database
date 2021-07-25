@@ -1,7 +1,7 @@
 const conn = require('../database/initConn');
 
 const processDateRange = (range) => {
-	if (!range || range.length !== 2)
+	if (range?.length !== 2)
 		return null;
 	return range;
 }
@@ -61,6 +61,8 @@ module.exports.searchMediaItems = async (req, res) => {
 	NATURAL JOIN media_statuses 
 	${whereClause}
 	ORDER BY name;`; 
+
+	console.log(query)
 
 	conn.query(query, (err, result) => {
 		if(err) return res.status(400).json({ message: 'Query error!' });
@@ -168,7 +170,7 @@ module.exports.deleteMediaItems = async (req, res) => {
 }
 
 module.exports.getAllTypes = async (req, res) => {
-	let query = `SELECT *
+	let query = `SELECT type_id AS id, type AS "option"
 	FROM media_types
 	ORDER BY type;`; 
 
@@ -179,7 +181,7 @@ module.exports.getAllTypes = async (req, res) => {
 }
 
 module.exports.getAllFormats = async (req, res) => {
-	let query = `SELECT *
+	let query = `SELECT format_id AS id, format AS "option"
 	FROM media_formats
 	order by format_id `; 
 
@@ -190,7 +192,7 @@ module.exports.getAllFormats = async (req, res) => {
 }
 
 module.exports.getAllStatuses = async (req, res) => {
-	let query = `SELECT *
+	let query = `SELECT status_id AS id, status AS "option"
 	FROM media_statuses
 	order by status_id `; 
 

@@ -1,13 +1,14 @@
 import { useDispatch } from 'react-redux';
 import { Button } from 'antd';
 
-import { logout } from '../actions/auth';
+//import { logout } from '../actions/auth';
+let logout = ()=>{}
 
 const LogoutButton = ({ username }) => {
 
 	const dispatch = useDispatch();
 	const onLogoutClick = () => dispatch(logout());
-
+	
 	return (
 		<div className='logout-button-wrapper'>
 			<Button type='primary' onClick={onLogoutClick}>

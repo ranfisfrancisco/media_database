@@ -12,10 +12,9 @@ const mediaFormatsSelector = (state) => state.mediaFormats.data;
 const mediaStatusesSelector = (state) => state.mediaStatuses.data;
 
 const SearchPage = () => {
-	
 
 	const dispatch = useDispatch();
-	const search = useSelector(searchSelector);
+	const searchResult = useSelector(searchSelector);
     const mediaTypes = useSelector(mediaTypesSelector);
 	const mediaFormats = useSelector(mediaFormatsSelector);
 	const mediaStatuses = useSelector(mediaStatusesSelector);
@@ -26,131 +25,133 @@ const SearchPage = () => {
 
 	const [nameSearch, setNameSearch] = useState("");
 	const [idSearch, setIdSearch] = useState("");
-	const [useDateSearchRange, setUsedDateSearchRange] = useState("");
-	const [releaseDateSearchRange, setReleaseDateSearchRange] = useState("");
-	const [typeFilter, setTypeFilter] = useState(NOT_SELECTED_ID);
-	const [formatFilter, setFormatFilter] = useState(NOT_SELECTED_ID);
-	const [statusFilter, setStatusFilter] = useState(NOT_SELECTED_ID);
+	const [useDateSearchRange, setUsedDateSearchRange] = useState(["",""]);
+	const [releaseDateSearchRange, setReleaseDateSearchRange] = useState(["",""]);
+	const [typeFilter, setTypeFilter] = useState(NOT_SELECTED_TEXT);
+	const [formatFilter, setFormatFilter] = useState(NOT_SELECTED_TEXT);
+	const [statusFilter, setStatusFilter] = useState(NOT_SELECTED_TEXT);
 
 	const [nameUpdate, setNameUpdate] = useState("");
 	const [useDateUpdate, setUseDateUpdate] = useState("");
 	const [releaseDateUpdate, setReleaseDateUpdate] = useState("");
-	const [typeUpdate, setTypeUpdate] = useState(NOT_SELECTED_ID);
-	const [formatUpdate, setFormatUpdate] = useState(NOT_SELECTED_ID);
-	const [statusUpdate, setStatusUpdate] = useState(NOT_SELECTED_ID);
+	const [typeUpdate, setTypeUpdate] = useState(NOT_SELECTED_TEXT);
+	const [formatUpdate, setFormatUpdate] = useState(NOT_SELECTED_TEXT);
+	const [statusUpdate, setStatusUpdate] = useState(NOT_SELECTED_TEXT);
 
 	const [selectedRows, setSelectedRows] = useState([]); 
 	const [selectedRowKeys, setSelectedRowKeys] = useState([]); // Attatched to table to determine and read what the user has clicked on
 
+	const returnMomentDateRangeStrings = (start, finish) => {
+		return [start.format('YYYY-MM-DD'), finish.format('YYYY-MM-DD')];
+	};
+
+	const processDateRange = (dateRange) => {
+		if (dateRange[0] === "" || dateRange[1] === ""){
+			return "";
+		} 
+		return returnMomentDateRangeStrings(dateRange[0], dateRange[1]);
+	}
+
+	const valueToColID = (value, options) => {
+		if (value === NOT_SELECTED_TEXT){
+			return NOT_SELECTED_ID;
+		}
+
+		for (const option of options){
+			if (value === option.option){
+				return option.id;
+			}
+		}
+
+		console.log("Failed to map Select option to corresponding ID >> \n", value, "\n", options);
+		return NOT_SELECTED_ID;
+	}
+
 	const searchFormOnFinish = (value) => {
-		deselectButtonOnClick();
-
-		if (useDateSearchRange[0] === "")
-			setUsedDateSearchRange([]);
-		if (releaseDateSearchRange[0] === "")
-			setReleaseDateSearchRange([]);
-
-		dispatch(searchForMedia(idSearch, nameSearch, useDateSearchRange, releaseDateSearchRange, typeFilter, formatFilter, statusFilter, exactNameSearch));
+		dispatch(searchForMedia(idSearch, nameSearch, processDateRange(useDateSearchRange), processDateRange(releaseDateSearchRange),
+		valueToColID(typeFilter, mediaTypes), valueToColID(formatFilter, mediaFormats), valueToColID(statusFilter, mediaStatuses), exactNameSearch));
+		deselectRows();
 	}
 
-    const filterTypeOnChange = (value) => {
-		if (value === NOT_SELECTED_TEXT){
-			setTypeFilter(NOT_SELECTED_ID);
-			return;
-		}
+	const clearSelectForm = () => {
+		setNameSearch("");
+		setIdSearch("");
+		setUsedDateSearchRange(["",""]);
+		setReleaseDateSearchRange(["",""]);
+		// setExactNameSearch(false);
+		// setTypeFilter(null);
+		// setFormatFilter(null);
+		// setStatusFilter(null);
 
-		for (const option of mediaTypes){
-			if (value === option.type){
-				setTypeFilter(option.type_id);
-				return;
-			}
-		}
-    }
-
-	const filterFormatOnChange = (value) => {
-		if (value === NOT_SELECTED_TEXT){
-			setFormatFilter(NOT_SELECTED_ID);
-			return;
-		}
-
-		for (const option of mediaFormats){
-			if (value === option.format){
-				setFormatFilter(option.format_id);
-				return;
-			}
-		}
-    }
-
-	const filterStatusOnChange = (value) => {
-		if (value === NOT_SELECTED_TEXT){
-			setStatusFilter(NOT_SELECTED_ID);
-			return;
-		}
-
-		for (const option of mediaStatuses){
-			if (value === option.status){
-				setStatusFilter(option.status_id);
-				return;
-			}
-		}
+		console.log(typeFilter, formatFilter, statusFilter)
 	}
 
-	const renderSearchOptions = () => {
+	const renderSearchForm = () => {
         var typeOptions = mediaTypes.map(function(obj, index){
-            return <Option key={ obj.type }>{ obj.type }</Option>;
+            return <Option key={ obj.option }>{ obj.option }</Option>;
         });
 
 		var formatOptions = mediaFormats.map(function(obj, index){
-            return <Option key={ obj.format }>{ obj.format }</Option>;
+            return <Option key={ obj.option }>{ obj.option }</Option>;
         });
 
 		var statusOptions = mediaStatuses.map(function(obj, index){
-            return <Option key={ obj.status }>{ obj.status }</Option>;
+            return <Option key={ obj.option }>{ obj.option }</Option>;
         });
 
         return (
-			<div>
-				<Form.Item label='Search by ID:' name='id' onInput={(e)=>{setIdSearch(e.target.value)}}>
-					<Input  type="number"  />
+			<Form onFinish={searchFormOnFinish}>
+				<Form.Item label='Search by ID:'  >
+					<Input type="number" name='id' value={idSearch} onInput={(e)=>{setIdSearch(e.target.value)}} />
 				</Form.Item>
 
-				<Form.Item label="Search by Name" name='name' onInput={(e)=>{setNameSearch(e.target.value)}}>
-					<Input  />
+				<Form.Item label="Search by Name">
+					<Input name='nameSearch' value={nameSearch} onInput={(e)=>{setNameSearch(e.target.value)}} />
 				</Form.Item>
 
 				<Form.Item>
-					<Checkbox onChange={(e) => {setExactNameSearch(e.target.checked)}}>Find Exact Name</Checkbox>
+					<Checkbox  onChange={(e) => {setExactNameSearch(e.target.checked)}}>Find Exact Name</Checkbox>
 				</Form.Item>
 
 				<label>Use Date</label>
 				<Form.Item>
-					<RangePicker onChange={(date, dateString) => {setUsedDateSearchRange([dateString[0], dateString[1]])}}/>
+					<RangePicker value={useDateSearchRange !== "" ? useDateSearchRange : ""} onChange={(dateRange) => {setUsedDateSearchRange(dateRange)}}/>
 				</Form.Item>
 
 				<label>Release Date</label>
 				<Form.Item>
-					<RangePicker onChange={(date, dateString) => {setReleaseDateSearchRange([dateString[0], dateString[1]])}}/>
+					<RangePicker value={releaseDateSearchRange !== "" ? releaseDateSearchRange : ""} onChange={(dateRange) => {setReleaseDateSearchRange(dateRange)}}/>
 				</Form.Item>
 
 				<Form.Item label='Filter by Type' name='typeFilter'>
-                    <Select defaultValue={NOT_SELECTED_TEXT} style={{ width: 120 }} onChange={filterTypeOnChange}>
+                    <Select defaultValue={typeFilter} value={typeFilter} style={{ width: 120 }} onChange={(value) => {setTypeFilter(value)}}>
 						<Option key={NOT_SELECTED_TEXT}>{NOT_SELECTED_TEXT}</Option>
                         { typeOptions }
                     </Select>
 				</Form.Item>
 				<Form.Item label='Filter by Format' name='formatFilter'>
-                    <Select defaultValue={NOT_SELECTED_TEXT} style={{ width: 120 }} onChange={filterFormatOnChange}>
+                    <Select defaultValue={NOT_SELECTED_TEXT} value={formatFilter} style={{ width: 120 }} onChange={(value) => {setFormatFilter(value)}}>
 						<Option key={NOT_SELECTED_TEXT}>{NOT_SELECTED_TEXT}</Option>
                         { formatOptions }
                     </Select>
 				</Form.Item>
 				<Form.Item label='Filter by Status' name='statusFilter'>
-                    <Select defaultValue={NOT_SELECTED_TEXT} style={{ width: 120 }} onChange={filterStatusOnChange}>
+                    <Select defaultValue={NOT_SELECTED_TEXT} value={statusFilter}  style={{ width: 120 }} onChange={(value) => {setStatusFilter(value)}}>
 						<Option key={NOT_SELECTED_TEXT}>{NOT_SELECTED_TEXT}</Option>
                         { statusOptions }
                     </Select>
 				</Form.Item>
-			</div>
+				<Form.Item>
+					<Button onClick={clearSelectForm}>
+						Clear Search Options
+					</Button>
+				</Form.Item>
+				<Form.Item>
+					<Button type='primary' htmlType='submit'>
+						Search
+					</Button>
+				</Form.Item>
+			</Form>
 		);
     }
 
@@ -161,15 +162,6 @@ const SearchPage = () => {
 						{buttonText}
 					</Button>
 				</Form.Item>
-		);
-	}
-
-	const renderSearchForm = () => {
-		return(
-			<Form onFinish={searchFormOnFinish}>
-					{renderSearchOptions()}
-					{renderFormSubmitButton("Search")}
-			</Form>
 		);
 	}
 
@@ -241,15 +233,15 @@ const SearchPage = () => {
 
 	const renderUpdateOptions = () => {
 		var typeOptions = mediaTypes.map(function(obj, index){
-            return <Option key={ obj.type }>{ obj.type }</Option>;
+            return <Option key={ obj.option }>{ obj.option }</Option>;
         });
 
 		var formatOptions = mediaFormats.map(function(obj, index){
-            return <Option key={ obj.format }>{ obj.format }</Option>;
+            return <Option key={ obj.option }>{ obj.option }</Option>;
         });
 
 		var statusOptions = mediaStatuses.map(function(obj, index){
-            return <Option key={ obj.status }>{ obj.status }</Option>;
+            return <Option key={ obj.option }>{ obj.option }</Option>;
         });
 
         return (
@@ -329,13 +321,13 @@ const SearchPage = () => {
 		);
 	}
 
-	const deselectButtonOnClick = () =>{
+	const deselectRows = () =>{
 		setSelectedRowKeys([]);
 		setSelectedRows([]);
 	}
 
 	const renderSearchTable = () => {
-		let dataSource = search.data;
+		let dataSource = searchResult.data;
 		let columns = [
 			{ title: 'ID', dataIndex: 'id' },
 			{ title: 'Name', dataIndex: 'name' },
@@ -347,7 +339,7 @@ const SearchPage = () => {
 		];
 		return (
 		<div>
-			<Button onClick={deselectButtonOnClick}>Deselect All</Button>
+			<Button onClick={deselectRows}>Deselect All</Button>
 			<Table dataSource={dataSource} columns={columns} rowSelection={rowSelection} rowKey={record =>record.id}/>
 		</div>
 		);
