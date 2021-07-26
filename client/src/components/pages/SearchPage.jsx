@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 import React, { useEffect, useState } from 'react';
 import { Form, Input, Button, Table, Select, Checkbox, DatePicker } from 'antd';
-import { searchForMedia, updateMedia, deleteMedia, getAllMediaTypes, getAllMediaFormats, getAllMediaStatuses } from '../../actions/actions';
+import { searchMedia, updateMedia, deleteMedia, getAllMediaTypes, getAllMediaFormats, getAllMediaStatuses } from '../../actions/actions';
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
@@ -66,7 +66,7 @@ const SearchPage = () => {
 		let statusFilter = valueToColID(searchForm.getFieldValue("statusFilter"), mediaStatuses);
 		let exactNameSearch = searchForm.getFieldValue("exactNameSearch");
 
-		dispatch(searchForMedia(id, name, useDateRange, releaseDateRange, typeFilter,
+		dispatch(searchMedia(id, name, useDateRange, releaseDateRange, typeFilter,
 		  formatFilter, statusFilter, exactNameSearch));
 	}
 

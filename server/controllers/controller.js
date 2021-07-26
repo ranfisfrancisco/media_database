@@ -10,6 +10,19 @@ module.exports.home = async (req, res) => {
 	res.send("Server")
 }
 
+/*
+Function for creating new media item.
+EXPECTS: req body to have 
+string: name
+int: type_id
+Will return error without these values.
+
+OPTIONAL: req body can also include:
+int: format_id
+int: status_id
+date (as string): use_date
+date (as string): release_date
+*/
 module.exports.createMediaItem = async (req, res) => {
 	if(!req.body.name )
 		return res.status(400).json({ message: 'Input error: did not provide name of new item' });
@@ -65,6 +78,25 @@ module.exports.createMediaItem = async (req, res) => {
 	});
 }
 
+
+/*
+Function for searching media item table.
+EXPECTS: No requirements for query
+
+OPTIONAL: req.query can include:
+int: id
+string: name
+int: type_id
+int: format_id
+int: status_id
+date (as string): use_date
+date (as string): release_date
+bool: exact_name_search (determines whether inputted name should match exactly)
+
+Returns JSON object with:
+message: string with success or failure description
+resut: array of objects each representing a row in the array
+*/
 module.exports.searchMediaItem = async (req, res) => {
 	let filters = 
 	[
@@ -123,6 +155,21 @@ module.exports.searchMediaItem = async (req, res) => {
 	});
 }
 
+/*
+Function for updating media item table.
+EXPECTS: req.body to have
+int[]: id_list (List of ID's to be modified)
+At least one optional argument.
+Will return error otherwise.
+
+OPTIONAL: req.query can include:
+string: name (UNLESS id_list contains more than 1 ID)
+int: type_id
+int: format_id
+int: status_id
+date (as string): use_date
+date (as string): release_date
+*/
 module.exports.updateMediaItem = async (req, res) => {
 	let filters = 
 	[{col: "name", val: (req.body.name) ? req.body.name.trim() : null},
@@ -192,14 +239,18 @@ module.exports.updateMediaItem = async (req, res) => {
 	});
 }
 
+/*
+Function for deleting an item from media item table.
+EXPECTS: req.body to have
+int[]: id_list (List of ID's to be deleted)
+Will return error otherwise
+*/
 module.exports.deleteMediaItem = async (req, res) => {
 	let idList = (req.body.idList) ? req.body.idList : [];
 
-	console.log(idList)
 	if (idList.length < 1){
 		return res.status(400).json({ message: 'Input error: did not provide list of ID to delete' });
 	}
-	console.log(idList)
 
 	let idClause = '(';
 	let idCount = 0;

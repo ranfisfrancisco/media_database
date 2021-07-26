@@ -2,7 +2,7 @@ import { message } from 'antd';
 
 import api from './api/api';
 
-export const searchForMedia = (id, name, useDateRange, releaseDateRange, typeID, formatID, statusID, exactNameSearch) => async (dispatch) => {
+export const searchMedia = (id, name, useDateRange, releaseDateRange, typeID, formatID, statusID, exactNameSearch) => async (dispatch) => {
 	dispatch({ type: 'GET_ALL_MEDIA_REQUEST' });
 	let response;
 	try {
@@ -46,7 +46,6 @@ export const updateMedia = (idList, name, useDate, releaseDate, typeID, formatID
 		});
 	} catch(error) {
 		dispatch({ type: 'UPDATE_MEDIA_FAILED' });
-		console.log(error)
 		return message.error('Query Error 1!');
 	}
 	if(response.data.message === 'UPDATE_MEDIA_SUCCESS') {
@@ -67,7 +66,6 @@ export const deleteMedia = (idList) => async (dispatch) => {
 		});
 	} catch(error) {
 		dispatch({ type: 'DELETE_MEDIA_FAILED' });
-		console.log(error.message);
 		return message.error(error.message);
 	}
 	if(response.data.message === 'DELETE_MEDIA_SUCCESS') {
