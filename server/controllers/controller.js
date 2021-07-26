@@ -10,7 +10,62 @@ module.exports.home = async (req, res) => {
 	res.send("Server")
 }
 
-module.exports.searchMediaItems = async (req, res) => {
+module.exports.createMediaItem = async (req, res) => {
+	if(!req.body.name )
+		return res.status(400).json({ message: 'Input error: did not provide name of new item' });
+	
+	if(!req.body.type_ID)
+		return res.status(400).json({ message: 'Input error: did not provide type ID of new item' });
+	
+
+	let colValues = 
+	[{col: "name", val: (req.body.name) ? req.body.name.trim() : null},
+	{col: "type_ID", val: req.body.type_ID || null},
+	{col: "format_ID", val: req.body.format_ID || "DEFAULT"},
+	{col: "status_ID", val: req.body.status_ID || "DEFAULT"},
+	{col: "use_date", val: req.body.use_date || "DEFAULT"},
+	{col: "release_date", val: req.body.release_date || "DEFAULT"},
+	];
+
+	let colClause = "";
+	let valueClause = "";
+	let statementCount = 0;
+
+	for (var cv of colValues){
+		if (cv.val !== null){
+			if(statementCount > 0){
+				colClause += ", ";
+				valueClause += ", ";
+			}
+
+			colClause += `${cv.col}`;
+
+			if (cv.col === "name"){
+				valueClause += `"${cv.val}"`;
+			} else {
+				valueClause += `${cv.val}`;
+			}
+			
+			statementCount++;
+		}
+	}
+
+	if (statementCount === 0){
+		return res.status(400).json({ message: 'Input error: provided no columns to update' });
+	}
+
+	let query = `INSERT INTO media_items
+	(${colClause})
+	VALUES (${valueClause});
+	`; 
+
+	conn.query(query, (err, result) => {
+		if(err) return res.status(400).json({ message: 'Query error' });
+		res.send({ message:"CREATE_MEDIA_SUCCESS", result });
+	});
+}
+
+module.exports.searchMediaItem = async (req, res) => {
 	let filters = 
 	[
 		{col: "id", val: req.query.id || null},
@@ -68,14 +123,14 @@ module.exports.searchMediaItems = async (req, res) => {
 	});
 }
 
-module.exports.updateMediaItems = async (req, res) => {
+module.exports.updateMediaItem = async (req, res) => {
 	let filters = 
 	[{col: "name", val: (req.body.name) ? req.body.name.trim() : null},
 	{col: "type_ID", val: req.body.type_ID || null},
 	{col: "format_ID", val: req.body.format_ID || null},
 	{col: "status_ID", val: req.body.status_ID || null},
-	{col: "use_date", val: req.body.use_date},
-	{col: "release_date", val: req.body.release_date},
+	{col: "use_date", val: req.body.use_date || null},
+	{col: "release_date", val: req.body.release_date || null},
 	];
 
 	let idList = (req.body.idList) ? req.body.idList : [];
@@ -137,7 +192,7 @@ module.exports.updateMediaItems = async (req, res) => {
 	});
 }
 
-module.exports.deleteMediaItems = async (req, res) => {
+module.exports.deleteMediaItem = async (req, res) => {
 	let idList = (req.body.idList) ? req.body.idList : [];
 
 	console.log(idList)
