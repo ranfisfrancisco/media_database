@@ -282,13 +282,14 @@ const SearchPage = () => {
 	const renderSearchTable = () => {
 		let dataSource = searchResult.data;
 		let columns = [
-			{ title: 'ID', dataIndex: 'id' },
-			{ title: 'Name', dataIndex: 'name' },
-			{ title: 'Release Date', dataIndex: 'release_date' },
-			{ title: 'Use Date', dataIndex: 'use_date' },
-            { title: 'Type', dataIndex: 'type' },
-            { title: 'Format', dataIndex: 'format' },
-            { title: 'Status', dataIndex: 'status' },
+			{ title: 'ID', dataIndex: 'id', sorter: {compare: (a,b) => a.id - b.id} },
+			{ title: 'Name', dataIndex: 'name', sorter: {compare: (a,b) => a.name > b.name} },
+			{ title: 'Release Date', dataIndex: 'release_date', sorter: {compare: (a,b) => new Date(a.release_date) - new Date(b.release_date)} },
+			{ title: 'Use Date', dataIndex: 'use_date', sorter: {compare: (a,b) => new Date(a.use_date) - new Date(b.use_date)} },
+            { title: 'Type', dataIndex: 'type', sorter: {compare: (a,b) => a.type > b.type} },
+            { title: 'Format', dataIndex: 'format', sorter: {compare: (a,b) => a.format > b.format} },
+            { title: 'Status', dataIndex: 'status', sorter: {compare: (a,b) => a.status > b.status} },
+			{ title: 'Date Entered Into DB', dataIndex: 'created_date', sorter: {compare: (a,b) => new Date(a.created_date) - new Date(b.created_date)} },
 		];
 		return (
 		<div>

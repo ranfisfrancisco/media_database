@@ -1,5 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { Form, Input, Button, Table } from 'antd';
+import React, { useEffect, useState } from 'react';
 
 import { searchForMedia } from '../../actions/actions';
 
@@ -37,6 +38,9 @@ const CreatePage = () => {
 		return <Table dataSource={dataSource} columns={columns} />;
 	}
 
+	useEffect(() => {
+
+    }, []);
 
 	return (
 		<div className='user-content-wrapper'>

@@ -55,7 +55,7 @@ module.exports.searchMediaItems = async (req, res) => {
 	if (statementCount === 0)
 		whereClause = "";
 
-	let query = `SELECT id, name, release_date, use_date, type, format, status FROM media_items
+	let query = `SELECT id, name, release_date, use_date, type, format, status, created_date FROM media_items
 	NATURAL JOIN media_types
 	NATURAL JOIN media_formats
 	NATURAL JOIN media_statuses 
