@@ -2,6 +2,33 @@ import { message } from 'antd';
 
 import api from './api/api';
 
+export const createMedia = (name, useDate, releaseDate, typeID, formatID, statusID) => async (dispatch) => {
+	dispatch({ type: 'CREATE_MEDIA_REQUEST' });
+	let response;
+
+	try {
+		response = await api.put('/media', {
+			name: (typeof(name) === 'string') ? name.trim() : name,
+			use_date: (typeof(useDate) === 'string' && useDate.trim() !== "") ? useDate: null,
+			release_date: (typeof(releaseDate) === 'string' && releaseDate.trim() !== "") ? releaseDate: null,
+			type_id: (typeID !== -1) ? typeID : null,
+			format_id: (formatID !== -1) ? formatID : null,
+			status_id: (statusID !== -1) ? statusID : null
+		});
+	} catch(error) {
+		dispatch({ type: 'CREATE_MEDIA_FAILED' });
+		return message.error('Query Error 1!');
+	}
+
+	if(response.data.message === 'CREATE_MEDIA_SUCCESS') {
+		dispatch({ type: 'Update_MEDIA_SUCCESS', payload: response.data.result });
+		return message.success('Created Item!');
+	}
+
+	dispatch({ type: 'CREATE_MEDIA_FAILED' });
+	return message.error('Query Error 2!');
+}
+
 export const searchMedia = (id, name, useDateRange, releaseDateRange, typeID, formatID, statusID, exactNameSearch) => async (dispatch) => {
 	dispatch({ type: 'GET_ALL_MEDIA_REQUEST' });
 	let response;
