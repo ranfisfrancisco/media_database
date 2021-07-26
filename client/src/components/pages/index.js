@@ -13,7 +13,7 @@ import {
 
 import LogoutButton from '../LogoutButton';
 
-import SearchPage from './SearchPage';
+import ManageMediaPage from './ManageMediaPage';
 import CreatePage from './CreatePage';
 
 //const readerUsernameSelector = (state) => state.page.reader.pname;
@@ -27,9 +27,7 @@ const SelectPage = () => {
 
 	const renderContent = () => {
 		if(visibleContent === 'search') {
-			return <SearchPage />;
-		} else if (visibleContent === 'create') {
-			return <CreatePage />;
+			return <ManageMediaPage />;
 		} {
 			return <div>PAGE NOT FOUND</div>;
 		}
@@ -37,11 +35,8 @@ const SelectPage = () => {
 
 	const renderMenu = () => (
 		<Menu mode='horizontal' onClick={handleClick} selectedKeys={[visibleContent]} theme='dark'>
-			<Menu.Item key='create' icon={<SearchOutlined />}>
-				Create Items
-			</Menu.Item>
 			<Menu.Item key='search' icon={<SearchOutlined />}>
-				Search & Modify Items
+				Manage Media
 			</Menu.Item>
 		</Menu>
 	);

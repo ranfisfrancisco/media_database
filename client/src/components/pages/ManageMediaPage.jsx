@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
 import React, { useEffect, useState } from 'react';
-import { Form, Input, Button, Table, Select, Checkbox, DatePicker } from 'antd';
+import { Form, Input, Button, Table, Select, Checkbox, DatePicker, Menu } from 'antd';
 import { searchMedia, updateMedia, deleteMedia, getAllMediaTypes, getAllMediaFormats, getAllMediaStatuses } from '../../actions/actions';
 
 const { Option } = Select;
@@ -11,7 +11,8 @@ const mediaTypesSelector = (state) => state.mediaTypes.data;
 const mediaFormatsSelector = (state) => state.mediaFormats.data;
 const mediaStatusesSelector = (state) => state.mediaStatuses.data;
 
-const SearchPage = () => {
+const ManageMediaPage = () => {
+	const [visibleContent, setVisibleContent] = useState('search');
 
 	const dispatch = useDispatch();
 	const searchResult = useSelector(searchSelector);
@@ -54,6 +55,10 @@ const SearchPage = () => {
 
 		console.log("Failed to map Select option to corresponding ID >> \n", value, "\n", options);
 		return NOT_SELECTED_ID;
+	}
+
+	const renderCreateForm = () => {
+
 	}
 
 	const submitSearch = () => {
@@ -99,16 +104,14 @@ const SearchPage = () => {
 				</Form.Item>
 
 				<Form.Item name='exactNameSearch' valuePropName='checked'>
-					<Checkbox >Find Exact Name</Checkbox>
+					<Checkbox>Find Exact Name</Checkbox>
 				</Form.Item>
 
-				<label>Use Date</label>
-				<Form.Item name='useDateRange'>
+				<Form.Item label="Use Date" name='useDateRange'>
 					<RangePicker/>
 				</Form.Item>
 
-				<label>Release Date</label>
-				<Form.Item name='releaseDateRange'>
+				<Form.Item label="Release Date" name='releaseDateRange'>
 					<RangePicker/>
 				</Form.Item>
 
@@ -130,11 +133,13 @@ const SearchPage = () => {
                         { statusOptions }
                     </Select>
 				</Form.Item>
+
 				<Form.Item>
 					<Button onClick={() => {searchForm.resetFields()}}>
 						Clear Search Form
 					</Button>
 				</Form.Item>
+
 				<Form.Item>
 					<Button type='primary' htmlType='submit'>
 						Search
@@ -145,12 +150,12 @@ const SearchPage = () => {
     }
 
 	const updateFormOnFinish = () => {
-		let name = updateForm.getFieldValue("name")
-		let useDate = (updateForm.getFieldValue("useDate")) ? updateForm.getFieldValue("useDate").format('YYYY-MM-DD') : null
-		let releaseDate = (updateForm.getFieldValue("releaseDate")) ? updateForm.getFieldValue("releaseDate").format('YYYY-MM-DD') : null
-		let typeFilter =  valueToColID(updateForm.getFieldValue("typeFilter"), mediaTypes);
-		let formatFilter = valueToColID(updateForm.getFieldValue("formatFilter"), mediaFormats);
-		let statusFilter = valueToColID(updateForm.getFieldValue("statusFilter"), mediaStatuses);
+		let name = updateForm.getFieldValue("updateName")
+		let useDate = (updateForm.getFieldValue("updateUseDate")) ? updateForm.getFieldValue("updateUseDate").format('YYYY-MM-DD') : null
+		let releaseDate = (updateForm.getFieldValue("updateReleaseDate")) ? updateForm.getFieldValue("updateReleaseDate").format('YYYY-MM-DD') : null
+		let typeFilter =  valueToColID(updateForm.getFieldValue("updateType"), mediaTypes);
+		let formatFilter = valueToColID(updateForm.getFieldValue("updateFormat"), mediaFormats);
+		let statusFilter = valueToColID(updateForm.getFieldValue("updateStatus"), mediaStatuses);
 	
 		if (selectedRows.length > 1 && name !== ""){
 			alert("You cannot change the names of multiple items to the same name!")
@@ -193,40 +198,45 @@ const SearchPage = () => {
 
         return (
 			<Form form={updateForm} onFinish={updateFormOnFinish} id="update-form" >
-				<Form.Item label="Update Name" name="name">
+				<Form.Item label="Update Name" name="updateName">
 					<Input  />
 				</Form.Item>
-				<label>Update Use Date</label>
-				<Form.Item name="useDate">
+
+				<Form.Item label="Update Use Date" name="updateUseDate">
 					<DatePicker/>
 				</Form.Item>
-				<label>Update Release Date</label>
-				<Form.Item name="releaseDate">
+
+				<Form.Item label="Update Release Date" name="updateReleaseDate">
 					<DatePicker/>
 				</Form.Item>
-				<Form.Item label='Change Type' name='typeFilter'>
+
+				<Form.Item label='Change Type' name='updateType'>
                     <Select defaultValue={NOT_SELECTED_TEXT} style={{ width: 120 }}>
 						<Option key={NOT_SELECTED_TEXT}>No Change</Option>
                         { typeOptions }
                     </Select>
 				</Form.Item>
-				<Form.Item label='Change Format' name='formatFilter'>
+
+				<Form.Item label='Change Format' name='updateFormat'>
 					<Select defaultValue={NOT_SELECTED_TEXT} style={{ width: 120 }}>
 						<Option key={NOT_SELECTED_TEXT}>No Change</Option>
                         { formatOptions }
                     </Select>
 				</Form.Item>
-				<Form.Item label='Change Status' name='statusFilter'>
+
+				<Form.Item label='Change Status' name='updateFilter'>
 					<Select defaultValue={NOT_SELECTED_TEXT} style={{ width: 120 }}>
 						<Option key={NOT_SELECTED_TEXT}>No Change</Option>
                         { statusOptions }
                     </Select>
 				</Form.Item>
+
 				<Form.Item>
 					<Button onClick={() => {updateForm.resetFields()}}>
 						Clear Update Form
 					</Button>
 				</Form.Item>
+
 				<Form.Item>
 					<Button type='primary' htmlType='submit'>
 						Update
@@ -306,12 +316,45 @@ const SearchPage = () => {
 		dispatch(getAllMediaStatuses());
     }, []);
 
+	const handleMenuClick = (e) => setVisibleContent(e.key);
+
+	const renderMenu = () => (
+		<Menu mode='horizontal' onClick={handleMenuClick} selectedKeys={[visibleContent]} theme='dark'>
+			<Menu.Item key='create'>
+				Create
+			</Menu.Item>
+			<Menu.Item key='search'>
+				Search
+			</Menu.Item>
+			<Menu.Item key='update'>
+				Update
+			</Menu.Item>
+			<Menu.Item key='delete'>
+				Delete
+			</Menu.Item>
+		</Menu>
+	);
+
+	const renderContent = () => {
+		if (visibleContent === 'create'){
+			return renderCreateForm();
+		}
+		else if(visibleContent === 'search') {
+			return renderSearchForm()
+		} else if (visibleContent === 'update') {
+			return renderUpdateForm()
+		} else if (visibleContent === 'delete') {
+			return renderDeleteButton();
+		} else {
+			return <div>PAGE NOT FOUND</div>;
+		}
+	}
+
 	return (
 		<div className='search-content-wrapper'>
 			<div className='entry-form'>
-				{renderSearchForm()}
-				{renderUpdateForm()}
-				{renderDeleteButton()}
+				{renderMenu()}
+				{renderContent()}
 			</div>
 			<div className='result-table'>
 				{renderSearchTable()}
@@ -320,4 +363,4 @@ const SearchPage = () => {
 	);
 }
 
-export default SearchPage;
+export default ManageMediaPage;

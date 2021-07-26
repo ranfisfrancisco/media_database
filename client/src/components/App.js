@@ -7,6 +7,8 @@ import SelectPage from './pages';
 
 import './css/App.css';
 
+//const pageSelector = (state) => state.page;
+
 // add form validation rules later
 const App = () => {
 

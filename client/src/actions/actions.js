@@ -60,6 +60,7 @@ export const searchMedia = (id, name, useDateRange, releaseDateRange, typeID, fo
 export const updateMedia = (idList, name, useDate, releaseDate, typeID, formatID, statusID) => async (dispatch) => {
 	dispatch({ type: 'UPDATE_MEDIA_REQUEST' });
 	let response;
+	console.log(idList, name, useDate, releaseDate, typeID, formatID, statusID)
 
 	try {
 		response = await api.post('/media', {
