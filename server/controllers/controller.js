@@ -24,18 +24,18 @@ date (as string): use_date
 date (as string): release_date
 */
 module.exports.createMediaItem = async (req, res) => {
-	if(!req.body.name )
+	if(!req.body.name)
 		return res.status(400).json({ message: 'Input error: did not provide name of new item' });
 	
-	if(!req.body.type_ID)
-		return res.status(400).json({ message: 'Input error: did not provide type ID of new item' });
+	if(!req.body.type_id)
+		return res.status(400).json({ message: 'Input error: did not provide type_id of new item' });
 	
 
 	let colValues = 
 	[{col: "name", val: (req.body.name) ? req.body.name.trim() : null},
-	{col: "type_ID", val: req.body.type_ID || null},
-	{col: "format_ID", val: req.body.format_ID || "DEFAULT"},
-	{col: "status_ID", val: req.body.status_ID || "DEFAULT"},
+	{col: "type_id", val: req.body.type_id || null},
+	{col: "format_id", val: req.body.format_id || "DEFAULT"},
+	{col: "status_id", val: req.body.status_id || "DEFAULT"},
 	{col: "use_date", val: req.body.use_date || "DEFAULT"},
 	{col: "release_date", val: req.body.release_date || "DEFAULT"},
 	];
@@ -102,9 +102,9 @@ module.exports.searchMediaItem = async (req, res) => {
 	[
 		{col: "id", val: req.query.id || null},
 		{col: "name", val: req.query.name || null},
-		{col: "type_ID", val: req.query.type_ID || null},
-		{col: "format_ID", val: req.query.format_ID || null},
-		{col: "status_ID", val: req.query.status_ID || null},
+		{col: "type_id", val: req.query.type_id || null},
+		{col: "format_id", val: req.query.format_id || null},
+		{col: "status_id", val: req.query.status_id || null},
 		{col: "use_date", val: processDateRange(req.query.use_date_range)},
 		{col: "release_date", val: processDateRange(req.query.release_date_range)
 	}];
@@ -173,9 +173,9 @@ date (as string): release_date
 module.exports.updateMediaItem = async (req, res) => {
 	let filters = 
 	[{col: "name", val: (req.body.name) ? req.body.name.trim() : null},
-	{col: "type_ID", val: req.body.type_ID || null},
-	{col: "format_ID", val: req.body.format_ID || null},
-	{col: "status_ID", val: req.body.status_ID || null},
+	{col: "type_id", val: req.body.type_id || null},
+	{col: "format_id", val: req.body.format_id || null},
+	{col: "status_id", val: req.body.status_id || null},
 	{col: "use_date", val: req.body.use_date || null},
 	{col: "release_date", val: req.body.release_date || null},
 	];

@@ -12,9 +12,9 @@ export const searchMedia = (id, name, useDateRange, releaseDateRange, typeID, fo
 				name: name,
 				use_date_range: useDateRange,
 				release_date_range: releaseDateRange,
-				type_ID: (typeID !== -1) ? typeID : null,
-				format_ID: (formatID !== -1) ? formatID : null,
-				status_ID: (statusID !== -1) ? statusID : null,
+				type_id: (typeID !== -1) ? typeID : null,
+				format_id: (formatID !== -1) ? formatID : null,
+				status_id: (statusID !== -1) ? statusID : null,
 				exact_name_search: exactNameSearch
 			}
 		});
@@ -40,9 +40,9 @@ export const updateMedia = (idList, name, useDate, releaseDate, typeID, formatID
 			name: (typeof(name) === 'string') ? name.trim() : name,
 			use_date: (typeof(useDate) === 'string' && useDate.trim() !== "") ? useDate: null,
 			release_date: (typeof(releaseDate) === 'string' && releaseDate.trim() !== "") ? releaseDate: null,
-			type_ID: (typeID !== -1) ? typeID : null,
-			format_ID: (formatID !== -1) ? formatID : null,
-			status_ID: (statusID !== -1) ? statusID : null
+			type_id: (typeID !== -1) ? typeID : null,
+			format_id: (formatID !== -1) ? formatID : null,
+			status_id: (statusID !== -1) ? statusID : null
 		});
 	} catch(error) {
 		dispatch({ type: 'UPDATE_MEDIA_FAILED' });
@@ -62,7 +62,7 @@ export const deleteMedia = (idList) => async (dispatch) => {
 
 	try {
 		response = await api.delete('/media', {data: {
-			idList: idList}
+			id_list: idList}
 		});
 	} catch(error) {
 		dispatch({ type: 'DELETE_MEDIA_FAILED' });
