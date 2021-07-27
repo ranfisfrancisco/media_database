@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 //import { adminLogin } from '../actions/admin';
 
 import SelectPage from './pages';
+import LoginPage from './pages/LoginPage';
 
 import './css/App.css';
 
@@ -36,7 +37,7 @@ const App = () => {
 
 	return (
 	<div className='app-wrapper'>
-	 		<SelectPage/>
+	 		<LoginPage/>
 	 	</div>
 	);
 };

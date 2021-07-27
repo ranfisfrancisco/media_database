@@ -14,7 +14,7 @@ import {
 import LogoutButton from '../LogoutButton';
 
 import ManageMediaPage from './ManageMediaPage';
-import CreatePage from './CreatePage';
+import LoginPage from './LoginPage';
 
 //const readerUsernameSelector = (state) => state.page.reader.pname;
 
