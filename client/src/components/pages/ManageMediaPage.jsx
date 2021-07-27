@@ -29,7 +29,7 @@ const ManageMediaPage = () => {
 	const [selectedRows, setSelectedRows] = useState([]); 
 	const [selectedRowKeys, setSelectedRowKeys] = useState([]); // Attatched to table to determine and read what the user has clicked on
 
-	const REFRESH_WAIT_TIME = 1000/2;
+	const REFRESH_WAIT_TIME = 1000;
 
 	const returnMomentDateRangeStrings = (start, finish) => {
 		return [start.format('YYYY-MM-DD'), finish.format('YYYY-MM-DD')];
@@ -272,6 +272,7 @@ const ManageMediaPage = () => {
 		}
 
 		dispatch(updateMedia(selectedIDList, name, useDate, releaseDate, typeFilter, formatFilter, statusFilter));
+		clearUpdateForm();
 		setTimeout(function () {
 			submitSearch();
 		}, REFRESH_WAIT_TIME);
