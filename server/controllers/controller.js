@@ -24,10 +24,10 @@ date (as string): use_date
 date (as string): release_date
 */
 module.exports.createMediaItem = async (req, res) => {
-	if(!req.body.name)
+	if (!req.body.name)
 		return res.status(400).json({ message: 'Input error: did not provide name of new item' });
 	
-	if(!req.body.type_id)
+	if (!req.body.type_id)
 		return res.status(400).json({ message: 'Input error: did not provide type_id of new item' });
 	
 
@@ -71,6 +71,8 @@ module.exports.createMediaItem = async (req, res) => {
 	(${colClause})
 	VALUES (${valueClause});
 	`; 
+
+	console.log(query)
 
 	conn.query(query, (err, result) => {
 		if(err) return res.status(400).json({ message: 'Query error' });

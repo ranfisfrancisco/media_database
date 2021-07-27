@@ -3,6 +3,7 @@ import { message } from 'antd';
 import api from './api/api';
 
 export const createMedia = (name, useDate, releaseDate, typeID, formatID, statusID) => async (dispatch) => {
+	console.log(name, useDate, releaseDate, typeID, formatID, statusID)
 	dispatch({ type: 'CREATE_MEDIA_REQUEST' });
 	let response;
 
@@ -16,6 +17,7 @@ export const createMedia = (name, useDate, releaseDate, typeID, formatID, status
 			status_id: (statusID !== -1) ? statusID : null
 		});
 	} catch(error) {
+		console.log(error.message)
 		dispatch({ type: 'CREATE_MEDIA_FAILED' });
 		return message.error('Query Error 1!');
 	}

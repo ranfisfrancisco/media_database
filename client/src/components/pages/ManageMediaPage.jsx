@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 import React, { useEffect, useState } from 'react';
 import { Form, Input, Button, Table, Select, Checkbox, DatePicker, Menu } from 'antd';
-import { searchMedia, updateMedia, deleteMedia, getAllMediaTypes, getAllMediaFormats, getAllMediaStatuses } from '../../actions/actions';
+import { createMedia, searchMedia, updateMedia, deleteMedia, getAllMediaTypes, getAllMediaFormats, getAllMediaStatuses } from '../../actions/actions';
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
@@ -12,7 +12,11 @@ const mediaFormatsSelector = (state) => state.mediaFormats.data;
 const mediaStatusesSelector = (state) => state.mediaStatuses.data;
 
 const ManageMediaPage = () => {
-	const [visibleContent, setVisibleContent] = useState('search');
+	const [visibleContent, setVisibleContent] = useState('');
+
+	const [searchForm] = Form.useForm();
+	const [createForm] = Form.useForm();
+	const [updateForm] = Form.useForm();
 
 	const dispatch = useDispatch();
 	const searchResult = useSelector(searchSelector);
@@ -22,9 +26,6 @@ const ManageMediaPage = () => {
 
 	const NOT_SELECTED_ID = -1;
 	const NOT_SELECTED_TEXT = "All"
-
-	const [searchForm] = Form.useForm();
-	const [updateForm] = Form.useForm();
 
 	const [selectedRows, setSelectedRows] = useState([]); 
 	const [selectedRowKeys, setSelectedRowKeys] = useState([]); // Attatched to table to determine and read what the user has clicked on
@@ -57,8 +58,79 @@ const ManageMediaPage = () => {
 		return NOT_SELECTED_ID;
 	}
 
-	const renderCreateForm = () => {
+	const createFormOnFinish = () => {
+		let name = createForm.getFieldValue("createName")
+		let useDateRange = createForm.getFieldValue("createUseDate");
+		let releaseDateRange = createForm.getFieldValue("createReleaseDate");
+		let typeFilter =  valueToColID(createForm.getFieldValue("createType"), mediaTypes);
+		let formatFilter = valueToColID(createForm.getFieldValue("createFormat"), mediaFormats);
+		let statusFilter = valueToColID(createForm.getFieldValue("createStatus"), mediaStatuses);
 
+		dispatch(createMedia(name, useDateRange, releaseDateRange, typeFilter,
+		  formatFilter, statusFilter));
+	}
+
+	const renderCreateForm = () => {
+		var typeOptions = mediaTypes.map(function(obj, index){
+            return <Option key={ obj.option }>{ obj.option }</Option>;
+        });
+
+		var formatOptions = mediaFormats.map(function(obj, index){
+            return <Option key={ obj.option }>{ obj.option }</Option>;
+        });
+
+		var statusOptions = mediaStatuses.map(function(obj, index){
+            return <Option key={ obj.option }>{ obj.option }</Option>;
+        });
+
+		return (
+			<Form form={createForm} onFinish={createFormOnFinish} id="create-form" >
+				<Form.Item label="Name" name='createName'>
+					<Input/>
+				</Form.Item>
+
+				<Form.Item label="Use Date" name='createUseDate'>
+					<RangePicker/>
+				</Form.Item>
+
+				<Form.Item label="Release Date" name='createReleaseDate'>
+					<RangePicker/>
+				</Form.Item>
+
+				<Form.Item label='Type' name='createType'>
+                    <Select defaultValue={NOT_SELECTED_TEXT} style={{ width: 120 }}>
+						<Option key={NOT_SELECTED_TEXT}>{NOT_SELECTED_TEXT}</Option>
+                        { typeOptions }
+                    </Select>
+				</Form.Item>
+				
+				<Form.Item label='Format' name='createFormat'>
+					<Select defaultValue={NOT_SELECTED_TEXT} style={{ width: 120 }}>
+						<Option key={NOT_SELECTED_TEXT}>{NOT_SELECTED_TEXT}</Option>
+                        { formatOptions }
+                    </Select>
+				</Form.Item>
+
+				<Form.Item label='Status' name='createStatus'>
+					<Select defaultValue={NOT_SELECTED_TEXT} style={{ width: 120 }}>
+						<Option key={NOT_SELECTED_TEXT}>{NOT_SELECTED_TEXT}</Option>
+                        { statusOptions }
+                    </Select>
+				</Form.Item>
+
+				<Form.Item>
+					<Button onClick={() => {createForm.resetFields()}}>
+						Clear Form
+					</Button>
+				</Form.Item>
+
+				<Form.Item>
+					<Button type='primary' htmlType='submit'>
+						Add
+					</Button>
+				</Form.Item>
+			</Form>
+		);
 	}
 
 	const submitSearch = () => {
@@ -94,7 +166,7 @@ const ManageMediaPage = () => {
         });
 
         return (
-			<Form onFinish={searchFormOnFinish} id="search-form" form={searchForm}>
+			<Form form={searchForm} onFinish={searchFormOnFinish} id="search-form" >
 				<Form.Item label='Search by ID:'  name='id'>
 					<Input type="number"  />
 				</Form.Item>
@@ -345,9 +417,10 @@ const ManageMediaPage = () => {
 			return renderUpdateForm()
 		} else if (visibleContent === 'delete') {
 			return renderDeleteButton();
-		} else {
-			return <div>PAGE NOT FOUND</div>;
 		}
+		
+		return <div>Select an Option</div>;
+		
 	}
 
 	return (
