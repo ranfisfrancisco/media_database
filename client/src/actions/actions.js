@@ -17,7 +17,7 @@ export const createMedia = (name, useDate, releaseDate, typeID, formatID, status
 			status_id: (statusID !== -1) ? statusID : null
 		});
 	} catch(error) {
-		console.log(error.message)
+		console.log(error.message);
 		dispatch({ type: 'CREATE_MEDIA_FAILED' });
 		return message.error('Query Error 1!');
 	}
@@ -62,7 +62,6 @@ export const searchMedia = (id, name, useDateRange, releaseDateRange, typeID, fo
 export const updateMedia = (idList, name, useDate, releaseDate, typeID, formatID, statusID) => async (dispatch) => {
 	dispatch({ type: 'UPDATE_MEDIA_REQUEST' });
 	let response;
-	console.log(idList, name, useDate, releaseDate, typeID, formatID, statusID)
 
 	try {
 		response = await api.post('/media', {

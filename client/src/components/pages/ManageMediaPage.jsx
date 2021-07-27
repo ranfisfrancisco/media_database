@@ -13,10 +13,6 @@ const mediaFormatsSelector = (state) => state.mediaFormats.data;
 const mediaStatusesSelector = (state) => state.mediaStatuses.data;
 
 const ManageMediaPage = () => {
-	const [visibleContent, setVisibleContent] = useState('search');
-
-	//using multiple useForm caused glitches with forms not submitting, updating
-	const [form] = Form.useForm();
 
 	const dispatch = useDispatch();
 	const searchResult = useSelector(searchSelector);
@@ -24,9 +20,13 @@ const ManageMediaPage = () => {
 	const mediaFormats = useSelector(mediaFormatsSelector);
 	const mediaStatuses = useSelector(mediaStatusesSelector);
 
+	//using multiple useForm caused glitches with forms not submitting, updating
+	const [form] = Form.useForm();
+
 	const NOT_SELECTED_ID = -1;
 	const NOT_SELECTED_TEXT = "All"
 
+	const [visibleContent, setVisibleContent] = useState('search');
 	const [selectedRows, setSelectedRows] = useState([]); 
 	const [selectedRowKeys, setSelectedRowKeys] = useState([]); // Attatched to table to determine and read what the user has clicked on
 
@@ -191,11 +191,11 @@ const ManageMediaPage = () => {
 
         return (
 			<Form form={form} onFinish={searchFormOnFinish} id="search-form" >
-				<Form.Item label='Search by ID:'  name='searchID'>
+				<Form.Item label='ID:'  name='searchID'>
 					<Input type="number"  />
 				</Form.Item>
 
-				<Form.Item label="Search by Name" name='searchName'>
+				<Form.Item label="Name" name='searchName'>
 					<Input  />
 				</Form.Item>
 
@@ -211,19 +211,19 @@ const ManageMediaPage = () => {
 					<RangePicker/>
 				</Form.Item>
 
-				<Form.Item label='Filter by Type' name='searchType'>
+				<Form.Item label='Type' name='searchType'>
                     <Select defaultValue={NOT_SELECTED_TEXT} style={{ width: 120 }}>
 						<Option key={NOT_SELECTED_TEXT}>{NOT_SELECTED_TEXT}</Option>
                         { typeOptions }
                     </Select>
 				</Form.Item>
-				<Form.Item label='Filter by Format' name='searchFormat'>
+				<Form.Item label='Format' name='searchFormat'>
 					<Select defaultValue={NOT_SELECTED_TEXT} style={{ width: 120 }}>
 						<Option key={NOT_SELECTED_TEXT}>{NOT_SELECTED_TEXT}</Option>
                         { formatOptions }
                     </Select>
 				</Form.Item>
-				<Form.Item label='Filter by Status' name='searchStatus'>
+				<Form.Item label='Status' name='searchStatus'>
 					<Select defaultValue={NOT_SELECTED_TEXT} style={{ width: 120 }}>
 						<Option key={NOT_SELECTED_TEXT}>{NOT_SELECTED_TEXT}</Option>
                         { statusOptions }
@@ -306,33 +306,33 @@ const ManageMediaPage = () => {
 
         return (
 			<Form  key={1} form={form} onFinish={updateFormOnFinish} id="update-form" >
-				<Form.Item label="Update Name" name="updateName">
+				<Form.Item label="Name" name="updateName">
 					<Input  />
 				</Form.Item>
 
-				<Form.Item label="Update Use Date" name="updateUseDate">
+				<Form.Item label="Use Date" name="updateUseDate">
 					<DatePicker/>
 				</Form.Item>
 
-				<Form.Item label="Update Release Date" name="updateReleaseDate">
+				<Form.Item label="Release Date" name="updateReleaseDate">
 					<DatePicker/>
 				</Form.Item>
 
-				<Form.Item label='Change Type' name='updateType'>
+				<Form.Item label='Type' name='updateType'>
                     <Select defaultValue={NOT_SELECTED_TEXT} style={{ width: 120 }}>
 						<Option key={NOT_SELECTED_TEXT}>No Change</Option>
                         { typeOptions }
                     </Select>
 				</Form.Item>
 
-				<Form.Item label='Change Format' name='updateFormat'>
+				<Form.Item label='Format' name='updateFormat'>
 					<Select defaultValue={NOT_SELECTED_TEXT} style={{ width: 120 }}>
 						<Option key={NOT_SELECTED_TEXT}>No Change</Option>
                         { formatOptions }
                     </Select>
 				</Form.Item>
 
-				<Form.Item label='Change Status' name='updateStatus'>
+				<Form.Item label='Status' name='updateStatus'>
 					<Select defaultValue={NOT_SELECTED_TEXT} style={{ width: 120 }}>
 						<Option key={NOT_SELECTED_TEXT}>No Change</Option>
                         { statusOptions }
