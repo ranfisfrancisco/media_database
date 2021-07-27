@@ -1,8 +1,7 @@
 import React from 'react';
 import { useGoogleLogin } from 'react-google-login';
-require('dotenv').config();
 
-const clientId = process.env.GOOGLE_CLIENT_ID;
+const { REACT_APP_GOOGLE_CLIENT_ID } = process.env;
 
 function LoginPage() {
   
@@ -22,7 +21,7 @@ function LoginPage() {
   const { signIn } = useGoogleLogin({
     onSuccess,
     onFailure,
-    clientId,
+    REACT_APP_GOOGLE_CLIENT_ID,
     isSignedIn: true,
     accessType: 'offline',
     // responseType: 'code',
@@ -31,6 +30,8 @@ function LoginPage() {
   
   return (
     <div>
+      <script src="https://apis.google.com/js/platform.js" async defer></script>
+      <meta name="google-signin-client_id" content={`${REACT_APP_GOOGLE_CLIENT_ID}.apps.googleusercontent.com`}></meta>
       <button onClick={signIn} className="button">
         <img src="google.svg" alt="google login" className="icon"></img>
         <span className="buttonText">Continue with Google</span>
