@@ -15,7 +15,7 @@ function LoginPage() {
   };
   
   const onFailure = (res) => {
-    console.log('[Login failed] res:', res);
+    console.log('[Login failed] res:', res.details);
   };
   
   const { signIn } = useGoogleLogin({
@@ -24,8 +24,6 @@ function LoginPage() {
     REACT_APP_GOOGLE_CLIENT_ID,
     isSignedIn: true,
     accessType: 'offline',
-    // responseType: 'code',
-    // prompt: 'consent',
   });
   
   return (
