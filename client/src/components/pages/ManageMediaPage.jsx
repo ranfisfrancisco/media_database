@@ -2,6 +2,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import React, { useEffect, useState } from 'react';
 import { Form, Input, Button, Table, Select, Checkbox, DatePicker, Menu } from 'antd';
 import { createMedia, searchMedia, updateMedia, deleteMedia, getAllMediaTypes, getAllMediaFormats, getAllMediaStatuses } from '../../actions/actions';
+import moment from 'moment';
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
@@ -396,18 +397,29 @@ const ManageMediaPage = () => {
 			setSelectedRows(rows);
 	}};
 
+	const getFullDate = (date) => {
+		if (!date)
+			return "";
+		return moment(new Date(date)).format("YYYY/MM/DD");
+	}
+
 	const renderSearchTable = () => {
 		let dataSource = searchResult.data;
+
 		let columns = [
 			{ title: 'ID', dataIndex: 'id', sorter: {compare: (a,b) => a.id - b.id} },
 			{ title: 'Name', dataIndex: 'name', sorter: {compare: (a,b) => a.name > b.name} },
-			{ title: 'Release Date', dataIndex: 'release_date', sorter: {compare: (a,b) => new Date(a.release_date) - new Date(b.release_date)} },
-			{ title: 'Use Date', dataIndex: 'use_date', sorter: {compare: (a,b) => new Date(a.use_date) - new Date(b.use_date)} },
+			{ title: 'Release Date', dataIndex: 'release_date', render: ((date) => getFullDate(date)),
+				 sorter: {compare: (a,b) => new Date(a.release_date) - new Date(b.release_date)} },
+			{ title: 'Use Date', dataIndex: 'use_date', render: ((date) => getFullDate(date)),
+				 sorter: {compare: (a,b) => new Date(a.use_date) - new Date(b.use_date)} },
             { title: 'Type', dataIndex: 'type', sorter: {compare: (a,b) => a.type > b.type} },
             { title: 'Format', dataIndex: 'format', sorter: {compare: (a,b) => a.format > b.format} },
             { title: 'Status', dataIndex: 'status', sorter: {compare: (a,b) => a.status > b.status} },
-			{ title: 'Date Entered Into DB', dataIndex: 'created_date', sorter: {compare: (a,b) => new Date(a.created_date) - new Date(b.created_date)} },
+			{ title: 'Date Entered Into DB', dataIndex: 'created_date', render: ((date) => getFullDate(date)),
+				 sorter: {compare: (a,b) => new Date(a.created_date) - new Date(b.created_date)} },
 		];
+
 		return (
 		<div>
 			<Button onClick={deselectRows}>Deselect All</Button>
