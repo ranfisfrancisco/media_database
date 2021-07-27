@@ -12,11 +12,10 @@ const mediaFormatsSelector = (state) => state.mediaFormats.data;
 const mediaStatusesSelector = (state) => state.mediaStatuses.data;
 
 const ManageMediaPage = () => {
-	const [visibleContent, setVisibleContent] = useState('');
+	const [visibleContent, setVisibleContent] = useState('search');
 
-	const [searchForm] = Form.useForm();
-	const [createForm] = Form.useForm();
-	const [updateForm] = Form.useForm();
+	//using multiple useForm caused glitches with forms not submitting, updating
+	const [form] = Form.useForm();
 
 	const dispatch = useDispatch();
 	const searchResult = useSelector(searchSelector);
@@ -30,7 +29,7 @@ const ManageMediaPage = () => {
 	const [selectedRows, setSelectedRows] = useState([]); 
 	const [selectedRowKeys, setSelectedRowKeys] = useState([]); // Attatched to table to determine and read what the user has clicked on
 
-	const REFRESH_WAIT_TIME = 1000;
+	const REFRESH_WAIT_TIME = 1000/2;
 
 	const returnMomentDateRangeStrings = (start, finish) => {
 		return [start.format('YYYY-MM-DD'), finish.format('YYYY-MM-DD')];
@@ -58,13 +57,24 @@ const ManageMediaPage = () => {
 		return NOT_SELECTED_ID;
 	}
 
+	const clearCreateForm = () => {
+		form.setFieldsValue({
+			createName: "",
+			createUseDate: "",
+			createReleaseDate: "",
+			createType: "All",
+			createFormat: "All",
+			createStatus: "All"
+		});
+	}
+
 	const createFormOnFinish = () => {
-		let name = createForm.getFieldValue("createName")
-		let useDateRange = createForm.getFieldValue("createUseDate");
-		let releaseDateRange = createForm.getFieldValue("createReleaseDate");
-		let typeFilter =  valueToColID(createForm.getFieldValue("createType"), mediaTypes);
-		let formatFilter = valueToColID(createForm.getFieldValue("createFormat"), mediaFormats);
-		let statusFilter = valueToColID(createForm.getFieldValue("createStatus"), mediaStatuses);
+		let name = form.getFieldValue("createName")
+		let useDateRange = form.getFieldValue("createUseDate");
+		let releaseDateRange = form.getFieldValue("createReleaseDate");
+		let typeFilter =  valueToColID(form.getFieldValue("createType"), mediaTypes);
+		let formatFilter = valueToColID(form.getFieldValue("createFormat"), mediaFormats);
+		let statusFilter = valueToColID(form.getFieldValue("createStatus"), mediaStatuses);
 
 		dispatch(createMedia(name, useDateRange, releaseDateRange, typeFilter,
 		  formatFilter, statusFilter));
@@ -84,17 +94,17 @@ const ManageMediaPage = () => {
         });
 
 		return (
-			<Form form={createForm} onFinish={createFormOnFinish} id="create-form" >
+			<Form form={form} onFinish={createFormOnFinish} id="create-form" >
 				<Form.Item label="Name" name='createName'>
 					<Input/>
 				</Form.Item>
 
 				<Form.Item label="Use Date" name='createUseDate'>
-					<RangePicker/>
+					<DatePicker/>
 				</Form.Item>
 
 				<Form.Item label="Release Date" name='createReleaseDate'>
-					<RangePicker/>
+					<DatePicker/>
 				</Form.Item>
 
 				<Form.Item label='Type' name='createType'>
@@ -119,7 +129,7 @@ const ManageMediaPage = () => {
 				</Form.Item>
 
 				<Form.Item>
-					<Button onClick={() => {createForm.resetFields()}}>
+					<Button onClick={() => {clearCreateForm()}}>
 						Clear Form
 					</Button>
 				</Form.Item>
@@ -134,14 +144,14 @@ const ManageMediaPage = () => {
 	}
 
 	const submitSearch = () => {
-		let id = searchForm.getFieldValue("id")
-		let name = searchForm.getFieldValue("name")
-		let useDateRange = processDateRange(searchForm.getFieldValue("useDateRange"));
-		let releaseDateRange = processDateRange(searchForm.getFieldValue("releaseDateRange"));
-		let typeFilter =  valueToColID(searchForm.getFieldValue("typeFilter"), mediaTypes);
-		let formatFilter = valueToColID(searchForm.getFieldValue("formatFilter"), mediaFormats);
-		let statusFilter = valueToColID(searchForm.getFieldValue("statusFilter"), mediaStatuses);
-		let exactNameSearch = searchForm.getFieldValue("exactNameSearch");
+		let id = form.getFieldValue("searchID")
+		let name = form.getFieldValue("searchName")
+		let useDateRange = processDateRange(form.getFieldValue("searchUseDateRange"));
+		let releaseDateRange = processDateRange(form.getFieldValue("searchReleaseDateRange"));
+		let typeFilter =  valueToColID(form.getFieldValue("searchType"), mediaTypes);
+		let formatFilter = valueToColID(form.getFieldValue("searchFormat"), mediaFormats);
+		let statusFilter = valueToColID(form.getFieldValue("searchStatus"), mediaStatuses);
+		let exactNameSearch = form.getFieldValue("exactNameSearch");
 
 		dispatch(searchMedia(id, name, useDateRange, releaseDateRange, typeFilter,
 		  formatFilter, statusFilter, exactNameSearch));
@@ -150,6 +160,19 @@ const ManageMediaPage = () => {
 	const searchFormOnFinish = () => {
 		submitSearch();
 		deselectRows();
+	}
+
+	const clearSearchForm = () => {
+		form.setFieldsValue({
+			searchID: "",
+			searchName: "",
+			exactNameSearch: false,
+			searchUseDate: "",
+			searchReleaseDate: "",
+			searchType: "All",
+			searchFormat: "All",
+			searchStatus: "All"
+		});
 	}
 
 	const renderSearchForm = () => {
@@ -166,12 +189,12 @@ const ManageMediaPage = () => {
         });
 
         return (
-			<Form form={searchForm} onFinish={searchFormOnFinish} id="search-form" >
-				<Form.Item label='Search by ID:'  name='id'>
+			<Form form={form} onFinish={searchFormOnFinish} id="search-form" >
+				<Form.Item label='Search by ID:'  name='searchID'>
 					<Input type="number"  />
 				</Form.Item>
 
-				<Form.Item label="Search by Name" name='name'>
+				<Form.Item label="Search by Name" name='searchName'>
 					<Input  />
 				</Form.Item>
 
@@ -179,27 +202,27 @@ const ManageMediaPage = () => {
 					<Checkbox>Find Exact Name</Checkbox>
 				</Form.Item>
 
-				<Form.Item label="Use Date" name='useDateRange'>
+				<Form.Item label="Use Date" name='searchUseDateRange'>
 					<RangePicker/>
 				</Form.Item>
 
-				<Form.Item label="Release Date" name='releaseDateRange'>
+				<Form.Item label="Release Date" name='searchReleaseDateRange'>
 					<RangePicker/>
 				</Form.Item>
 
-				<Form.Item label='Filter by Type' name='typeFilter'>
+				<Form.Item label='Filter by Type' name='searchType'>
                     <Select defaultValue={NOT_SELECTED_TEXT} style={{ width: 120 }}>
 						<Option key={NOT_SELECTED_TEXT}>{NOT_SELECTED_TEXT}</Option>
                         { typeOptions }
                     </Select>
 				</Form.Item>
-				<Form.Item label='Filter by Format' name='formatFilter'>
+				<Form.Item label='Filter by Format' name='searchFormat'>
 					<Select defaultValue={NOT_SELECTED_TEXT} style={{ width: 120 }}>
 						<Option key={NOT_SELECTED_TEXT}>{NOT_SELECTED_TEXT}</Option>
                         { formatOptions }
                     </Select>
 				</Form.Item>
-				<Form.Item label='Filter by Status' name='statusFilter'>
+				<Form.Item label='Filter by Status' name='searchStatus'>
 					<Select defaultValue={NOT_SELECTED_TEXT} style={{ width: 120 }}>
 						<Option key={NOT_SELECTED_TEXT}>{NOT_SELECTED_TEXT}</Option>
                         { statusOptions }
@@ -207,8 +230,8 @@ const ManageMediaPage = () => {
 				</Form.Item>
 
 				<Form.Item>
-					<Button onClick={() => {searchForm.resetFields()}}>
-						Clear Search Form
+					<Button onClick={() => {clearSearchForm()}}>
+						Clear Form
 					</Button>
 				</Form.Item>
 
@@ -222,12 +245,12 @@ const ManageMediaPage = () => {
     }
 
 	const updateFormOnFinish = () => {
-		let name = updateForm.getFieldValue("updateName")
-		let useDate = (updateForm.getFieldValue("updateUseDate")) ? updateForm.getFieldValue("updateUseDate").format('YYYY-MM-DD') : null
-		let releaseDate = (updateForm.getFieldValue("updateReleaseDate")) ? updateForm.getFieldValue("updateReleaseDate").format('YYYY-MM-DD') : null
-		let typeFilter =  valueToColID(updateForm.getFieldValue("updateType"), mediaTypes);
-		let formatFilter = valueToColID(updateForm.getFieldValue("updateFormat"), mediaFormats);
-		let statusFilter = valueToColID(updateForm.getFieldValue("updateStatus"), mediaStatuses);
+		let name = form.getFieldValue("updateName")
+		let useDate = (form.getFieldValue("updateUseDate")) ? form.getFieldValue("updateUseDate").format('YYYY-MM-DD') : null
+		let releaseDate = (form.getFieldValue("updateReleaseDate")) ? form.getFieldValue("updateReleaseDate").format('YYYY-MM-DD') : null
+		let typeFilter =  valueToColID(form.getFieldValue("updateType"), mediaTypes);
+		let formatFilter = valueToColID(form.getFieldValue("updateFormat"), mediaFormats);
+		let statusFilter = valueToColID(form.getFieldValue("updateStatus"), mediaStatuses);
 	
 		if (selectedRows.length > 1 && name !== ""){
 			alert("You cannot change the names of multiple items to the same name!")
@@ -252,8 +275,19 @@ const ManageMediaPage = () => {
 		setTimeout(function () {
 			submitSearch();
 		}, REFRESH_WAIT_TIME);
-		updateForm.resetFields()
 	}
+
+	const clearUpdateForm = () => {
+		form.setFieldsValue({
+			updateName: "",
+			updateUseDate: "",
+			updateReleaseDate: "",
+			updateType: "All",
+			updateFormat: "All",
+			updateStatus: "All"
+		});
+	}
+
 
 	const renderUpdateForm = () => {
 		var typeOptions = mediaTypes.map(function(obj, index){
@@ -269,7 +303,7 @@ const ManageMediaPage = () => {
         });
 
         return (
-			<Form form={updateForm} onFinish={updateFormOnFinish} id="update-form" >
+			<Form  key={1} form={form} onFinish={updateFormOnFinish} id="update-form" >
 				<Form.Item label="Update Name" name="updateName">
 					<Input  />
 				</Form.Item>
@@ -296,7 +330,7 @@ const ManageMediaPage = () => {
                     </Select>
 				</Form.Item>
 
-				<Form.Item label='Change Status' name='updateFilter'>
+				<Form.Item label='Change Status' name='updateStatus'>
 					<Select defaultValue={NOT_SELECTED_TEXT} style={{ width: 120 }}>
 						<Option key={NOT_SELECTED_TEXT}>No Change</Option>
                         { statusOptions }
@@ -304,8 +338,8 @@ const ManageMediaPage = () => {
 				</Form.Item>
 
 				<Form.Item>
-					<Button onClick={() => {updateForm.resetFields()}}>
-						Clear Update Form
+					<Button onClick={() => {clearUpdateForm()}}>
+						Clear Form
 					</Button>
 				</Form.Item>
 
@@ -410,17 +444,15 @@ const ManageMediaPage = () => {
 	const renderContent = () => {
 		if (visibleContent === 'create'){
 			return renderCreateForm();
-		}
-		else if(visibleContent === 'search') {
-			return renderSearchForm()
+		}else if(visibleContent === 'search') {
+			return renderSearchForm();
 		} else if (visibleContent === 'update') {
-			return renderUpdateForm()
+			return renderUpdateForm();
 		} else if (visibleContent === 'delete') {
 			return renderDeleteButton();
 		}
-		
+
 		return <div>Select an Option</div>;
-		
 	}
 
 	return (
