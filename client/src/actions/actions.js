@@ -31,13 +31,13 @@ export const createMedia = (name, useDate, releaseDate, typeID, formatID, status
 	return message.error('Query Error 2!');
 }
 
-export const searchMedia = (id, name, useDateRange, releaseDateRange, typeID, formatID, statusID, exactNameSearch) => async (dispatch) => {
+export const searchMedia = (mediaID, name, useDateRange, releaseDateRange, typeID, formatID, statusID, exactNameSearch) => async (dispatch) => {
 	dispatch({ type: 'GET_ALL_MEDIA_REQUEST' });
 	let response;
 	try {
 		response = await api.get('/media', {
 			params: {
-				id: id,
+				media_id: mediaID,
 				name: name,
 				use_date_range: useDateRange,
 				release_date_range: releaseDateRange,
@@ -59,13 +59,13 @@ export const searchMedia = (id, name, useDateRange, releaseDateRange, typeID, fo
 	return message.error('Query Error 2!');
 }
 
-export const updateMedia = (idList, name, useDate, releaseDate, typeID, formatID, statusID) => async (dispatch) => {
+export const updateMedia = (mediaIdList, name, useDate, releaseDate, typeID, formatID, statusID) => async (dispatch) => {
 	dispatch({ type: 'UPDATE_MEDIA_REQUEST' });
 	let response;
 
 	try {
 		response = await api.post('/media', {
-			idList: idList,
+			media_id_list: mediaIdList,
 			name: (typeof(name) === 'string') ? name.trim() : name,
 			use_date: (typeof(useDate) === 'string' && useDate.trim() !== "") ? useDate: null,
 			release_date: (typeof(releaseDate) === 'string' && releaseDate.trim() !== "") ? releaseDate: null,
@@ -85,13 +85,13 @@ export const updateMedia = (idList, name, useDate, releaseDate, typeID, formatID
 	return message.error('Query Error 2!');
 }
 
-export const deleteMedia = (idList) => async (dispatch) => {
+export const deleteMedia = (mediaIdList) => async (dispatch) => {
 	dispatch({ type: 'DELETE_MEDIA_REQUEST' });
 	let response;
 
 	try {
 		response = await api.delete('/media', {data: {
-			id_list: idList}
+			media_id_list: mediaIdList}
 		});
 	} catch(error) {
 		dispatch({ type: 'DELETE_MEDIA_FAILED' });

@@ -102,7 +102,7 @@ resut: array of objects each representing a row in the array
 module.exports.searchMediaItem = async (req, res) => {
 	let filters = 
 	[
-		{col: "id", val: req.query.id || null},
+		{col: "media_id", val: req.query.media_id || null},
 		{col: "name", val: req.query.name || null},
 		{col: "type_id", val: req.query.type_id || null},
 		{col: "format_id", val: req.query.format_id || null},
@@ -144,7 +144,7 @@ module.exports.searchMediaItem = async (req, res) => {
 	if (statementCount === 0)
 		whereClause = "";
 
-	let query = `SELECT id, name, release_date, use_date, type, format, status, created_date FROM media_items
+	let query = `SELECT media_id, name, release_date, use_date, type, format, status, created_date FROM media_items
 	NATURAL JOIN media_types
 	NATURAL JOIN media_formats
 	NATURAL JOIN media_statuses 
@@ -160,7 +160,7 @@ module.exports.searchMediaItem = async (req, res) => {
 /*
 Function for updating media item table.
 EXPECTS: req.body to have
-int[]: id_list (List of ID's to be modified)
+int[]: media_id_list (List of ID's to be modified)
 At least one optional argument.
 Will return error otherwise.
 
@@ -182,7 +182,7 @@ module.exports.updateMediaItem = async (req, res) => {
 	{col: "release_date", val: req.body.release_date || null},
 	];
 
-	let idList = (req.body.idList) ? req.body.idList : [];
+	let idList = (req.body.media_id_list) ? req.body.media_id_list : [];
 
 	if (idList.length < 1){
 		return res.status(400).json({ message: 'Input error: did not provide list of ID update' });
@@ -230,7 +230,7 @@ module.exports.updateMediaItem = async (req, res) => {
 
 	let query = `UPDATE media_items
 	SET ${setClause}
-	WHERE id IN ${idClause};
+	WHERE media_id IN ${idClause};
 	`; 
 
 	console.log(query)
@@ -244,11 +244,11 @@ module.exports.updateMediaItem = async (req, res) => {
 /*
 Function for deleting an item from media item table.
 EXPECTS: req.body to have
-int[]: id_list (List of ID's to be deleted)
+int[]: media_id_list (List of ID's to be deleted)
 Will return error otherwise
 */
 module.exports.deleteMediaItem = async (req, res) => {
-	let idList = (req.body.id_list) ? req.body.id_list : [];
+	let idList = (req.body.media_id_list) ? req.body.media_id_list : [];
 
 	if (idList.length < 1){
 		return res.status(400).json({ message: 'Input error: did not provide list of ID to delete' });
@@ -267,7 +267,7 @@ module.exports.deleteMediaItem = async (req, res) => {
 	idClause += ')'
 
 	let query = `DELETE FROM media_items
-	WHERE id IN ${idClause};`; 
+	WHERE media_id IN ${idClause};`; 
 
 	console.log(query)
 
