@@ -14,7 +14,6 @@ import {
 import LogoutButton from '../LogoutButton';
 
 import ManageMediaPage from './ManageMediaPage';
-import LoginPage from './LoginPage';
 
 //const readerUsernameSelector = (state) => state.page.reader.pname;
 
@@ -43,6 +42,7 @@ const SelectPage = () => {
 	
 	return (
 		<div className='reader-page-wrapper'>
+			<LogoutButton/>
 			{renderMenu()}
 			{renderContent()}
 		</div>

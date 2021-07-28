@@ -1,18 +1,36 @@
 import { useDispatch } from 'react-redux';
 import { Button } from 'antd';
+import { useGoogleLogout } from 'react-google-login';
 
-//import { logout } from '../actions/auth';
-let logout = ()=>{}
+const REACT_APP_GOOGLE_CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
 
 const LogoutButton = ({ username }) => {
 
 	const dispatch = useDispatch();
-	const onLogoutClick = () => dispatch(logout());
+
+	const onLogoutSuccess = (res) => {
+		console.log('Logged out Success');
+	  };
+	  
+	  const onLogoutFailure = () => {
+		console.log('Failed to Log Out');
+	  };
+	  
+	  const { signOut } = useGoogleLogout({
+		REACT_APP_GOOGLE_CLIENT_ID,
+		onLogoutSuccess,
+		onLogoutFailure,
+	  });
+	
+	const onLogoutClick = () => {
+		dispatch({ type: 'USER_LOGOUT'});
+		signOut();
+	}
 	
 	return (
 		<div className='logout-button-wrapper'>
 			<Button type='primary' onClick={onLogoutClick}>
-				LOGOUT, {`${username}`}
+				Log Out
 			</Button>
 		</div>
 	);

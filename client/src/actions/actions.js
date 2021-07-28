@@ -23,7 +23,7 @@ export const createMedia = (name, useDate, releaseDate, typeID, formatID, status
 	}
 
 	if(response.data.message === 'CREATE_MEDIA_SUCCESS') {
-		dispatch({ type: 'Update_MEDIA_SUCCESS', payload: response.data.result });
+		dispatch({ type: 'UPDATE_MEDIA_SUCCESS', payload: response.data.result });
 		return message.success('Created Item!');
 	}
 
