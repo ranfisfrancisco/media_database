@@ -27,9 +27,9 @@ const SelectPage = () => {
 	const renderContent = () => {
 		if(visibleContent === 'search') {
 			return <ManageMediaPage />;
-		} {
-			return <div>PAGE NOT FOUND</div>;
 		}
+
+		return <div>PAGE NOT FOUND</div>;
 	}
 
 	const renderMenu = () => (

@@ -435,7 +435,7 @@ const ManageMediaPage = () => {
 		return (
 		<div>
 			<Button onClick={deselectRows}>Deselect All</Button>
-			<Table dataSource={dataSource} columns={columns} rowSelection={rowSelection} rowKey={record =>record.id} />
+			<Table dataSource={dataSource} columns={columns} rowSelection={rowSelection} rowKey={record =>record.media_id} />
 		</div>
 		);
 	}
