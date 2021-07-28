@@ -37,7 +37,10 @@ module.exports.userLogin = async (req, res) => {
 
 			//grab new ID
 			conn.query(idQuery, (err, result) => {
-				if(err) return res.status(400).json({ message: 'Query error' });
+				if(err) {
+					console.log(err)
+					return res.status(400).json({ message: 'Query error' });
+				}
 				res.send({ message:"USER_SERVER_LOGIN_SUCCESS", result });
 				return;
 			});
@@ -114,11 +117,11 @@ module.exports.createMediaItem = async (req, res) => {
 	VALUES (${valueClause});
 	`; 
 
-	console.log(query)
-
 	conn.query(query, (err, result) => {
-		console.log(err)
-		if(err) return res.status(400).json({ message: 'Query error' });
+		if(err) {
+			console.log(err)
+			return res.status(400).json({ message: 'Query error' });
+		}
 		res.send({ message:"CREATE_MEDIA_SUCCESS", result });
 	});
 }
@@ -200,10 +203,11 @@ module.exports.searchMediaItem = async (req, res) => {
 	${whereClause}
 	ORDER BY name;`; 
 
-	console.log(query)
-
 	conn.query(query, (err, result) => {
-		if(err) return res.status(400).json({ message: 'Query error!' });
+		if(err) {
+			console.log(err)
+			return res.status(400).json({ message: 'Query error!' });
+		}
 		res.send({ message:"GET_MEDIA_SUCCESS", result });
 	});
 }
@@ -285,10 +289,11 @@ module.exports.updateMediaItem = async (req, res) => {
 	WHERE media_id IN ${idClause};
 	`; 
 
-	console.log(query)
-
 	conn.query(query, (err, result) => {
-		if(err) return res.status(400).json({ message: 'Query error' });
+		if(err) {
+			return res.status(400).json({ message: 'Query error' });
+			console.log(err)
+		}
 		res.send({ message:"UPDATE_MEDIA_SUCCESS", result });
 	});
 }
@@ -322,8 +327,10 @@ module.exports.deleteMediaItem = async (req, res) => {
 	WHERE media_id IN ${idClause};`; 
 
 	conn.query(query, (err, result) => {
-		console.log(err)
-		if(err) return res.status(400).json({ message: 'Query error' });
+		if(err) {
+			console.log(err);
+			return res.status(400).json({ message: 'Query error' });
+		}
 		res.send({ message:"DELETE_MEDIA_SUCCESS", result });
 	});
 }
@@ -361,7 +368,7 @@ module.exports.getAllStatuses = async (req, res) => {
 	});
 }
 
-//Depreciated. Equivalent to calling search with no parameters
+//DEPRECIATED. Equivalent to calling search with no parameters
 module.exports.getAllMedia = async (req, res) => {
 	let query = `SELECT id, name, releaseDate, useDate, type, format, status FROM media_items
 	NATURAL JOIN media_types
@@ -375,7 +382,7 @@ module.exports.getAllMedia = async (req, res) => {
 	});
 }
 
-//Depreciated. Use search instead.
+//DEPRECIATED. Use search instead.
 module.exports.searchByID = async (req, res) => {
 	let { mediaID } = req.params;
 	let query = `SELECT id, name, releaseDate, useDate, type, format, status FROM media_items
@@ -390,7 +397,7 @@ module.exports.searchByID = async (req, res) => {
 	});
 }
 
-//Depreciated. Use search instead.
+//DEPRECIATED. Use search instead.
 module.exports.searchByName = async (req, res) => {
 	let { mediaName } = req.params;
 	let query = 

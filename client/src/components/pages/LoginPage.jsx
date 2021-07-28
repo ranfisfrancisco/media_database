@@ -9,11 +9,9 @@ function LoginPage() {
   const dispatch = useDispatch();
 
   const onSuccess = (res) => {
-    console.log('Login Success: currentUser:', res.profileObj);
     console.log(
-      `Logged in successfully! Welcome ${res.profileObj.name} See console for full profile object.`
+      `Google Login successful! Welcome ${res.profileObj.name}`
     );
-    console.log("goog email", res.profileObj);
     dispatch(userServerLogin(res.profileObj.email));
     dispatch({ type: 'USER_LOGIN_SUCCESS', payload: {userEmail: res.profileObj.email}});
   };

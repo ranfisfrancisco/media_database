@@ -3,7 +3,6 @@ import { message } from 'antd';
 import api from './api/api';
 
 export const userServerLogin = (userEmail) => async (dispatch) => {
-	console.log('User Email '+userEmail)
 	dispatch({ type: 'USER_SERVER_LOGIN' });
 	let response;
 
@@ -85,7 +84,6 @@ export const searchMedia = (userID, mediaID, name, useDateRange, releaseDateRang
 export const updateMedia = (mediaIdList, name, useDate, releaseDate, typeID, formatID, statusID) => async (dispatch) => {
 	dispatch({ type: 'UPDATE_MEDIA_REQUEST' });
 	let response;
-	console.log(mediaIdList)
 
 	try {
 		response = await api.post('/media', {
@@ -119,6 +117,7 @@ export const deleteMedia = (mediaIdList) => async (dispatch) => {
 			media_id_list: mediaIdList}
 		});
 	} catch(error) {
+		console.log(error)
 		dispatch({ type: 'DELETE_MEDIA_FAILED' });
 		return message.error(error.message);
 	}
@@ -136,6 +135,7 @@ export const getAllMediaTypes = () => async (dispatch) => {
 	try {
 		response = await api.get('/media_types');
 	} catch(error) {
+		console.log(error)
 		dispatch({ type: 'GET_ALL_MEDIA_TYPES_FAILED' });
 		return message.error('Query Error 1!');
 	}
@@ -154,6 +154,7 @@ export const getAllMediaFormats = () => async (dispatch) => {
 	try {
 		response = await api.get('/media_formats');
 	} catch(error) {
+		console.log(error)
 		dispatch({ type: 'GET_ALL_MEDIA_FORMATS_FAILED' });
 		return message.error('Query Error 1!');
 	}
@@ -171,6 +172,7 @@ export const getAllMediaStatuses = () => async (dispatch) => {
 	try {
 		response = await api.get('/media_statuses');
 	} catch(error) {
+		console.log(error)
 		dispatch({ type: 'GET_ALL_MEDIA_STATUSES_FAILED' });
 		return message.error('Query Error 1!');
 	}
@@ -181,49 +183,3 @@ export const getAllMediaStatuses = () => async (dispatch) => {
 	dispatch({ type: 'GET_ALL_MEDIA_STATUSES_FAILED' });
 	return message.error('Query Error 2!');
 }
-
-// export const getAllAMedia = () => async (dispatch) => {
-// 	dispatch({ type: 'GET_ALL_MEDIA_REQUEST' });
-// 	let response;
-// 	try {
-// 		response = await api.get('/media');
-// 	} catch(error) {
-// 		dispatch({ type: 'GET_ALL_MEDIA_FAILED' });
-// 		return message.error('Query Error 1!');
-// 	}
-// 	if(response.data.message === 'GET_ALL_MEDIA_SUCCESS') {
-// 		dispatch({ type: 'GET_ALL_MEDIA_SUCCESS', payload: response.data.result });
-// 		console.log("Success")
-// 		return message.success('Got all media!');
-// 	}
-// 	dispatch({ type: 'GET_ALL_MEDIA_FAILED' });
-// 	return message.error('Query Error 2!');
-// }
-
-// export const searchId = (mediaID) => async (dispatch) => {
-// 	dispatch({ type: 'SEARCH_BY_ID_REQUEST' });
-// 	let response;
-// 	try {
-// 		response = await api.get(`/media/id/${mediaID}`);
-// 	} catch(error) {
-// 		dispatch({ type: 'SEARCH_BY_ID_FAILED' });
-// 		return message.error('Error searching by ID!');
-// 	}
-// 	dispatch({ type: 'SEARCH_BY_ID_SUCCESS', payload: response.data.result });
-// 	return message.success('Got item by ID');
-// }
-
-// export const searchName = (mediaName) => async (dispatch) => {
-// 	dispatch({ type: 'SEARCH_BY_NAME_REQUEST' });
-// 	let response;
-// 	try {
-// 		response = await api.get(`/media/name/${mediaName}`);
-// 	} catch(error) {
-// 		dispatch({ type: 'SEARCH_BY_NAME_FAILED' });
-// 		return message.error('Error searching by name!');
-// 	}
-// 	dispatch({ type: 'SEARCH_BY_NAME_SUCCESS', payload: response.data.result });
-// 	return message.success('Got item by name');
-// }
-
-//TODO: get statuses and formats
