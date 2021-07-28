@@ -180,8 +180,8 @@ const ManageMediaPage = () => {
 			searchID: "",
 			searchName: "",
 			exactNameSearch: false,
-			searchUseDate: "",
-			searchReleaseDate: "",
+			searchUseDateRange: "",
+			searchReleaseDateRange: "",
 			searchType: "All",
 			searchFormat: "All",
 			searchStatus: "All"
