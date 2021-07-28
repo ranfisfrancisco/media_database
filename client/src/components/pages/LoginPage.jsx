@@ -44,9 +44,7 @@ function LoginPage() {
 
   return (
     <div className ="landing-page">
-      <br></br>
       <div className="landing-container1">
-          <br></br>
           <div class="landing-top-text">
               <br></br>
               <br></br>
@@ -55,24 +53,14 @@ function LoginPage() {
               <p>Keep track of what you've experienced through this web interface.</p>
               <br></br>
               <p>Just Sign In To Begin!</p>
+              <br></br>
               {logInButton()}
           </div>
-          <img src="servicebkg1.png" alt="background" className="landing-background1"></img>
+          <img src="media.png" alt="background" className="landing-background1"></img>
       </div>
       <div className="landing-container2">
-      <br></br>
         <div class="landing-bot-text">
-          <br></br>
-          <br></br>
-          <br></br>
-          <br></br>
-          <h1>Share your thoughts with the community</h1>
-          <br></br>
-          <p>Post comments and let others know what you thought about the movie.</p>
-          <br></br>
-          <p>Add and share your favorites or create your own watchlist.</p>
         </div>
-        <img src="landbkg2.png" alt="background" className="landing-background2"></img>
       </div>
     </div>
   );

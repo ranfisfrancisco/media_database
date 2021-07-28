@@ -70,6 +70,7 @@ button {
   }
   
   .landing-container1 {
+	background-image:"media.png";
 	width:100%;
 	position: relative;
 	display: inline-block;
@@ -80,6 +81,14 @@ button {
 	height: 100%;
 	text-align: center;    
 	width: 100%;
+  }
+
+  .landing-top-text h1{
+	font-size: 40px;
+  }
+
+  .landing-top-text p{
+	font-size: 18px;
   }
   
   .landing-container2 {
