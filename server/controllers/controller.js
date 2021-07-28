@@ -12,7 +12,6 @@ module.exports.home = async (req, res) => {
 
 module.exports.userLogin = async (req, res) => {
 	if (!req.body.user_email){
-		console.log(req.body)
 		return res.status(400).json({ message: 'Input error: did not provide email of user' });
 	}
 
@@ -40,12 +39,10 @@ module.exports.userLogin = async (req, res) => {
 			conn.query(idQuery, (err, result) => {
 				if(err) return res.status(400).json({ message: 'Query error' });
 				res.send({ message:"USER_SERVER_LOGIN_SUCCESS", result });
-				console.log("New ID ", result)
 				return;
 			});
 		} 
 
-		console.log("User ID ", result)
 		return res.send({ message:"USER_SERVER_LOGIN_SUCCESS", result });
 	});
 }
@@ -65,6 +62,9 @@ date (as string): use_date
 date (as string): release_date
 */
 module.exports.createMediaItem = async (req, res) => {
+	if (!req.body.user_id)
+		return res.status(400).json({ message: 'Input error: did not provide user ID' });
+
 	if (!req.body.name)
 		return res.status(400).json({ message: 'Input error: did not provide name of new item' });
 	
@@ -72,12 +72,14 @@ module.exports.createMediaItem = async (req, res) => {
 		return res.status(400).json({ message: 'Input error: did not provide type_id of new item' });
 	
 	let colValues = 
-	[{col: "name", val: (req.body.name) ? req.body.name.trim() : null},
-	{col: "type_id", val: req.body.type_id || null},
-	{col: "format_id", val: req.body.format_id || "DEFAULT"},
-	{col: "status_id", val: req.body.status_id || "DEFAULT"},
-	{col: "use_date", val: req.body.use_date || "DEFAULT"},
-	{col: "release_date", val: req.body.release_date || "DEFAULT"},
+	[
+		{col: "user_id", val: req.body.user_id},
+		{col: "name", val: (req.body.name) ? req.body.name.trim() : null},
+		{col: "type_id", val: req.body.type_id || null},
+		{col: "format_id", val: req.body.format_id || "DEFAULT"},
+		{col: "status_id", val: req.body.status_id || "DEFAULT"},
+		{col: "use_date", val: req.body.use_date || "DEFAULT"},
+		{col: "release_date", val: req.body.release_date || "DEFAULT"},
 	];
 
 	let colClause = "";
@@ -112,6 +114,8 @@ module.exports.createMediaItem = async (req, res) => {
 	VALUES (${valueClause});
 	`; 
 
+	console.log(query)
+
 	conn.query(query, (err, result) => {
 		console.log(err)
 		if(err) return res.status(400).json({ message: 'Query error' });
@@ -141,8 +145,12 @@ message: string with success or failure description
 resut: array of objects each representing a row in the array
 */
 module.exports.searchMediaItem = async (req, res) => {
+	if (!req.query.user_id)
+		return res.status(400).json({ message: 'Input error: did not provide user ID' });
+		
 	let filters = 
 	[
+		{col: "user_id", val: req.query.user_id},
 		{col: "media_id", val: req.query.media_id || null},
 		{col: "name", val: req.query.name || null},
 		{col: "type_id", val: req.query.type_id || null},
@@ -191,6 +199,8 @@ module.exports.searchMediaItem = async (req, res) => {
 	NATURAL JOIN media_statuses 
 	${whereClause}
 	ORDER BY name;`; 
+
+	console.log(query)
 
 	conn.query(query, (err, result) => {
 		if(err) return res.status(400).json({ message: 'Query error!' });
@@ -310,8 +320,6 @@ module.exports.deleteMediaItem = async (req, res) => {
 
 	let query = `DELETE FROM media_items
 	WHERE media_id IN ${idClause};`; 
-
-	console.log(query)
 
 	conn.query(query, (err, result) => {
 		console.log(err)

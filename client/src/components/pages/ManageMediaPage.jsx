@@ -79,7 +79,7 @@ const ManageMediaPage = () => {
 		let formatFilter = valueToColID(form.getFieldValue("createFormat"), mediaFormats);
 		let statusFilter = valueToColID(form.getFieldValue("createStatus"), mediaStatuses);
 
-		dispatch(createMedia(name, useDateRange, releaseDateRange, typeFilter,
+		dispatch(createMedia(userID, name, useDateRange, releaseDateRange, typeFilter,
 		  formatFilter, statusFilter));
 	}
 
@@ -156,7 +156,7 @@ const ManageMediaPage = () => {
 		let statusFilter = valueToColID(form.getFieldValue("searchStatus"), mediaStatuses);
 		let exactNameSearch = form.getFieldValue("exactNameSearch");
 
-		dispatch(searchMedia(id, name, useDateRange, releaseDateRange, typeFilter,
+		dispatch(searchMedia(userID, id, name, useDateRange, releaseDateRange, typeFilter,
 		  formatFilter, statusFilter, exactNameSearch));
 	}
 
@@ -266,7 +266,7 @@ const ManageMediaPage = () => {
 		}
 
 		let selectedIDList = selectedRows.map(function(row){
-			return row.id;
+			return row.media_id;
 		})
 
 		if (name === "" && useDate === "" && releaseDate === "" && typeFilter === -1 && formatFilter === -1 && statusFilter === -1){
