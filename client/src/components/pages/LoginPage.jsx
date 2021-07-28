@@ -33,6 +33,7 @@ function LoginPage() {
     <div>
       <script src="https://apis.google.com/js/platform.js" async defer></script>
       <meta name="google-signin-client_id" content={`${REACT_APP_GOOGLE_CLIENT_ID}.apps.googleusercontent.com`}></meta>
+      <h1>Welcome!</h1>
       <button onClick={signIn} className="button">
         <img src="google.svg" alt="google login" className="icon"></img>
         <span className="buttonText">Continue with Google</span>
