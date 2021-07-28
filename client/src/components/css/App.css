@@ -35,3 +35,45 @@
     float: left;
     padding: 20px;
 }
+
+.landing-page {
+	background-color: black;
+	color: white;
+	padding-bottom: 20px;
+  }
+  
+  .landing-container1 {
+	width:100%;
+	position: relative;
+	display: inline-block;
+  }
+  
+  .landing-top-text {
+	position: absolute;
+	height: 100%;
+	text-align: center;    
+	width: 100%;
+  }
+  
+  .landing-container2 {
+	width:100%;
+	position: relative;
+	display: inline-block;
+  }
+  
+  .landing-bot-text {
+	position: absolute;
+	text-align: center; 
+	height: 100%;
+	width: 100%;
+  }
+  
+  .landing-background1 {
+	height: 75%;
+	width: 45%;
+  }
+  
+  .landing-background2 {
+	width: 100%;
+	padding-bottom: -100px;
+  }
