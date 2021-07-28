@@ -35,6 +35,8 @@ const ManageMediaPage = () => {
 	const REFRESH_WAIT_TIME = 1000;
 
 	const returnMomentDateRangeStrings = (start, finish) => {
+		if (start === undefined || finish === undefined)
+			return null
 		return [start.format('YYYY-MM-DD'), finish.format('YYYY-MM-DD')];
 	};
 
