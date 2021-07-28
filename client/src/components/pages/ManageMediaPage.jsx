@@ -7,6 +7,7 @@ import moment from 'moment';
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 
+const userIDSelector = (state) => state.page.userID;
 const searchSelector = (state) => state.search;
 const mediaTypesSelector = (state) => state.mediaTypes.data;
 const mediaFormatsSelector = (state) => state.mediaFormats.data;
@@ -15,6 +16,7 @@ const mediaStatusesSelector = (state) => state.mediaStatuses.data;
 const ManageMediaPage = () => {
 
 	const dispatch = useDispatch();
+	const userID = useSelector(userIDSelector);
 	const searchResult = useSelector(searchSelector);
     const mediaTypes = useSelector(mediaTypesSelector);
 	const mediaFormats = useSelector(mediaFormatsSelector);

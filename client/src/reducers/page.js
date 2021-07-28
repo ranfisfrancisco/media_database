@@ -14,6 +14,13 @@ export default (state = initState, action) => {
             }
         }
 
+        case 'USER_SERVER_LOGIN_SUCCESS': {
+            return {
+                ...state,
+                userID: action.payload[0].user_id
+            }
+        }
+
         case 'USER_LOGOUT': {
             return {
                 ...state,

@@ -2,8 +2,29 @@ import { message } from 'antd';
 
 import api from './api/api';
 
+export const userServerLogin = (userEmail) => async (dispatch) => {
+	console.log('User Email '+userEmail)
+	dispatch({ type: 'USER_SERVER_LOGIN' });
+	let response;
+
+	try {
+		response = await api.post('/media_users', {
+			user_email: userEmail
+		});
+	} catch(error) {
+		console.log(error);
+		dispatch({ type: 'USER_SERVER_LOGIN_FAILED' });
+		return message.error('Query Error 1!');
+	}
+	if(response.data.message === 'USER_SERVER_LOGIN_SUCCESS') {
+		dispatch({ type: 'USER_SERVER_LOGIN_SUCCESS', payload: response.data.result });
+		return message.success('Logged in with server!');
+	}
+	dispatch({ type: 'USER_SERVER_LOGIN_FAILED' });
+	return message.error('Query Error 2!');
+}
+
 export const createMedia = (name, useDate, releaseDate, typeID, formatID, statusID) => async (dispatch) => {
-	console.log(name, useDate, releaseDate, typeID, formatID, statusID)
 	dispatch({ type: 'CREATE_MEDIA_REQUEST' });
 	let response;
 
@@ -74,11 +95,12 @@ export const updateMedia = (mediaIdList, name, useDate, releaseDate, typeID, for
 			status_id: (statusID !== -1) ? statusID : null
 		});
 	} catch(error) {
+		console.log(error)
 		dispatch({ type: 'UPDATE_MEDIA_FAILED' });
 		return message.error('Query Error 1!');
 	}
 	if(response.data.message === 'UPDATE_MEDIA_SUCCESS') {
-		dispatch({ type: 'Update_MEDIA_SUCCESS', payload: response.data.result });
+		dispatch({ type: 'UPDATE_MEDIA_SUCCESS', payload: response.data.result });
 		return message.success('Updated!');
 	}
 	dispatch({ type: 'UPDATE_MEDIA_FAILED' });

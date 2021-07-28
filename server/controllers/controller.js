@@ -10,9 +10,50 @@ module.exports.home = async (req, res) => {
 	res.send("Server")
 }
 
+module.exports.userLogin = async (req, res) => {
+	if (!req.body.user_email){
+		console.log(req.body)
+		return res.status(400).json({ message: 'Input error: did not provide email of user' });
+	}
+
+	let userEmail = req.body.user_email;
+
+	let idQuery = `SELECT user_id
+	FROM users
+	WHERE user_email="${userEmail}";`
+
+	//check if user exists
+	conn.query(idQuery, (err, result) => {
+		if(err) return res.status(400).json({ message: 'Query error' });
+
+		//user does not exist
+		if (result.length === 0){
+			//insert new user
+			let insertQuery = `INSERT INTO users (user_email)
+			VALUES "${userEmail}";`
+
+			conn.query(insertQuery, (err, result) => {
+				if(err) return res.status(400).json({ message: 'Query error' });
+			});
+
+			//grab new ID
+			conn.query(idQuery, (err, result) => {
+				if(err) return res.status(400).json({ message: 'Query error' });
+				res.send({ message:"USER_SERVER_LOGIN_SUCCESS", result });
+				console.log("New ID ", result)
+				return;
+			});
+		} 
+
+		console.log("User ID ", result)
+		return res.send({ message:"USER_SERVER_LOGIN_SUCCESS", result });
+	});
+}
+
 /*
 Function for creating new media item.
-EXPECTS: req body to have 
+EXPECTS req body to have 
+int: user_id (the ID of the user) 
 string: name
 int: type_id
 Will return error without these values.
@@ -30,7 +71,6 @@ module.exports.createMediaItem = async (req, res) => {
 	if (!req.body.type_id)
 		return res.status(400).json({ message: 'Input error: did not provide type_id of new item' });
 	
-
 	let colValues = 
 	[{col: "name", val: (req.body.name) ? req.body.name.trim() : null},
 	{col: "type_id", val: req.body.type_id || null},
@@ -72,9 +112,8 @@ module.exports.createMediaItem = async (req, res) => {
 	VALUES (${valueClause});
 	`; 
 
-	console.log(query)
-
 	conn.query(query, (err, result) => {
+		console.log(err)
 		if(err) return res.status(400).json({ message: 'Query error' });
 		res.send({ message:"CREATE_MEDIA_SUCCESS", result });
 	});
@@ -83,7 +122,9 @@ module.exports.createMediaItem = async (req, res) => {
 
 /*
 Function for searching media item table.
-EXPECTS: No requirements for query
+
+EXPECTS req.query to have
+int: user_id (the ID of the user) 
 
 OPTIONAL: req.query can include:
 int: id
@@ -159,7 +200,8 @@ module.exports.searchMediaItem = async (req, res) => {
 
 /*
 Function for updating media item table.
-EXPECTS: req.body to have
+
+EXPECTS req.body to have
 int[]: media_id_list (List of ID's to be modified)
 At least one optional argument.
 Will return error otherwise.
