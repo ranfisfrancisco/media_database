@@ -79,6 +79,16 @@ const ManageMediaPage = () => {
 		let formatFilter = valueToColID(form.getFieldValue("createFormat"), mediaFormats);
 		let statusFilter = valueToColID(form.getFieldValue("createStatus"), mediaStatuses);
 
+		if (name.trim() === ""){
+			alert("You must enter a name!");
+			return;
+		}
+
+		if (typeFilter == NOT_SELECTED_ID){
+			alert("You must set a type!");
+			return;
+		}
+
 		dispatch(createMedia(userID, name, useDateRange, releaseDateRange, typeFilter,
 		  formatFilter, statusFilter));
 	}
