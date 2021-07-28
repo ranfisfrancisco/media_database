@@ -2,6 +2,10 @@
 	height: 100%;
 }
 
+button {
+	cursor:pointer;
+}
+
 .app-wrapper {
 	height: 100%;
 }
@@ -36,10 +40,33 @@
     padding: 20px;
 }
 
+.buttonText {
+	/* color: #4285f4; */
+	color: black;
+	font-weight: bolder;
+  }
+
+.logo {
+	height: 2.8em;
+	width: 2.5em;
+  }
+
 .landing-page {
 	background-color: black;
 	color: white;
 	padding-bottom: 20px;
+  }
+
+.landing-title {
+	color: white;
+}
+
+  .land-grid ul{
+	display: grid;
+	grid-auto-flow: column;
+	padding: 10px;
+	justify-items: start;
+	list-style:none;
   }
   
   .landing-container1 {
