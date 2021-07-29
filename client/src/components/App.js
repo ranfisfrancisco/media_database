@@ -14,7 +14,6 @@ const App = () => {
 	const page = useSelector(pageSelector);
 
 	const renderPage = () => {
-		console.log(page.visible)
 		if (page.visible === 'homepage') {
 			return (
 				<div className='login-wrapper'>

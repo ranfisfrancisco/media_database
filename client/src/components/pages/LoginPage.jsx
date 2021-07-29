@@ -17,7 +17,7 @@ function LoginPage() {
   };
   
   const onFailure = (res) => {
-    dispatch({ type: 'USER_LOGIN_SUCCESS'});
+    dispatch({ type: 'USER_LOGIN_FAILURE'});
     console.log('[Login failed] res:', res.details);
   };
   
