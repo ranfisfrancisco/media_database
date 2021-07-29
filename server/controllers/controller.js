@@ -215,9 +215,8 @@ module.exports.searchMediaItem = async (req, res) => {
 	conn.query(query, (err, result) => {
 		if(err) {
 			console.log(err)
-			return res.status(400).json({ message: 'Query error!' });
+			return res.status(400).json({ message: err.message });
 		}
-		console.log(result)
 		res.send({ message:"GET_MEDIA_SUCCESS", result });
 	});
 }
