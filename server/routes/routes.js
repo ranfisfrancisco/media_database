@@ -11,7 +11,7 @@ router.post('/media', controller.updateMediaItem);
 router.put('/media', controller.createMediaItem);
 router.delete('/media', controller.deleteMediaItem);
 router.get('/media_types', controller.getAllTypes);
-router.get('/media_formats', controller.getAllFormats);
+router.get('/media_ownerships', controller.getAllOwnerships);
 router.get('/media_statuses', controller.getAllStatuses);
 
 module.exports = router;

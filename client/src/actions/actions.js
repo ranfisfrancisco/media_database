@@ -23,7 +23,7 @@ export const userServerLogin = (userEmail) => async (dispatch) => {
 	return message.error('Query Error 2!');
 }
 
-export const createMedia = (userID, name, useDate, releaseDate, typeID, formatID, statusID) => async (dispatch) => {
+export const createMedia = (userID, name, useDate, releaseDate, typeID, ownershipID, statusID) => async (dispatch) => {
 	dispatch({ type: 'CREATE_MEDIA_REQUEST' });
 	let response;
 
@@ -34,7 +34,7 @@ export const createMedia = (userID, name, useDate, releaseDate, typeID, formatID
 			use_date: (typeof(useDate) === 'string' && useDate.trim() !== "") ? useDate: null,
 			release_date: (typeof(releaseDate) === 'string' && releaseDate.trim() !== "") ? releaseDate: null,
 			type_id: (typeID !== -1) ? typeID : null,
-			format_id: (formatID !== -1) ? formatID : null,
+			ownership_id: (ownershipID !== -1) ? ownershipID : null,
 			status_id: (statusID !== -1) ? statusID : null
 		});
 	} catch(error) {
@@ -52,7 +52,7 @@ export const createMedia = (userID, name, useDate, releaseDate, typeID, formatID
 	return message.error('Query Error 2!');
 }
 
-export const searchMedia = (userID, mediaID, name, useDateRange, releaseDateRange, typeID, formatID, statusID, exactNameSearch) => async (dispatch) => {
+export const searchMedia = (userID, mediaID, name, useDateRange, releaseDateRange, typeID, ownershipID, statusID, exactNameSearch) => async (dispatch) => {
 	dispatch({ type: 'GET_ALL_MEDIA_REQUEST' });
 	let response;
 	try {
@@ -64,7 +64,7 @@ export const searchMedia = (userID, mediaID, name, useDateRange, releaseDateRang
 				use_date_range: useDateRange,
 				release_date_range: releaseDateRange,
 				type_id: (typeID !== -1) ? typeID : null,
-				format_id: (formatID !== -1) ? formatID : null,
+				ownership_id: (ownershipID !== -1) ? ownershipID : null,
 				status_id: (statusID !== -1) ? statusID : null,
 				exact_name_search: exactNameSearch
 			}
@@ -81,7 +81,7 @@ export const searchMedia = (userID, mediaID, name, useDateRange, releaseDateRang
 	return message.error('Query Error 2!');
 }
 
-export const updateMedia = (mediaIdList, name, useDate, releaseDate, typeID, formatID, statusID) => async (dispatch) => {
+export const updateMedia = (mediaIdList, name, useDate, releaseDate, typeID, ownershipID, statusID) => async (dispatch) => {
 	dispatch({ type: 'UPDATE_MEDIA_REQUEST' });
 	let response;
 
@@ -92,7 +92,7 @@ export const updateMedia = (mediaIdList, name, useDate, releaseDate, typeID, for
 			use_date: (typeof(useDate) === 'string' && useDate.trim() !== "") ? useDate: null,
 			release_date: (typeof(releaseDate) === 'string' && releaseDate.trim() !== "") ? releaseDate: null,
 			type_id: (typeID !== -1) ? typeID : null,
-			format_id: (formatID !== -1) ? formatID : null,
+			ownership_id: (ownershipID !== -1) ? ownershipID : null,
 			status_id: (statusID !== -1) ? statusID : null
 		});
 	} catch(error) {
@@ -141,28 +141,27 @@ export const getAllMediaTypes = () => async (dispatch) => {
 	}
 	if(response.data.message === 'GET_ALL_MEDIA_TYPES_SUCCESS') {
 		dispatch({ type: 'GET_ALL_MEDIA_TYPES_SUCCESS', payload: response.data.result });
-		//return message.success('Got all media types');
 		return;
 	}
 	dispatch({ type: 'GET_ALL_MEDIA_TYPES_FAILED' });
 	return message.error('Query Error 2!');
 }
 
-export const getAllMediaFormats = () => async (dispatch) => {
-	dispatch({ type: 'GET_ALL_MEDIA_FORMATS_REQUEST' });
+export const getAllMediaOwnerships = () => async (dispatch) => {
+	dispatch({ type: 'GET_ALL_MEDIA_OWNERSHIPS_REQUEST' });
 	let response;
 	try {
-		response = await api.get('/media_formats');
+		response = await api.get('/media_ownerships');
 	} catch(error) {
 		console.log(error)
-		dispatch({ type: 'GET_ALL_MEDIA_FORMATS_FAILED' });
+		dispatch({ type: 'GET_ALL_MEDIA_OWNERSHIPS_FAILED' });
 		return message.error('Query Error 1!');
 	}
-	if(response.data.message === 'GET_ALL_MEDIA_FORMATS_SUCCESS') {
-		dispatch({ type: 'GET_ALL_MEDIA_FORMATS_SUCCESS', payload: response.data.result });
+	if(response.data.message === 'GET_ALL_MEDIA_OWNERSHIPS_SUCCESS') {
+		dispatch({ type: 'GET_ALL_MEDIA_OWNERSHIPS_SUCCESS', payload: response.data.result });
 		return;
 	}
-	dispatch({ type: 'GET_ALL_MEDIA_FORMATS_FAILED' });
+	dispatch({ type: 'GET_ALL_MEDIA_OWNERSHIPS_FAILED' });
 	return message.error('Query Error 2!');
 }
 

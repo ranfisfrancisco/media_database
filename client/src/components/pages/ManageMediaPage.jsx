@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 import React, { useEffect, useState } from 'react';
 import { Form, Input, Button, Table, Select, Checkbox, DatePicker, Menu } from 'antd';
-import { createMedia, searchMedia, updateMedia, deleteMedia, getAllMediaTypes, getAllMediaFormats, getAllMediaStatuses } from '../../actions/actions';
+import { createMedia, searchMedia, updateMedia, deleteMedia, getAllMediaTypes, getAllMediaOwnerships, getAllMediaStatuses } from '../../actions/actions';
 import moment from 'moment';
 
 const { Option } = Select;
@@ -10,7 +10,7 @@ const { RangePicker } = DatePicker;
 const userIDSelector = (state) => state.page.userID;
 const searchSelector = (state) => state.search;
 const mediaTypesSelector = (state) => state.mediaTypes.data;
-const mediaFormatsSelector = (state) => state.mediaFormats.data;
+const mediaOwnershipsSelector = (state) => state.mediaOwnerships.data;
 const mediaStatusesSelector = (state) => state.mediaStatuses.data;
 
 const ManageMediaPage = () => {
@@ -19,7 +19,7 @@ const ManageMediaPage = () => {
 	const userID = useSelector(userIDSelector);
 	const searchResult = useSelector(searchSelector);
     const mediaTypes = useSelector(mediaTypesSelector);
-	const mediaFormats = useSelector(mediaFormatsSelector);
+	const mediaOwnerships = useSelector(mediaOwnershipsSelector);
 	const mediaStatuses = useSelector(mediaStatusesSelector);
 
 	//using multiple useForm caused glitches with forms not submitting, updating
@@ -37,7 +37,7 @@ const ManageMediaPage = () => {
 	const returnMomentDateRangeStrings = (start, finish) => {
 		if (start === undefined || finish === undefined)
 			return null
-		return [start.format('YYYY-MM-DD'), finish.format('YYYY-MM-DD')];
+		return [start.ownership('YYYY-MM-DD'), finish.format('YYYY-MM-DD')];
 	};
 
 	const processDateRange = (dateRange) => {
@@ -68,7 +68,7 @@ const ManageMediaPage = () => {
 			createUseDate: "",
 			createReleaseDate: "",
 			createType: "All",
-			createFormat: "All",
+			createOwnership: "All",
 			createStatus: "All"
 		});
 	}
@@ -78,7 +78,7 @@ const ManageMediaPage = () => {
 		let useDateRange = form.getFieldValue("createUseDate");
 		let releaseDateRange = form.getFieldValue("createReleaseDate");
 		let typeFilter =  valueToColID(form.getFieldValue("createType"), mediaTypes);
-		let formatFilter = valueToColID(form.getFieldValue("createFormat"), mediaFormats);
+		let ownershipFilter = valueToColID(form.getFieldValue("createOwnership"), mediaOwnerships);
 		let statusFilter = valueToColID(form.getFieldValue("createStatus"), mediaStatuses);
 
 		if (name.trim() === ""){
@@ -92,7 +92,7 @@ const ManageMediaPage = () => {
 		}
 
 		dispatch(createMedia(userID, name, useDateRange, releaseDateRange, typeFilter,
-		  formatFilter, statusFilter));
+		  ownershipFilter, statusFilter));
 	}
 
 	const renderCreateForm = () => {
@@ -100,7 +100,7 @@ const ManageMediaPage = () => {
             return <Option key={ obj.option }>{ obj.option }</Option>;
         });
 
-		var formatOptions = mediaFormats.map(function(obj, index){
+		var ownershipOptions = mediaOwnerships.map(function(obj, index){
             return <Option key={ obj.option }>{ obj.option }</Option>;
         });
 
@@ -129,10 +129,10 @@ const ManageMediaPage = () => {
                     </Select>
 				</Form.Item>
 				
-				<Form.Item label='Format' name='createFormat'>
+				<Form.Item label='Ownership' name='createOwnership'>
 					<Select defaultValue={NOT_SELECTED_TEXT} style={{ width: 120 }}>
 						<Option key={NOT_SELECTED_TEXT}>{NOT_SELECTED_TEXT}</Option>
-                        { formatOptions }
+                        { ownershipOptions }
                     </Select>
 				</Form.Item>
 
@@ -164,12 +164,12 @@ const ManageMediaPage = () => {
 		let useDateRange = processDateRange(form.getFieldValue("searchUseDateRange"));
 		let releaseDateRange = processDateRange(form.getFieldValue("searchReleaseDateRange"));
 		let typeFilter =  valueToColID(form.getFieldValue("searchType"), mediaTypes);
-		let formatFilter = valueToColID(form.getFieldValue("searchFormat"), mediaFormats);
+		let ownershipFilter = valueToColID(form.getFieldValue("searchOwnership"), mediaOwnerships);
 		let statusFilter = valueToColID(form.getFieldValue("searchStatus"), mediaStatuses);
 		let exactNameSearch = form.getFieldValue("exactNameSearch");
 
 		dispatch(searchMedia(userID, id, name, useDateRange, releaseDateRange, typeFilter,
-		  formatFilter, statusFilter, exactNameSearch));
+		  ownershipFilter, statusFilter, exactNameSearch));
 	}
 
 	const searchFormOnFinish = () => {
@@ -185,7 +185,7 @@ const ManageMediaPage = () => {
 			searchUseDateRange: "",
 			searchReleaseDateRange: "",
 			searchType: "All",
-			searchFormat: "All",
+			searchOwnership: "All",
 			searchStatus: "All"
 		});
 	}
@@ -195,7 +195,7 @@ const ManageMediaPage = () => {
             return <Option key={ obj.option }>{ obj.option }</Option>;
         });
 
-		var formatOptions = mediaFormats.map(function(obj, index){
+		var ownershipOptions = mediaOwnerships.map(function(obj, index){
             return <Option key={ obj.option }>{ obj.option }</Option>;
         });
 
@@ -231,10 +231,10 @@ const ManageMediaPage = () => {
                         { typeOptions }
                     </Select>
 				</Form.Item>
-				<Form.Item label='Format' name='searchFormat'>
+				<Form.Item label='Ownership' name='searchOwnership'>
 					<Select defaultValue={NOT_SELECTED_TEXT} style={{ width: 120 }}>
 						<Option key={NOT_SELECTED_TEXT}>{NOT_SELECTED_TEXT}</Option>
-                        { formatOptions }
+                        { ownershipOptions }
                     </Select>
 				</Form.Item>
 				<Form.Item label='Status' name='searchStatus'>
@@ -261,10 +261,10 @@ const ManageMediaPage = () => {
 
 	const updateFormOnFinish = () => {
 		let name = form.getFieldValue("updateName")
-		let useDate = (form.getFieldValue("updateUseDate")) ? form.getFieldValue("updateUseDate").format('YYYY-MM-DD') : null
-		let releaseDate = (form.getFieldValue("updateReleaseDate")) ? form.getFieldValue("updateReleaseDate").format('YYYY-MM-DD') : null
+		let useDate = (form.getFieldValue("updateUseDate")) ? form.getFieldValue("updateUseDate").ownership('YYYY-MM-DD') : null
+		let releaseDate = (form.getFieldValue("updateReleaseDate")) ? form.getFieldValue("updateReleaseDate").ownership('YYYY-MM-DD') : null
 		let typeFilter =  valueToColID(form.getFieldValue("updateType"), mediaTypes);
-		let formatFilter = valueToColID(form.getFieldValue("updateFormat"), mediaFormats);
+		let ownershipFilter = valueToColID(form.getFieldValue("updateOwnership"), mediaOwnerships);
 		let statusFilter = valueToColID(form.getFieldValue("updateStatus"), mediaStatuses);
 	
 		if (selectedRows.length > 1 && name !== ""){
@@ -281,12 +281,12 @@ const ManageMediaPage = () => {
 			return row.media_id;
 		})
 
-		if (name === "" && useDate === "" && releaseDate === "" && typeFilter === -1 && formatFilter === -1 && statusFilter === -1){
+		if (name === "" && useDate === "" && releaseDate === "" && typeFilter === -1 && ownershipFilter === -1 && statusFilter === -1){
 			alert("Must provide something to update!")
 			return;
 		}
 
-		dispatch(updateMedia(selectedIDList, name, useDate, releaseDate, typeFilter, formatFilter, statusFilter));
+		dispatch(updateMedia(selectedIDList, name, useDate, releaseDate, typeFilter, ownershipFilter, statusFilter));
 		clearUpdateForm();
 		setTimeout(function () {
 			submitSearch();
@@ -299,7 +299,7 @@ const ManageMediaPage = () => {
 			updateUseDate: "",
 			updateReleaseDate: "",
 			updateType: "All",
-			updateFormat: "All",
+			updateOwnership: "All",
 			updateStatus: "All"
 		});
 	}
@@ -310,7 +310,7 @@ const ManageMediaPage = () => {
             return <Option key={ obj.option }>{ obj.option }</Option>;
         });
 
-		var formatOptions = mediaFormats.map(function(obj, index){
+		var ownershipOptions = mediaOwnerships.map(function(obj, index){
             return <Option key={ obj.option }>{ obj.option }</Option>;
         });
 
@@ -339,10 +339,10 @@ const ManageMediaPage = () => {
                     </Select>
 				</Form.Item>
 
-				<Form.Item label='Format' name='updateFormat'>
+				<Form.Item label='Ownership' name='updateOwnership'>
 					<Select defaultValue={NOT_SELECTED_TEXT} style={{ width: 120 }}>
 						<Option key={NOT_SELECTED_TEXT}>No Change</Option>
-                        { formatOptions }
+                        { ownershipOptions }
                     </Select>
 				</Form.Item>
 
@@ -428,7 +428,7 @@ const ManageMediaPage = () => {
 			{ title: 'Use Date', dataIndex: 'use_date', render: ((date) => getFullDate(date)),
 				 sorter: {compare: (a,b) => new Date(a.use_date) - new Date(b.use_date)} },
             { title: 'Type', dataIndex: 'type', sorter: {compare: (a,b) => a.type > b.type} },
-            { title: 'Format', dataIndex: 'format', sorter: {compare: (a,b) => a.format > b.format} },
+            { title: 'Ownership', dataIndex: 'ownership', sorter: {compare: (a,b) => a.ownership > b.ownership} },
             { title: 'Status', dataIndex: 'status', sorter: {compare: (a,b) => a.status > b.status} },
 			{ title: 'Date Entered Into DB', dataIndex: 'created_date', render: ((date) => getFullDate(date)),
 				 sorter: {compare: (a,b) => new Date(a.created_date) - new Date(b.created_date)} },
@@ -442,10 +442,10 @@ const ManageMediaPage = () => {
 		);
 	}
 
-    //load media types, statuses, formats once on page load
+    //load media types, statuses, ownerships once on page load
     useEffect(() => {
         dispatch(getAllMediaTypes());
-		dispatch(getAllMediaFormats());
+		dispatch(getAllMediaOwnerships());
 		dispatch(getAllMediaStatuses());
     }, []);
 

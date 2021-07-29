@@ -59,7 +59,7 @@ int: type_id
 Will return error without these values.
 
 OPTIONAL: req body can also include:
-int: format_id
+int: ownership_id
 int: status_id
 date (as string): use_date
 date (as string): release_date
@@ -79,7 +79,7 @@ module.exports.createMediaItem = async (req, res) => {
 		{col: "user_id", val: req.body.user_id},
 		{col: "name", val: (req.body.name) ? req.body.name.trim() : null},
 		{col: "type_id", val: req.body.type_id || null},
-		{col: "format_id", val: req.body.format_id || "DEFAULT"},
+		{col: "ownership_id", val: req.body.ownership_id || "DEFAULT"},
 		{col: "status_id", val: req.body.status_id || "DEFAULT"},
 		{col: "use_date", val: req.body.use_date || "DEFAULT"},
 		{col: "release_date", val: req.body.release_date || "DEFAULT"},
@@ -137,7 +137,7 @@ OPTIONAL: req.query can include:
 int: id
 string: name
 int: type_id
-int: format_id
+int: ownership_id
 int: status_id
 date (as string): use_date
 date (as string): release_date
@@ -157,7 +157,7 @@ module.exports.searchMediaItem = async (req, res) => {
 		{col: "media_id", val: req.query.media_id || null},
 		{col: "name", val: req.query.name || null},
 		{col: "type_id", val: req.query.type_id || null},
-		{col: "format_id", val: req.query.format_id || null},
+		{col: "ownership_id", val: req.query.ownership_id || null},
 		{col: "status_id", val: req.query.status_id || null},
 		{col: "use_date", val: processDateRange(req.query.use_date_range)},
 		{col: "release_date", val: processDateRange(req.query.release_date_range)
@@ -196,9 +196,9 @@ module.exports.searchMediaItem = async (req, res) => {
 	if (statementCount === 0)
 		whereClause = "";
 
-	let query = `SELECT media_id, name, release_date, use_date, type, format, status, created_date FROM media_items
+	let query = `SELECT media_id, name, release_date, use_date, type, ownership, status, created_date FROM media_items
 	NATURAL JOIN media_types
-	NATURAL JOIN media_formats
+	NATURAL JOIN media_ownerships
 	NATURAL JOIN media_statuses 
 	${whereClause}
 	ORDER BY name;`; 
@@ -223,7 +223,7 @@ Will return error otherwise.
 OPTIONAL: req.query can include:
 string: name (UNLESS id_list contains more than 1 ID)
 int: type_id
-int: format_id
+int: ownership_id
 int: status_id
 date (as string): use_date
 date (as string): release_date
@@ -232,7 +232,7 @@ module.exports.updateMediaItem = async (req, res) => {
 	let filters = 
 	[{col: "name", val: (req.body.name) ? req.body.name.trim() : null},
 	{col: "type_id", val: req.body.type_id || null},
-	{col: "format_id", val: req.body.format_id || null},
+	{col: "ownership_id", val: req.body.ownership_id || null},
 	{col: "status_id", val: req.body.status_id || null},
 	{col: "use_date", val: req.body.use_date || null},
 	{col: "release_date", val: req.body.release_date || null},
@@ -346,14 +346,14 @@ module.exports.getAllTypes = async (req, res) => {
 	});
 }
 
-module.exports.getAllFormats = async (req, res) => {
-	let query = `SELECT format_id AS id, format AS "option"
-	FROM media_formats
-	order by format_id `; 
+module.exports.getAllOwnerships = async (req, res) => {
+	let query = `SELECT ownership_id AS id, ownership AS "option"
+	FROM media_ownerships
+	order by ownership_id `; 
 
 	conn.query(query, (err, result) => {
 		if(err) return res.status(400).json({ message: 'Query error' });
-		res.send({ message:"GET_ALL_MEDIA_FORMATS_SUCCESS", result });
+		res.send({ message:"GET_ALL_MEDIA_OWNERSHIPS_SUCCESS", result });
 	});
 }
 
@@ -370,9 +370,9 @@ module.exports.getAllStatuses = async (req, res) => {
 
 //DEPRECIATED. Equivalent to calling search with no parameters
 module.exports.getAllMedia = async (req, res) => {
-	let query = `SELECT id, name, releaseDate, useDate, type, format, status FROM media_items
+	let query = `SELECT id, name, releaseDate, useDate, type, ownership, status FROM media_items
 	NATURAL JOIN media_types
-	NATURAL JOIN media_formats
+	NATURAL JOIN media_ownerships
 	NATURAL JOIN media_statuses
 	ORDER BY id;`; 
 
@@ -385,9 +385,9 @@ module.exports.getAllMedia = async (req, res) => {
 //DEPRECIATED. Use search instead.
 module.exports.searchByID = async (req, res) => {
 	let { mediaID } = req.params;
-	let query = `SELECT id, name, releaseDate, useDate, type, format, status FROM media_items
+	let query = `SELECT id, name, releaseDate, useDate, type, ownership, status FROM media_items
 	NATURAL JOIN media_types
-	NATURAL JOIN media_formats
+	NATURAL JOIN media_ownerships
 	NATURAL JOIN media_statuses
 	WHERE ID=${mediaID};`; 
 
@@ -401,9 +401,9 @@ module.exports.searchByID = async (req, res) => {
 module.exports.searchByName = async (req, res) => {
 	let { mediaName } = req.params;
 	let query = 
-	`SELECT id, name, releaseDate, useDate, type, format, status FROM media_items
+	`SELECT id, name, releaseDate, useDate, type, ownership, status FROM media_items
 	NATURAL JOIN media_types
-	NATURAL JOIN media_formats
+	NATURAL JOIN media_ownerships
 	NATURAL JOIN media_statuses
 	WHERE name LIKE "%${mediaName}%"`; 
 
