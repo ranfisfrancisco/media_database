@@ -77,22 +77,22 @@ const ManageMediaPage = () => {
 		let name = form.getFieldValue("createName")
 		let useDateRange = form.getFieldValue("createUseDate");
 		let releaseDateRange = form.getFieldValue("createReleaseDate");
-		let typeFilter =  valueToColID(form.getFieldValue("createType"), mediaTypes);
-		let ownershipFilter = valueToColID(form.getFieldValue("createOwnership"), mediaOwnerships);
-		let statusFilter = valueToColID(form.getFieldValue("createStatus"), mediaStatuses);
+		let type =  valueToColID(form.getFieldValue("createType"), mediaTypes);
+		let ownership = valueToColID(form.getFieldValue("createOwnership"), mediaOwnerships);
+		let status = valueToColID(form.getFieldValue("createStatus"), mediaStatuses);
 
 		if (name.trim() === ""){
 			alert("You must enter a name!");
 			return;
 		}
 
-		if (typeFilter == NOT_SELECTED_ID){
+		if (type == NOT_SELECTED_ID){
 			alert("You must set a type!");
 			return;
 		}
 
-		dispatch(createMedia(userID, name, useDateRange, releaseDateRange, typeFilter,
-		  ownershipFilter, statusFilter));
+		dispatch(createMedia(userID, name, useDateRange, releaseDateRange, type,
+		  ownership, status));
 	}
 
 	const renderCreateForm = () => {
@@ -163,13 +163,13 @@ const ManageMediaPage = () => {
 		let name = form.getFieldValue("searchName")
 		let useDateRange = processDateRange(form.getFieldValue("searchUseDateRange"));
 		let releaseDateRange = processDateRange(form.getFieldValue("searchReleaseDateRange"));
-		let typeFilter =  valueToColID(form.getFieldValue("searchType"), mediaTypes);
-		let ownershipFilter = valueToColID(form.getFieldValue("searchOwnership"), mediaOwnerships);
-		let statusFilter = valueToColID(form.getFieldValue("searchStatus"), mediaStatuses);
+		let type =  valueToColID(form.getFieldValue("searchType"), mediaTypes);
+		let ownership = valueToColID(form.getFieldValue("searchOwnership"), mediaOwnerships);
+		let status = valueToColID(form.getFieldValue("searchStatus"), mediaStatuses);
 		let exactNameSearch = form.getFieldValue("exactNameSearch");
 
-		dispatch(searchMedia(userID, id, name, useDateRange, releaseDateRange, typeFilter,
-		  ownershipFilter, statusFilter, exactNameSearch));
+		dispatch(searchMedia(userID, id, name, useDateRange, releaseDateRange, type,
+		  ownership, status, exactNameSearch));
 	}
 
 	const searchFormOnFinish = () => {
@@ -263,9 +263,9 @@ const ManageMediaPage = () => {
 		let name = form.getFieldValue("updateName")
 		let useDate = (form.getFieldValue("updateUseDate")) ? form.getFieldValue("updateUseDate").ownership('YYYY-MM-DD') : null
 		let releaseDate = (form.getFieldValue("updateReleaseDate")) ? form.getFieldValue("updateReleaseDate").ownership('YYYY-MM-DD') : null
-		let typeFilter =  valueToColID(form.getFieldValue("updateType"), mediaTypes);
-		let ownershipFilter = valueToColID(form.getFieldValue("updateOwnership"), mediaOwnerships);
-		let statusFilter = valueToColID(form.getFieldValue("updateStatus"), mediaStatuses);
+		let type =  valueToColID(form.getFieldValue("updateType"), mediaTypes);
+		let ownership = valueToColID(form.getFieldValue("updateOwnership"), mediaOwnerships);
+		let status = valueToColID(form.getFieldValue("updateStatus"), mediaStatuses);
 	
 		if (selectedRows.length > 1 && name !== ""){
 			alert("You cannot change the names of multiple items to the same name!")
@@ -281,12 +281,12 @@ const ManageMediaPage = () => {
 			return row.media_id;
 		})
 
-		if (name === "" && useDate === "" && releaseDate === "" && typeFilter === -1 && ownershipFilter === -1 && statusFilter === -1){
+		if (name === "" && useDate === "" && releaseDate === "" && type === -1 && ownership === -1 && status === -1){
 			alert("Must provide something to update!")
 			return;
 		}
 
-		dispatch(updateMedia(selectedIDList, name, useDate, releaseDate, typeFilter, ownershipFilter, statusFilter));
+		dispatch(updateMedia(selectedIDList, name, useDate, releaseDate, type, ownership, status));
 		clearUpdateForm();
 		setTimeout(function () {
 			submitSearch();
