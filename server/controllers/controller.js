@@ -208,6 +208,7 @@ module.exports.searchMediaItem = async (req, res) => {
 			console.log(err)
 			return res.status(400).json({ message: 'Query error!' });
 		}
+		console.log(result)
 		res.send({ message:"GET_MEDIA_SUCCESS", result });
 	});
 }
