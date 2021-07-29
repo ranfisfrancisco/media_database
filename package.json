@@ -1,0 +1,23 @@
+{
+  "name": "media_database",
+  "version": "1.0.0",
+  "description": "client and server for app",
+  "main": "server/index.js",
+  "dependencies": {
+    "dotenv": "^10.0.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ranfisfrancisco/media_database.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ranfisfrancisco/media_database/issues"
+  },
+  "homepage": "https://github.com/ranfisfrancisco/media_database#readme"
+}
