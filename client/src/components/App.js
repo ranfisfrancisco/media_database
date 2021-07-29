@@ -1,3 +1,4 @@
+import React from 'react';
 import { useSelector } from 'react-redux';
 
 import SelectPage from './pages';
@@ -13,6 +14,7 @@ const App = () => {
 	const page = useSelector(pageSelector);
 
 	const renderPage = () => {
+		console.log(page.visible)
 		if (page.visible === 'homepage') {
 			return (
 				<div className='login-wrapper'>
@@ -27,7 +29,6 @@ const App = () => {
 			return `Error with page.visible state ${page.visible}`
 		}
 	}
-
 
 	return (
 	<div className='app-wrapper'>

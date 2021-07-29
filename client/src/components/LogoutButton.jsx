@@ -1,10 +1,11 @@
+import React from 'react';
 import { useDispatch } from 'react-redux';
 import { Button } from 'antd';
 import { useGoogleLogout } from 'react-google-login';
 
 const REACT_APP_GOOGLE_CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
 
-const LogoutButton = ({ username }) => {
+const LogoutButton = () => {
 
 	const dispatch = useDispatch();
 

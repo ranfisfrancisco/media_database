@@ -45,12 +45,12 @@ function LoginPage() {
   return (
     <div className ="landing-page">
       <div className="landing-container1">
-          <div class="landing-top-text">
+          <div className="landing-top-text">
               <br></br>
               <br></br>
-              <h1 class="landing-title">Multimedia Database</h1>
+              <h1 className="landing-title">Multimedia Database</h1>
               <br></br>
-              <p>Keep track of what you've experienced through this web interface.</p>
+              <p>Keep track of what you have experienced through this web interface.</p>
               <br></br>
               <p>Just Sign In To Begin!</p>
               <br></br>
@@ -59,7 +59,7 @@ function LoginPage() {
           <img src="media.png" alt="background" className="landing-background1"></img>
       </div>
       <div className="landing-container2">
-        <div class="landing-bot-text">
+        <div className="landing-bot-text">
         </div>
       </div>
     </div>

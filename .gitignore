@@ -5,3 +5,5 @@ node_modules/
 *.sw*
 
 *.env
+
+.eslint*
