@@ -53,8 +53,15 @@ module.exports.userLogin = async (req, res) => {
 				console.log(err)
 				return res.status(400).json({ message: 'Query error' });
 			}
-			res.send({ message: "USER_SERVER_LOGIN_SUCCESS", result });
-			return;
+			//grab new ID
+			conn.query(idQuery, (err, result) => {
+				if(err) {
+					console.log(err)
+					return res.status(400).json({ message: 'Query error' });
+				}
+				res.send({ message: "USER_SERVER_LOGIN_SUCCESS", result });
+				return;
+			});
 		});
 	});
 }
