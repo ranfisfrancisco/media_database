@@ -28,8 +28,8 @@ module.exports.userLogin = async (req, res) => {
 		//user does not exist
 		if (result.length === 0){
 			//insert new user
-			let insertQuery = `INSERT INTO users (user_email)
-			VALUES "${userEmail}";`
+			let insertQuery = `INSERT INTO users (user_email, last_login_date)
+			VALUES ("${userEmail}", CURRENT_TIMESTAMP());`
 
 			conn.query(insertQuery, (err, result) => {
 				if(err) return res.status(400).json({ message: 'Query error' });
@@ -41,12 +41,21 @@ module.exports.userLogin = async (req, res) => {
 					console.log(err)
 					return res.status(400).json({ message: 'Query error' });
 				}
-				res.send({ message:"USER_SERVER_LOGIN_SUCCESS", result });
+				res.send({ message: "USER_SERVER_LOGIN_SUCCESS", result });
 				return;
 			});
 		} 
 
-		return res.send({ message:"USER_SERVER_LOGIN_SUCCESS", result });
+		let updateQuery = `UPDATE users SET last_login_date=CURRENT_TIMESTAMP() WHERE user_email="${userEmail}"`;
+
+		conn.query(updateQuery, (err, result) => {
+			if(err) {
+				console.log(err)
+				return res.status(400).json({ message: 'Query error' });
+			}
+			res.send({ message: "USER_SERVER_LOGIN_SUCCESS", result });
+			return;
+		});
 	});
 }
 
