@@ -75,9 +75,9 @@ const ManageMediaPage = () => {
 
 	const createFormOnFinish = () => {
 		let name = form.getFieldValue("createName")
-		let useDateRange = form.getFieldValue("createUseDate");
-		let releaseDateRange = form.getFieldValue("createReleaseDate");
-		let type =  valueToColID(form.getFieldValue("createType"), mediaTypes);
+		let useDate = (form.getFieldValue("createUseDate")) ? form.getFieldValue("createUseDate").format('YYYY-MM-DD') : null
+		let releaseDate = (form.getFieldValue("createReleaseDate")) ? form.getFieldValue("createReleaseDate").format('YYYY-MM-DD') : null
+		let type = valueToColID(form.getFieldValue("createType"), mediaTypes);
 		let ownership = valueToColID(form.getFieldValue("createOwnership"), mediaOwnerships);
 		let status = valueToColID(form.getFieldValue("createStatus"), mediaStatuses);
 
@@ -91,7 +91,7 @@ const ManageMediaPage = () => {
 			return;
 		}
 
-		dispatch(createMedia(userID, name, useDateRange, releaseDateRange, type,
+		dispatch(createMedia(userID, name, useDate, releaseDate, type,
 		  ownership, status));
 	}
 
@@ -261,8 +261,8 @@ const ManageMediaPage = () => {
 
 	const updateFormOnFinish = () => {
 		let name = form.getFieldValue("updateName")
-		let useDate = (form.getFieldValue("updateUseDate")) ? form.getFieldValue("updateUseDate").ownership('YYYY-MM-DD') : null
-		let releaseDate = (form.getFieldValue("updateReleaseDate")) ? form.getFieldValue("updateReleaseDate").ownership('YYYY-MM-DD') : null
+		let useDate = (form.getFieldValue("updateUseDate")) ? form.getFieldValue("updateUseDate").format('YYYY-MM-DD') : null
+		let releaseDate = (form.getFieldValue("updateReleaseDate")) ? form.getFieldValue("updateReleaseDate").format('YYYY-MM-DD') : null
 		let type =  valueToColID(form.getFieldValue("updateType"), mediaTypes);
 		let ownership = valueToColID(form.getFieldValue("updateOwnership"), mediaOwnerships);
 		let status = valueToColID(form.getFieldValue("updateStatus"), mediaStatuses);

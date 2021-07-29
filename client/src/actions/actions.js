@@ -27,6 +27,8 @@ export const createMedia = (userID, name, useDate, releaseDate, typeID, ownershi
 	dispatch({ type: 'CREATE_MEDIA_REQUEST' });
 	let response;
 
+	console.log(userID, name, useDate, releaseDate, typeID, ownershipID, statusID)
+
 	try {
 		response = await api.put('/media', {
 			user_id: userID,

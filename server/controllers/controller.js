@@ -95,10 +95,10 @@ module.exports.createMediaItem = async (req, res) => {
 		{col: "user_id", val: req.body.user_id},
 		{col: "name", val: (req.body.name) ? req.body.name.trim() : null},
 		{col: "type_id", val: req.body.type_id || null},
-		{col: "ownership_id", val: req.body.ownership_id || "DEFAULT"},
-		{col: "status_id", val: req.body.status_id || "DEFAULT"},
-		{col: "use_date", val: req.body.use_date || "DEFAULT"},
-		{col: "release_date", val: req.body.release_date || "DEFAULT"},
+		{col: "ownership_id", val: req.body.ownership_id || null},
+		{col: "status_id", val: req.body.status_id || null},
+		{col: "use_date", val: req.body.use_date || null},
+		{col: "release_date", val: req.body.release_date || null},
 	];
 
 	let colClause = "";
@@ -114,7 +114,7 @@ module.exports.createMediaItem = async (req, res) => {
 
 			colClause += `${cv.col}`;
 
-			if (cv.col === "name"){
+			if (cv.col === "name" || cv.col === "use_date" || cv.col === "release_date"){
 				valueClause += `"${cv.val}"`;
 			} else {
 				valueClause += `${cv.val}`;
@@ -132,6 +132,8 @@ module.exports.createMediaItem = async (req, res) => {
 	(${colClause})
 	VALUES (${valueClause});
 	`; 
+
+	console.log(query);
 
 	conn.query(query, (err, result) => {
 		if(err) {
