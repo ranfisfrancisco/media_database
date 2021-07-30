@@ -133,8 +133,6 @@ module.exports.createMediaItem = async (req, res) => {
 	VALUES (${valueClause});
 	`; 
 
-	console.log(query);
-
 	conn.query(query, (err, result) => {
 		if(err) {
 			console.log(err)
@@ -359,7 +357,10 @@ module.exports.getAllTypes = async (req, res) => {
 	ORDER BY type;`; 
 
 	conn.query(query, (err, result) => {
-		if(err) return res.status(400).json({ message: 'Query error' });
+		if(err){
+			console.log(err)
+			return res.status(400).json({ message: err.message });
+		} 
 		res.send({ message:"GET_ALL_MEDIA_TYPES_SUCCESS", result });
 	});
 }
@@ -370,7 +371,10 @@ module.exports.getAllOwnerships = async (req, res) => {
 	order by ownership_id `; 
 
 	conn.query(query, (err, result) => {
-		if(err) return res.status(400).json({ message: 'Query error' });
+		if(err){
+			console.log(err)
+			return res.status(400).json({ message: err.message });
+		} 
 		res.send({ message:"GET_ALL_MEDIA_OWNERSHIPS_SUCCESS", result });
 	});
 }
@@ -381,7 +385,10 @@ module.exports.getAllStatuses = async (req, res) => {
 	order by status_id `; 
 
 	conn.query(query, (err, result) => {
-		if(err) return res.status(400).json({ message: 'Query error' });
+		if(err){
+			console.log(err)
+			return res.status(400).json({ message: err.message });
+		} 
 		res.send({ message:"GET_ALL_MEDIA_STATUSES_SUCCESS", result });
 	});
 }

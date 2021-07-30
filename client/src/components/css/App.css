@@ -16,10 +16,14 @@ button {
 	margin-top: 15%;
 }
 
+
+
 .search-content-wrapper {
 	width: 80%;
 	margin: auto;
 	margin-top: 5%;
+	overflow:hidden;
+	/* background-color: #403c3c; */
 }
 
 .logout-button-wrapper {

@@ -1,5 +1,5 @@
 const axios = require('axios');
 
 module.exports = axios.create({
-	baseURL: "/api",
+	baseURL: "https://my-media-database.herokuapp.com/api",
 });
