@@ -8,6 +8,8 @@ button {
 
 .app-wrapper {
 	height: 100%;
+	/*background-color: #403c3c;
+	color: white;*/
 }
 
 .homepage-wrapper {
@@ -15,8 +17,6 @@ button {
 	margin: auto;
 	margin-top: 15%;
 }
-
-
 
 .search-content-wrapper {
 	width: 80%;
