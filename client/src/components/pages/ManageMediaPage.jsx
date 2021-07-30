@@ -421,7 +421,7 @@ const ManageMediaPage = () => {
 		let dataSource = searchResult.data;
 
 		let columns = [
-			{ title: 'ID', dataIndex: 'media_id', sorter: {compare: (a,b) => a.id - b.id} },
+			{ title: 'ID', dataIndex: 'media_id', sorter: {compare: (a,b) => a.media_id - b.media_id} },
 			{ title: 'Name', dataIndex: 'name', sorter: {compare: (a,b) => a.name > b.name} },
 			{ title: 'Release Date', dataIndex: 'release_date', render: ((date) => getFullDate(date)),
 				 sorter: {compare: (a,b) => new Date(a.release_date) - new Date(b.release_date)} },
