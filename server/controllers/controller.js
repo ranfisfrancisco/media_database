@@ -1,4 +1,5 @@
 const conn = require('../database/initConn');
+var toUnnamed = require('named-placeholders')();
 
 const authenticateAPIKey = (key) => {
 	return key === "test";
@@ -21,7 +22,6 @@ module.exports.userLogin = async (req, res) => {
 	if (!req.body.user_email)
 		return res.status(400).json({ message: 'Input error: did not provide email of user' });
 	
-
 	let userEmail = req.body.user_email;
 
 	let idQuery = `SELECT user_id
@@ -30,7 +30,10 @@ module.exports.userLogin = async (req, res) => {
 
 	//check if user exists
 	conn.query(idQuery, (err, result) => {
-		if(err) return res.status(400).json({ message: 'Query error' });
+		if(err){
+			console.log(err)
+		 return res.status(400).json({ message: 'Query error' });
+		}
 
 		//user does not exist
 		if (result.length === 0){
@@ -200,6 +203,9 @@ module.exports.searchMediaItem = async (req, res) => {
 	if (req.query.exact_name_search && (req.query.exact_name_search === "1" || req.query.exact_name_search === "true"))
 		exactNameSearch = true;
 
+	if (!exactNameSearch)
+		req.query.name = `%${req.query.name}%`;
+
 	whereClause = "WHERE ";
 	let statementCount = 0;
 
@@ -210,15 +216,12 @@ module.exports.searchMediaItem = async (req, res) => {
 
 			if (f.col === "name"){
 				//if true, match exact name, else use LIKE for closest match
-				if (exactNameSearch)
-					whereClause += ` ${f.col} = "${f.val}" `;
-				else
-					whereClause += ` ${f.col} LIKE "%${f.val}%" `;
+				whereClause += ` ${f.col} LIKE :${f.col} `;
 			} else if (f.col === "use_date" || f.col === "release_date"){
-				whereClause += ` ${f.col} BETWEEN "${f.val[0]}" AND "${f.val[1]}"`;
+				whereClause += ` ${f.col} BETWEEN :${f.col}_lower AND ${f.col}_upper`;
 			}
 			else{
-				whereClause += ` ${f.col}=${f.val} `;
+				whereClause += ` ${f.col} = :${f.col} `;
 			}
 			statementCount++;
 		}
@@ -234,13 +237,28 @@ module.exports.searchMediaItem = async (req, res) => {
 	${whereClause}
 	ORDER BY name;`; 
 
-	conn.query(query, (err, result) => {
-		if(err) {
-			console.log(err)
-			return res.status(400).json({ message: err.message });
+	let q = toUnnamed(query, {
+		user_id: req.query.user_id,
+		media_id: req.query.media_id,
+		name: req.query.name,
+		type_id: req.query.type_id,
+		ownership_id: req.query.ownership_id,
+		status_id: req.query.status_id,
+		use_date_lower: req.query?.use_date?.[0],
+		use_date_higher: req.query?.use_date?.[1],
+		release_date_lower: req.query?.release_date?.[0],
+		release_date_higher: req.query?.release_date?.[1],
+	});
+
+	console.log(q);
+
+	conn.query(q[0], q[1], (error, result) => {
+		if (error){
+			console.log(error)
+			return res.status(400).json({ message: error.message });
 		}
 		res.send({ message:"GET_MEDIA_SUCCESS", result });
-	});
+	}); 
 }
 
 /*
