@@ -129,9 +129,9 @@ module.exports.createMediaItem = async (req, res) => {
 			colClause += `${cv.col}`;
 
 			if (cv.col === "name" || cv.col === "use_date" || cv.col === "release_date"){
-				valueClause += `"${cv.val}"`;
+				valueClause += `:${cv.col}`;
 			} else {
-				valueClause += `${cv.val}`;
+				valueClause += `:${cv.col}`;
 			}
 			
 			statementCount++;
@@ -147,7 +147,17 @@ module.exports.createMediaItem = async (req, res) => {
 	VALUES (${valueClause});
 	`; 
 
-	conn.query(query, (err, result) => {
+	let formattedQuery = toUnnamed(query, {
+		user_id: req.body.user_id,
+		name: req.body.name,
+		type_id: req.body.type_id,
+		ownership_id: req.body.ownership_id,
+		status_id: req.body.status_id,
+		use_date: req.body?.use_date_range,
+		release_date: req.body?.release_date,
+	});
+
+	conn.query(formattedQuery[0], formattedQuery[1], (err, result) => {
 		if(err) {
 			console.log(err)
 			return res.status(400).json({ message: 'Query error' });
