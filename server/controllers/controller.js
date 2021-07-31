@@ -331,18 +331,6 @@ module.exports.updateMediaItem = async (req, res) => {
 		return res.status(400).json({ message: 'Input error: provided no columns to update' });
 	}
 
-	let idClause = '(';
-	let idCount = 0;
-	for (var id of idList){
-		if (idCount > 0)
-			idClause += ', '
-
-		idClause += `:${id}`
-
-		idCount++;
-	}
-	idClause += ')'
-
 	let query = `UPDATE media_items
 	SET ${setClause}
 	WHERE media_id IN (:id_list);`; 
@@ -380,26 +368,20 @@ module.exports.deleteMediaItem = async (req, res) => {
 
 	let idList = (req.body.media_id_list) ? req.body.media_id_list : [];
 
-	if (idList.length < 1){
+	if (idList.length < 1)
 		return res.status(400).json({ message: 'Input error: did not provide list of ID to delete' });
-	}
-
-	let idClause = '(';
-	let idCount = 0;
-	for (var id of idList){
-		if (idCount > 0)
-			idClause += ', '
-
-		idClause += `${id}`
-
-		idCount++;
-	}
-	idClause += ')'
 
 	let query = `DELETE FROM media_items
-	WHERE media_id IN ${idClause};`; 
+	WHERE media_id IN (:id_list);`; 
 
-	conn.query(query, (err, result) => {
+	let formattedQuery = toUnnamed(query, {
+		id_list: idList,
+	});
+
+	console.log(formattedQuery)
+	console.log(idList)
+
+	conn.query(formattedQuery[0], formattedQuery[1], (err, result) => {
 		if(err) {
 			console.log(err);
 			return res.status(400).json({ message: 'Query error' });
