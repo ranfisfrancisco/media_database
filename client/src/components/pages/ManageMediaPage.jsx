@@ -37,7 +37,7 @@ const ManageMediaPage = () => {
 	const returnMomentDateRangeStrings = (start, finish) => {
 		if (start === undefined || finish === undefined)
 			return null
-		return [start.ownership('YYYY-MM-DD'), finish.format('YYYY-MM-DD')];
+		return [start.format('YYYY-MM-DD'), finish.format('YYYY-MM-DD')];
 	};
 
 	const processDateRange = (dateRange) => {

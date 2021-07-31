@@ -218,7 +218,7 @@ module.exports.searchMediaItem = async (req, res) => {
 				//if true, match exact name, else use LIKE for closest match
 				whereClause += ` ${f.col} LIKE :${f.col} `;
 			} else if (f.col === "use_date" || f.col === "release_date"){
-				whereClause += ` ${f.col} BETWEEN :${f.col}_lower AND ${f.col}_upper`;
+				whereClause += ` ${f.col} BETWEEN :${f.col}_lower AND :${f.col}_upper`;
 			}
 			else{
 				whereClause += ` ${f.col} = :${f.col} `;
@@ -244,10 +244,10 @@ module.exports.searchMediaItem = async (req, res) => {
 		type_id: req.query.type_id,
 		ownership_id: req.query.ownership_id,
 		status_id: req.query.status_id,
-		use_date_lower: req.query?.use_date?.[0],
-		use_date_higher: req.query?.use_date?.[1],
-		release_date_lower: req.query?.release_date?.[0],
-		release_date_higher: req.query?.release_date?.[1],
+		use_date_lower: req.query?.use_date_range?.[0],
+		use_date_upper: req.query?.use_date_range?.[1],
+		release_date_lower: req.query?.release_date_range?.[0],
+		release_date_upper: req.query?.release_date_range?.[1],
 	});
 
 	console.log(q);
