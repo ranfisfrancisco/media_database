@@ -159,7 +159,7 @@ module.exports.createMediaItem = async (req, res) => {
 		type_id: req.body.type_id,
 		ownership_id: req.body.ownership_id,
 		status_id: req.body.status_id,
-		use_date: req.body?.use_date_range,
+		use_date: req.body?.use_date,
 		release_date: req.body?.release_date,
 	});
 
@@ -355,11 +355,12 @@ module.exports.updateMediaItem = async (req, res) => {
 		type_id: req.body.type_id,
 		ownership_id: req.body.ownership_id,
 		status_id: req.body.status_id,
-		use_date: req.body?.use_date_range,
+		use_date: req.body?.use_date,
 		release_date: req.body?.release_date,
 	});
 
 	console.log(formattedQuery);
+	console.log(req.body.use_date);
 
 	conn.query(formattedQuery[0], formattedQuery[1], (err, result) => {
 		if(err) {
