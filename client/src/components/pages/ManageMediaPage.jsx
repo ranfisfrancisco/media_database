@@ -114,11 +114,11 @@ const ManageMediaPage = () => {
 					<Input/>
 				</Form.Item>
 
-				<Form.Item label="Use Date" name='createUseDate'>
+				<Form.Item label="Release Date" name='createReleaseDate'>
 					<DatePicker/>
 				</Form.Item>
 
-				<Form.Item label="Release Date" name='createReleaseDate'>
+				<Form.Item label="Use Date" name='createUseDate'>
 					<DatePicker/>
 				</Form.Item>
 
@@ -217,11 +217,11 @@ const ManageMediaPage = () => {
 					<Checkbox>Find Exact Name</Checkbox>
 				</Form.Item>
 
-				<Form.Item label="Use Date" name='searchUseDateRange'>
+				<Form.Item label="Release Date" name='searchReleaseDateRange'>
 					<RangePicker/>
 				</Form.Item>
 
-				<Form.Item label="Release Date" name='searchReleaseDateRange'>
+				<Form.Item label="Use Date" name='searchUseDateRange'>
 					<RangePicker/>
 				</Form.Item>
 
@@ -324,11 +324,11 @@ const ManageMediaPage = () => {
 					<Input  />
 				</Form.Item>
 
-				<Form.Item label="Use Date" name="updateUseDate">
+				<Form.Item label="Release Date" name="updateReleaseDate">
 					<DatePicker/>
 				</Form.Item>
 
-				<Form.Item label="Release Date" name="updateReleaseDate">
+				<Form.Item label="Use Date" name="updateUseDate">
 					<DatePicker/>
 				</Form.Item>
 

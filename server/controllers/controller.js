@@ -337,7 +337,7 @@ module.exports.updateMediaItem = async (req, res) => {
 		if (idCount > 0)
 			idClause += ', '
 
-		idClause += `${id}`
+		idClause += `:${id}`
 
 		idCount++;
 	}
@@ -345,10 +345,10 @@ module.exports.updateMediaItem = async (req, res) => {
 
 	let query = `UPDATE media_items
 	SET ${setClause}
-	WHERE media_id IN ${idClause};
-	`; 
+	WHERE media_id IN (:id_list);`; 
 
 	let formattedQuery = toUnnamed(query, {
+		id_list: idList,
 		user_id: req.body.user_id,
 		media_id: req.body.media_id,
 		name: req.body.name,
@@ -358,9 +358,6 @@ module.exports.updateMediaItem = async (req, res) => {
 		use_date: req.body?.use_date,
 		release_date: req.body?.release_date,
 	});
-
-	console.log(formattedQuery);
-	console.log(req.body.use_date);
 
 	conn.query(formattedQuery[0], formattedQuery[1], (err, result) => {
 		if(err) {
