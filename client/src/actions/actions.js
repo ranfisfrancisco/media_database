@@ -2,13 +2,16 @@ import { message } from 'antd';
 
 import api from './api/api';
 
+const apiKey = "test"
+
 export const userServerLogin = (userEmail) => async (dispatch) => {
 	dispatch({ type: 'USER_SERVER_LOGIN' });
 	let response;
 
 	try {
 		response = await api.post('/media_users', {
-			user_email: userEmail
+			user_email: userEmail,
+			api_key: apiKey
 		});
 	} catch(error) {
 		console.log(error);
@@ -37,7 +40,8 @@ export const createMedia = (userID, name, useDate, releaseDate, typeID, ownershi
 			release_date: (typeof(releaseDate) === 'string' && releaseDate.trim() !== "") ? releaseDate: null,
 			type_id: (typeID !== -1) ? typeID : null,
 			ownership_id: (ownershipID !== -1) ? ownershipID : null,
-			status_id: (statusID !== -1) ? statusID : null
+			status_id: (statusID !== -1) ? statusID : null,
+			api_key: apiKey
 		});
 	} catch(error) {
 		console.log(error.message);
@@ -68,7 +72,8 @@ export const searchMedia = (userID, mediaID, name, useDateRange, releaseDateRang
 				type_id: (typeID !== -1) ? typeID : null,
 				ownership_id: (ownershipID !== -1) ? ownershipID : null,
 				status_id: (statusID !== -1) ? statusID : null,
-				exact_name_search: exactNameSearch
+				exact_name_search: exactNameSearch,
+				api_key: apiKey
 			}
 		});
 	} catch(error) {
@@ -95,7 +100,8 @@ export const updateMedia = (mediaIdList, name, useDate, releaseDate, typeID, own
 			release_date: (typeof(releaseDate) === 'string' && releaseDate.trim() !== "") ? releaseDate: null,
 			type_id: (typeID !== -1) ? typeID : null,
 			ownership_id: (ownershipID !== -1) ? ownershipID : null,
-			status_id: (statusID !== -1) ? statusID : null
+			status_id: (statusID !== -1) ? statusID : null,
+			api_key: apiKey
 		});
 	} catch(error) {
 		console.log(error)
@@ -116,8 +122,9 @@ export const deleteMedia = (mediaIdList) => async (dispatch) => {
 
 	try {
 		response = await api.delete('/media', {data: {
-			media_id_list: mediaIdList}
-		});
+			media_id_list: mediaIdList,
+			api_key: apiKey
+		}});
 	} catch(error) {
 		console.log(error)
 		dispatch({ type: 'DELETE_MEDIA_FAILED' });
@@ -135,7 +142,11 @@ export const getAllMediaTypes = () => async (dispatch) => {
 	dispatch({ type: 'GET_ALL_MEDIA_TYPES_REQUEST' });
 	let response;
 	try {
-		response = await api.get('/media_types');
+		response = await api.get('/media_types', {
+			params: {
+				api_key: apiKey
+			}
+		});
 	} catch(error) {
 		console.log(error)
 		dispatch({ type: 'GET_ALL_MEDIA_TYPES_FAILED' });
@@ -153,7 +164,11 @@ export const getAllMediaOwnerships = () => async (dispatch) => {
 	dispatch({ type: 'GET_ALL_MEDIA_OWNERSHIPS_REQUEST' });
 	let response;
 	try {
-		response = await api.get('/media_ownerships');
+		response = await api.get('/media_ownerships', {
+			params: {
+				api_key: apiKey
+			}
+		});
 	} catch(error) {
 		console.log(error)
 		dispatch({ type: 'GET_ALL_MEDIA_OWNERSHIPS_FAILED' });
@@ -171,7 +186,11 @@ export const getAllMediaStatuses = () => async (dispatch) => {
 	dispatch({ type: 'GET_ALL_MEDIA_STATUSES_REQUEST' });
 	let response;
 	try {
-		response = await api.get('/media_statuses');
+		response = await api.get('/media_statuses', {
+			params: {
+				api_key: apiKey
+			}
+		});
 	} catch(error) {
 		console.log(error)
 		dispatch({ type: 'GET_ALL_MEDIA_STATUSES_FAILED' });
