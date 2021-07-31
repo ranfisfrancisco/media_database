@@ -378,9 +378,6 @@ module.exports.deleteMediaItem = async (req, res) => {
 		id_list: idList,
 	});
 
-	console.log(formattedQuery)
-	console.log(idList)
-
 	conn.query(formattedQuery[0], formattedQuery[1], (err, result) => {
 		if(err) {
 			console.log(err);

@@ -381,7 +381,6 @@ const ManageMediaPage = () => {
 		let selectedIDList = selectedRows.map(function(row){
 			return row.media_id;
 		})
-		console.log("DEBUF", selectedIDList)
 
 		dispatch(deleteMedia(selectedIDList));
 		setTimeout(function () {
