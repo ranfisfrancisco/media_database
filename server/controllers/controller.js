@@ -237,7 +237,7 @@ module.exports.searchMediaItem = async (req, res) => {
 	${whereClause}
 	ORDER BY name;`; 
 
-	let q = toUnnamed(query, {
+	let formattedQuery = toUnnamed(query, {
 		user_id: req.query.user_id,
 		media_id: req.query.media_id,
 		name: req.query.name,
@@ -250,9 +250,7 @@ module.exports.searchMediaItem = async (req, res) => {
 		release_date_upper: req.query?.release_date_range?.[1],
 	});
 
-	console.log(q);
-
-	conn.query(q[0], q[1], (error, result) => {
+	conn.query(formattedQuery[0], formattedQuery[1], (error, result) => {
 		if (error){
 			console.log(error)
 			return res.status(400).json({ message: error.message });
@@ -438,50 +436,5 @@ module.exports.getAllStatuses = async (req, res) => {
 			return res.status(400).json({ message: err.message });
 		} 
 		res.send({ message:"GET_ALL_MEDIA_STATUSES_SUCCESS", result });
-	});
-}
-
-//DEPRECIATED. Equivalent to calling search with no parameters
-module.exports.getAllMedia = async (req, res) => {
-	let query = `SELECT id, name, releaseDate, useDate, type, ownership, status FROM media_items
-	NATURAL JOIN media_types
-	NATURAL JOIN media_ownerships
-	NATURAL JOIN media_statuses
-	ORDER BY id;`; 
-
-	conn.query(query, (err, result) => {
-		if(err) return res.status(400).json({ message: 'Query error' });
-		res.send({ message:"GET_ALL_MEDIA_SUCCESS", result });
-	});
-}
-
-//DEPRECIATED. Use search instead.
-module.exports.searchByID = async (req, res) => {
-	let { mediaID } = req.params;
-	let query = `SELECT id, name, releaseDate, useDate, type, ownership, status FROM media_items
-	NATURAL JOIN media_types
-	NATURAL JOIN media_ownerships
-	NATURAL JOIN media_statuses
-	WHERE ID=${mediaID};`; 
-
-	conn.query(query, (err, result) => {
-		if(err) return res.status(400).json({ message: 'Query error' });
-		res.send({ message:"GET_BY_ID_SUCCESS", result });
-	});
-}
-
-//DEPRECIATED. Use search instead.
-module.exports.searchByName = async (req, res) => {
-	let { mediaName } = req.params;
-	let query = 
-	`SELECT id, name, releaseDate, useDate, type, ownership, status FROM media_items
-	NATURAL JOIN media_types
-	NATURAL JOIN media_ownerships
-	NATURAL JOIN media_statuses
-	WHERE name LIKE "%${mediaName}%"`; 
-
-	conn.query(query, (err, result) => {
-		if(err) return res.status(400).json({ message: mediaName });
-		res.send({ message:"GET_BY_NAME_SUCCESS", result });
 	});
 }
