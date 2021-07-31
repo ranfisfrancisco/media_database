@@ -1,5 +1,9 @@
 const conn = require('../database/initConn');
 
+const authenticateAPIKey = (key) => {
+	return key === "test";
+}
+
 const processDateRange = (range) => {
 	if (range?.length !== 2)
 		return null;
@@ -11,9 +15,12 @@ module.exports.home = async (req, res) => {
 }
 
 module.exports.userLogin = async (req, res) => {
-	if (!req.body.user_email){
+	if (!authenticateAPIKey(req.body.api_key))
+		return res.status(401).json({ message: 'Unauthorized API Key' });
+
+	if (!req.body.user_email)
 		return res.status(400).json({ message: 'Input error: did not provide email of user' });
-	}
+	
 
 	let userEmail = req.body.user_email;
 
@@ -72,6 +79,7 @@ EXPECTS req body to have
 int: user_id (the ID of the user) 
 string: name
 int: type_id
+string: api_key
 Will return error without these values.
 
 OPTIONAL: req body can also include:
@@ -81,6 +89,9 @@ date (as string): use_date
 date (as string): release_date
 */
 module.exports.createMediaItem = async (req, res) => {
+	if (!authenticateAPIKey(req.body.api_key))
+		return res.status(401).json({ message: 'Unauthorized API Key' });
+
 	if (!req.body.user_id)
 		return res.status(400).json({ message: 'Input error: did not provide user ID' });
 
@@ -148,6 +159,7 @@ Function for searching media item table.
 
 EXPECTS req.query to have
 int: user_id (the ID of the user) 
+string: api_key
 
 OPTIONAL: req.query can include:
 int: id
@@ -164,6 +176,9 @@ message: string with success or failure description
 resut: array of objects each representing a row in the array
 */
 module.exports.searchMediaItem = async (req, res) => {
+	if (!authenticateAPIKey(req.query.api_key))
+		return res.status(401).json({ message: 'Unauthorized API Key' });
+
 	if (!req.query.user_id)
 		return res.status(400).json({ message: 'Input error: did not provide user ID' });
 		
@@ -245,6 +260,9 @@ date (as string): use_date
 date (as string): release_date
 */
 module.exports.updateMediaItem = async (req, res) => {
+	if (!authenticateAPIKey(req.body.api_key))
+		return res.status(401).json({ message: 'Unauthorized API Key' });
+
 	let filters = 
 	[{col: "name", val: (req.body.name) ? req.body.name.trim() : null},
 	{col: "type_id", val: req.body.type_id || null},
@@ -321,6 +339,9 @@ int[]: media_id_list (List of ID's to be deleted)
 Will return error otherwise
 */
 module.exports.deleteMediaItem = async (req, res) => {
+	if (!authenticateAPIKey(req.body.api_key))
+		return res.status(401).json({ message: 'Unauthorized API Key' });
+
 	let idList = (req.body.media_id_list) ? req.body.media_id_list : [];
 
 	if (idList.length < 1){
@@ -352,6 +373,9 @@ module.exports.deleteMediaItem = async (req, res) => {
 }
 
 module.exports.getAllTypes = async (req, res) => {
+	if (!authenticateAPIKey(req.query.api_key))
+		return res.status(401).json({ message: 'Unauthorized API Key' });
+
 	let query = `SELECT type_id AS id, type AS "option"
 	FROM media_types
 	ORDER BY type;`; 
@@ -366,6 +390,9 @@ module.exports.getAllTypes = async (req, res) => {
 }
 
 module.exports.getAllOwnerships = async (req, res) => {
+	if (!authenticateAPIKey(req.query.api_key))
+		return res.status(401).json({ message: 'Unauthorized API Key' });
+
 	let query = `SELECT ownership_id AS id, ownership AS "option"
 	FROM media_ownerships
 	order by ownership_id `; 
@@ -380,6 +407,9 @@ module.exports.getAllOwnerships = async (req, res) => {
 }
 
 module.exports.getAllStatuses = async (req, res) => {
+	if (!authenticateAPIKey(req.query.api_key))
+		return res.status(401).json({ message: 'Unauthorized API Key' });
+		
 	let query = `SELECT status_id AS id, status AS "option"
 	FROM media_statuses
 	order by status_id `; 
