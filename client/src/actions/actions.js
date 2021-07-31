@@ -92,6 +92,8 @@ export const updateMedia = (mediaIdList, name, useDate, releaseDate, typeID, own
 	dispatch({ type: 'UPDATE_MEDIA_REQUEST' });
 	let response;
 
+	console.log(ownershipID)
+
 	try {
 		response = await api.post('/media', {
 			media_id_list: mediaIdList,

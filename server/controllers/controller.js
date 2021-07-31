@@ -11,6 +11,12 @@ const processDateRange = (range) => {
 	return range;
 }
 
+const processNumber = (num) => {
+	if (typeof num === "number")
+		return num
+	return null;
+}
+
 module.exports.home = async (req, res) => {
 	res.send("Server")
 }
@@ -291,9 +297,9 @@ module.exports.updateMediaItem = async (req, res) => {
 
 	let filters = 
 	[{col: "name", val: (req.body.name) ? req.body.name.trim() : null},
-	{col: "type_id", val: req.body.type_id || null},
-	{col: "ownership_id", val: req.body.ownership_id || null},
-	{col: "status_id", val: req.body.status_id || null},
+	{col: "type_id", val: processNumber(req.body.type_id)},
+	{col: "ownership_id", val: processNumber(req.body.ownership_id)},
+	{col: "status_id", val: processNumber(req.body.status_id)},
 	{col: "use_date", val: req.body.use_date || null},
 	{col: "release_date", val: req.body.release_date || null},
 	];
@@ -316,14 +322,7 @@ module.exports.updateMediaItem = async (req, res) => {
 			if(statementCount > 0)
 				setClause += ", ";
 
-			if (f.col === "name"){
-				setClause += `${f.col}="${f.val}"`
-			} else if (f.col === "use_date" || f.col === "release_date"){
-				setClause += `${f.col}="${f.val}"`
-			} 
-			else {
-				setClause += `${f.col}=${f.val}`
-			}
+			setClause += `${f.col}=:${f.col}`
 			statementCount++;
 		}
 	}
@@ -349,10 +348,23 @@ module.exports.updateMediaItem = async (req, res) => {
 	WHERE media_id IN ${idClause};
 	`; 
 
-	conn.query(query, (err, result) => {
+	let formattedQuery = toUnnamed(query, {
+		user_id: req.body.user_id,
+		media_id: req.body.media_id,
+		name: req.body.name,
+		type_id: req.body.type_id,
+		ownership_id: req.body.ownership_id,
+		status_id: req.body.status_id,
+		use_date: req.body?.use_date_range,
+		release_date: req.body?.release_date,
+	});
+
+	console.log(formattedQuery);
+
+	conn.query(formattedQuery[0], formattedQuery[1], (err, result) => {
 		if(err) {
-			return res.status(400).json({ message: 'Query error' });
 			console.log(err)
+			return res.status(400).json({ message: 'Query error' });
 		}
 		res.send({ message:"UPDATE_MEDIA_SUCCESS", result });
 	});
