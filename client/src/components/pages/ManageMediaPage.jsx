@@ -268,7 +268,7 @@ const ManageMediaPage = () => {
 		let status = valueToColID(form.getFieldValue("updateStatus"), mediaStatuses);
 	
 		if (selectedRows.length > 1 && (name !== "" && name !== undefined)){
-			console.log("rows", selectedRows.length, "name", name)
+			console.log("Rows:", selectedRows, "\nName: ", name);
 			alert("You can't change the names of multiple items to the same name!");
 			return;
 		}

@@ -14,7 +14,7 @@ const App = () => {
 	const page = useSelector(pageSelector);
 
 	const renderPage = () => {
-		if (page.user_id === null || page.user_id === undefined) {
+		if (page.userID === null || page.userID === undefined) {
 			return (
 				<div className='login-wrapper'>
 					{<LoginPage/>}

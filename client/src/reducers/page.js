@@ -25,7 +25,8 @@ export default (state = initState, action) => {
             return {
                 ...state,
                 visible: 'homepage',
-                userEmail: null
+                userEmail: null,
+                userID: null,
             }
         }
         default:
