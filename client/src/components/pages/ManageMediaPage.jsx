@@ -74,7 +74,7 @@ const ManageMediaPage = () => {
 	}
 
 	const createFormOnFinish = () => {
-		let name = form.getFieldValue("createName")
+		let name = form.getFieldValue("createName")?.trim()
 		let useDate = (form.getFieldValue("createUseDate")) ? form.getFieldValue("createUseDate").format('YYYY-MM-DD') : null
 		let releaseDate = (form.getFieldValue("createReleaseDate")) ? form.getFieldValue("createReleaseDate").format('YYYY-MM-DD') : null
 		let type = valueToColID(form.getFieldValue("createType"), mediaTypes);
@@ -160,7 +160,7 @@ const ManageMediaPage = () => {
 
 	const submitSearch = () => {
 		let id = form.getFieldValue("searchID")
-		let name = form.getFieldValue("searchName")
+		let name = form.getFieldValue("searchName")?.trim()
 		let useDateRange = processDateRange(form.getFieldValue("searchUseDateRange"));
 		let releaseDateRange = processDateRange(form.getFieldValue("searchReleaseDateRange"));
 		let type =  valueToColID(form.getFieldValue("searchType"), mediaTypes);
@@ -260,15 +260,16 @@ const ManageMediaPage = () => {
     }
 
 	const updateFormOnFinish = () => {
-		let name = form.getFieldValue("updateName")
+		let name = form.getFieldValue("updateName")?.trim()
 		let useDate = (form.getFieldValue("updateUseDate")) ? form.getFieldValue("updateUseDate").format('YYYY-MM-DD') : null
 		let releaseDate = (form.getFieldValue("updateReleaseDate")) ? form.getFieldValue("updateReleaseDate").format('YYYY-MM-DD') : null
 		let type =  valueToColID(form.getFieldValue("updateType"), mediaTypes);
 		let ownership = valueToColID(form.getFieldValue("updateOwnership"), mediaOwnerships);
 		let status = valueToColID(form.getFieldValue("updateStatus"), mediaStatuses);
 	
-		if (selectedRows.length > 1 && name !== ""){
-			alert("You cannot change the names of multiple items to the same name!")
+		if (selectedRows.length > 1 && (name !== "" && name !== undefined)){
+			console.log("rows", selectedRows.length, "name", name)
+			alert("You can't change the names of multiple items to the same name!");
 			return;
 		}
 

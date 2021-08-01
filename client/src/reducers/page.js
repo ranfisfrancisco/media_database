@@ -1,5 +1,5 @@
 const initState = {
-	visible: 'homepage',
+	visible: 'managemediapage',
     userEmail: null,
     userID: null
 };
@@ -9,7 +9,6 @@ export default (state = initState, action) => {
 		case 'USER_LOGIN_SUCCESS': {
             return {
                 ...state,
-                visible: 'managemediapage',
                 userEmail: action.payload.userEmail
             }
         }
@@ -17,6 +16,7 @@ export default (state = initState, action) => {
         case 'USER_SERVER_LOGIN_SUCCESS': {
             return {
                 ...state,
+                visible: 'managemediapage',
                 userID: action.payload[0].user_id
             }
         }

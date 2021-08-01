@@ -14,13 +14,13 @@ const App = () => {
 	const page = useSelector(pageSelector);
 
 	const renderPage = () => {
-		if (page.visible === 'homepage') {
+		if (page.user_id === null || page.user_id === undefined) {
 			return (
 				<div className='login-wrapper'>
 					{<LoginPage/>}
 				</div>
 			);
-		} else if(page.visible === 'managemediapage') {
+		} else if (page.visible === 'managemediapage') {
 			return (<div className='login-wrapper'>
 					{<SelectPage/>}
 			</div>)

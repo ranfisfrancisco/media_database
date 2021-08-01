@@ -22,6 +22,11 @@ module.exports.home = async (req, res) => {
 	res.send("Server")
 }
 
+/*
+Function for loggin in a user.
+EXPECTS req body to have 
+string: user_email
+*/
 module.exports.userLogin = async (req, res) => {
 	if (!authenticateAPIKey(req.body.api_key))
 		return res.status(401).json({ message: 'Unauthorized API Key' });
@@ -166,7 +171,7 @@ module.exports.createMediaItem = async (req, res) => {
 
 	conn.query(formattedQuery[0], formattedQuery[1], (err, result) => {
 		if(err) {
-			console.log(err)
+			console.log(err);
 			return res.status(400).json({ message: 'Query error' });
 		}
 		res.send({ message:"CREATE_MEDIA_SUCCESS", result });
@@ -267,10 +272,10 @@ module.exports.searchMediaItem = async (req, res) => {
 		release_date_upper: req.query?.release_date_range?.[1],
 	});
 
-	conn.query(formattedQuery[0], formattedQuery[1], (error, result) => {
-		if (error){
-			console.log(error)
-			return res.status(400).json({ message: error.message });
+	conn.query(formattedQuery[0], formattedQuery[1], (err, result) => {
+		if (err){
+			console.log(err);
+			return res.status(400).json({ message: err.message });
 		}
 		res.send({ message:"GET_MEDIA_SUCCESS", result });
 	}); 
@@ -350,7 +355,7 @@ module.exports.updateMediaItem = async (req, res) => {
 
 	conn.query(formattedQuery[0], formattedQuery[1], (err, result) => {
 		if(err) {
-			console.log(err)
+			console.log(err);
 			return res.status(400).json({ message: 'Query error' });
 		}
 		res.send({ message:"UPDATE_MEDIA_SUCCESS", result });
