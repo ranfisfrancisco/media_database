@@ -1,8 +1,9 @@
+require('dotenv').config();
 const conn = require('../database/initConn');
 var toUnnamed = require('named-placeholders')();
 
 const authenticateAPIKey = (key) => {
-	return key === "test";
+	return key === process.env.API_KEY;
 }
 
 const processDateRange = (range) => {

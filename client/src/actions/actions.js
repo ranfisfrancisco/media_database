@@ -2,7 +2,7 @@ import { message } from 'antd';
 
 import api from './api/api';
 
-const apiKey = "test"
+const API_KEY = process.env.REACT_APP_API_KEY;
 
 export const userServerLogin = (userEmail) => async (dispatch) => {
 	dispatch({ type: 'USER_SERVER_LOGIN' });
@@ -11,7 +11,7 @@ export const userServerLogin = (userEmail) => async (dispatch) => {
 	try {
 		response = await api.post('/media_users', {
 			user_email: userEmail,
-			api_key: apiKey
+			api_key: API_KEY
 		});
 	} catch(error) {
 		console.log(error);
@@ -41,7 +41,7 @@ export const createMedia = (userID, name, useDate, releaseDate, typeID, ownershi
 			type_id: (typeID !== -1) ? typeID : null,
 			ownership_id: (ownershipID !== -1) ? ownershipID : null,
 			status_id: (statusID !== -1) ? statusID : null,
-			api_key: apiKey
+			api_key: API_KEY
 		});
 	} catch(error) {
 		console.log(error.message);
@@ -73,7 +73,7 @@ export const searchMedia = (userID, mediaID, name, useDateRange, releaseDateRang
 				ownership_id: (ownershipID !== -1) ? ownershipID : null,
 				status_id: (statusID !== -1) ? statusID : null,
 				exact_name_search: exactNameSearch,
-				api_key: apiKey
+				api_key: API_KEY
 			}
 		});
 	} catch(error) {
@@ -101,7 +101,7 @@ export const updateMedia = (mediaIdList, name, useDate, releaseDate, typeID, own
 			type_id: (typeID !== -1) ? typeID : null,
 			ownership_id: (ownershipID !== -1) ? ownershipID : null,
 			status_id: (statusID !== -1) ? statusID : null,
-			api_key: apiKey
+			api_key: API_KEY
 		});
 	} catch(error) {
 		console.log(error)
@@ -123,7 +123,7 @@ export const deleteMedia = (mediaIdList) => async (dispatch) => {
 	try {
 		response = await api.delete('/media', {data: {
 			media_id_list: mediaIdList,
-			api_key: apiKey
+			api_key: API_KEY
 		}});
 	} catch(error) {
 		console.log(error)
@@ -144,7 +144,7 @@ export const getAllMediaTypes = () => async (dispatch) => {
 	try {
 		response = await api.get('/media_types', {
 			params: {
-				api_key: apiKey
+				api_key: API_KEY
 			}
 		});
 	} catch(error) {
@@ -166,7 +166,7 @@ export const getAllMediaOwnerships = () => async (dispatch) => {
 	try {
 		response = await api.get('/media_ownerships', {
 			params: {
-				api_key: apiKey
+				api_key: API_KEY
 			}
 		});
 	} catch(error) {
@@ -188,7 +188,7 @@ export const getAllMediaStatuses = () => async (dispatch) => {
 	try {
 		response = await api.get('/media_statuses', {
 			params: {
-				api_key: apiKey
+				api_key: API_KEY
 			}
 		});
 	} catch(error) {
