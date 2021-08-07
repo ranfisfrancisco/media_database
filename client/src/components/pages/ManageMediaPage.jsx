@@ -81,12 +81,12 @@ const ManageMediaPage = () => {
 		let ownership = valueToColID(form.getFieldValue("createOwnership"), mediaOwnerships);
 		let status = valueToColID(form.getFieldValue("createStatus"), mediaStatuses);
 
-		if (name.trim() === ""){
+		if (name === ""){
 			alert("You must enter a name!");
 			return;
 		}
 
-		if (type == NOT_SELECTED_ID){
+		if (type === NOT_SELECTED_ID || type === undefined){
 			alert("You must set a type!");
 			return;
 		}
