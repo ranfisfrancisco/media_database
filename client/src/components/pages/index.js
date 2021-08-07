@@ -10,6 +10,7 @@ import {
 	DollarOutlined,
 	ProfileOutlined,
 	FileOutlined,
+	ArrowUpOutlined,
 } from '@ant-design/icons';
 
 import LogoutButton from '../LogoutButton';
@@ -20,26 +21,33 @@ import ManageMediaPage from './ManageMediaPage';
 
 const SelectPage = () => {
 
-	const [visibleContent, setVisibleContent] = useState('search');
+	const [visibleContent, setVisibleContent] = useState('manage');
 	//const readerUsername = useSelector(readerUsernameSelector);
 
 	const handleClick = (e) => setVisibleContent(e.key);
 
 	const renderContent = () => {
-		if(visibleContent === 'search') {
-			return <ManageMediaPage />;
+		switch(visibleContent) {
+			case 'manage':
+				return <ManageMediaPage />;
+			case 'export':
+				return <div>Under Construction</div>;
+			default:
+				return <div>PAGE NOT FOUND</div>;
 		}
-
-		return <div>PAGE NOT FOUND</div>;
 	}
 
 	const renderMenu = () => (
 		<Menu mode='horizontal' onClick={handleClick} selectedKeys={[visibleContent]} theme='dark'>
-			<Menu.Item key='search' icon={<SearchOutlined />}>
+			<Menu.Item key='manage' icon={<SearchOutlined />}>
 				Manage Media
 			</Menu.Item>
 		</Menu>
 	);
+
+	/*<Menu.Item key='export' icon={<ArrowUpOutlined />}>
+				Export Data
+			</Menu.Item>*/
 	
 	return (
 		<div className='reader-page-wrapper'>
