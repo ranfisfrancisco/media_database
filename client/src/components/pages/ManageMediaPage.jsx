@@ -68,8 +68,8 @@ const ManageMediaPage = () => {
 			createUseDate: "",
 			createReleaseDate: "",
 			createType: "All",
-			createOwnership: "All",
-			createStatus: "All"
+			createOwnership: "Not Owned",
+			createStatus: "N/A"
 		});
 	}
 
@@ -130,15 +130,13 @@ const ManageMediaPage = () => {
 				</Form.Item>
 				
 				<Form.Item label='Ownership' name='createOwnership'>
-					<Select defaultValue={NOT_SELECTED_TEXT} style={{ width: 120 }}>
-						<Option key={NOT_SELECTED_TEXT}>{NOT_SELECTED_TEXT}</Option>
+					<Select defaultValue="Not Owned" style={{ width: 120 }}>
                         { ownershipOptions }
                     </Select>
 				</Form.Item>
 
 				<Form.Item label='Status' name='createStatus'>
-					<Select defaultValue={NOT_SELECTED_TEXT} style={{ width: 120 }}>
-						<Option key={NOT_SELECTED_TEXT}>{NOT_SELECTED_TEXT}</Option>
+					<Select defaultValue="N/A" style={{ width: 120 }}>
                         { statusOptions }
                     </Select>
 				</Form.Item>
