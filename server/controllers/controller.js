@@ -195,8 +195,8 @@ int: status_id
 date (as string): use_date
 date (as string): release_date
 bool: exact_name_search (determines whether inputted name should match exactly)
-int: filter_null_release_date (determines whether null results for release date should be returned)
-int: filter_null_use_date (determines whether null results for release date should be returned)
+int (as string): filter_null_release_date (determines whether null results for release date should be returned)
+int (as string): filter_null_use_date (determines whether null results for release date should be returned)
 	0 indicates null values can be returned. This is the default.
 	1 indicates null values should be filtered out.
 	2 indicates ONLY null values should be returned.
@@ -233,11 +233,11 @@ module.exports.searchMediaItem = async (req, res) => {
 	if (req.query.exact_name_search === "1" || req.query.exact_name_search === "true")
 		exactNameSearch = true;
 
-	if (req.query.not_null_release_date === 1 || req.query.not_null_release_date === 2)
-		filterNullReleaseDate = req.query.not_null_release_date;
+	if (req.query.filter_null_release_date === "1" || req.query.filter_null_release_date === "2")
+		filterNullReleaseDate = req.query.filter_null_release_date;
 
-	if (req.query.not_null_use_date === 1 || req.query.not_null_use_date === 2)
-		filterNullUseDate = req.query.not_null_use_date;
+	if (req.query.filter_null_use_date === "1" || req.query.filter_null_use_date === "2")
+		filterNullUseDate = req.query.filter_null_use_date;
 
 	whereClause = "WHERE ";
 	let statementCount = 0;
@@ -250,12 +250,12 @@ module.exports.searchMediaItem = async (req, res) => {
 			{var: filterNullUseDate, col: "use_date"}]
 		){
 		
-		if (f.var === 1){
+		if (f.var === "1"){
 			if(statementCount > 0)
 				whereClause += " AND ";
 			whereClause += ` ${f.col} IS NOT NULL `;
 			statementCount++;
-		} else if (f.var === 2) {
+		} else if (f.var === "2") {
 			if(statementCount > 0)
 				whereClause += " AND ";
 			whereClause += ` ${f.col} IS NULL `;

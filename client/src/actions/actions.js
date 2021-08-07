@@ -58,9 +58,10 @@ export const createMedia = (userID, name, useDate, releaseDate, typeID, ownershi
 	return message.error('Query Error 2!');
 }
 
-export const searchMedia = (userID, mediaID, name, useDateRange, releaseDateRange, typeID, ownershipID, statusID, exactNameSearch) => async (dispatch) => {
+export const searchMedia = (userID, mediaID, name, useDateRange, releaseDateRange, typeID, ownershipID, statusID, exactNameSearch, filterNullReleaseDate, filterNullUseDate) => async (dispatch) => {
 	dispatch({ type: 'GET_ALL_MEDIA_REQUEST' });
 	let response;
+
 	try {
 		response = await api.get('/media', {
 			params: {
@@ -73,6 +74,8 @@ export const searchMedia = (userID, mediaID, name, useDateRange, releaseDateRang
 				ownership_id: (ownershipID !== -1) ? ownershipID : null,
 				status_id: (statusID !== -1) ? statusID : null,
 				exact_name_search: exactNameSearch,
+				filter_null_release_date: filterNullReleaseDate,
+				filter_null_use_date: filterNullUseDate,
 				api_key: API_KEY
 			}
 		});

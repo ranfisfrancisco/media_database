@@ -167,9 +167,11 @@ const ManageMediaPage = () => {
 		let ownership = valueToColID(form.getFieldValue("searchOwnership"), mediaOwnerships);
 		let status = valueToColID(form.getFieldValue("searchStatus"), mediaStatuses);
 		let exactNameSearch = form.getFieldValue("exactNameSearch");
+		let filterNullReleaseDate = form.getFieldValue("searchReleaseDateFilter");
+		let filterNullUseDate = form.getFieldValue("searchUseDateFilter");
 
 		dispatch(searchMedia(userID, id, name, useDateRange, releaseDateRange, type,
-		  ownership, status, exactNameSearch));
+		  ownership, status, exactNameSearch, filterNullReleaseDate, filterNullUseDate));
 	}
 
 	const searchFormOnFinish = () => {
@@ -183,7 +185,9 @@ const ManageMediaPage = () => {
 			searchName: "",
 			exactNameSearch: false,
 			searchUseDateRange: "",
+			searchUseDateFilter: "All",
 			searchReleaseDateRange: "",
+			searchReleaseDateFilter: "All",
 			searchType: "All",
 			searchOwnership: "All",
 			searchStatus: "All"
@@ -221,8 +225,24 @@ const ManageMediaPage = () => {
 					<RangePicker/>
 				</Form.Item>
 
+				<Form.Item label="Release Date Filter" name='searchReleaseDateFilter'>
+					<Select defaultValue={NOT_SELECTED_TEXT} style={{ width: 120 }}>
+						<Option key="0">{NOT_SELECTED_TEXT}</Option>
+						<Option key="1">No Null Values</Option>
+						<Option key="2">Only Null Values</Option>
+                    </Select>
+				</Form.Item>
+
 				<Form.Item label="Use Date" name='searchUseDateRange'>
 					<RangePicker/>
+				</Form.Item>
+
+				<Form.Item label="Use Date Filter" name='searchUseDateFilter'>
+					<Select defaultValue={NOT_SELECTED_TEXT} style={{ width: 120 }}>
+						<Option key="0">{NOT_SELECTED_TEXT}</Option>
+						<Option key="1">No Null Values</Option>
+						<Option key="2">Only Null Values</Option>
+                    </Select>
 				</Form.Item>
 
 				<Form.Item label='Type' name='searchType'>
