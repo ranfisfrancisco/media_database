@@ -433,7 +433,8 @@ const ManageMediaPage = () => {
 	const getFullDate = (date) => {
 		if (!date)
 			return "";
-		return moment(new Date(date)).format("YYYY/MM/DD");
+	
+		return moment(new Date(date)).utc(false).format("YYYY/MM/DD")
 	}
 
 	const renderSearchTable = () => {
