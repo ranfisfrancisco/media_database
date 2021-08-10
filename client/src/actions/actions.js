@@ -4,13 +4,14 @@ import api from './api/api';
 
 const API_KEY = process.env.REACT_APP_API_KEY;
 
-export const userServerLogin = (userEmail) => async (dispatch) => {
+export const userServerLogin = (userEmail, idToken) => async (dispatch) => {
 	dispatch({ type: 'USER_SERVER_LOGIN' });
 	let response;
 
 	try {
 		response = await api.post('/media_users', {
 			user_email: userEmail,
+			id_token: idToken,
 			api_key: API_KEY
 		});
 	} catch(error) {

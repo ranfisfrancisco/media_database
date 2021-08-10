@@ -1,6 +1,22 @@
 require('dotenv').config();
 const conn = require('../database/initConn');
 var toUnnamed = require('named-placeholders')();
+const {OAuth2Client} = require('google-auth-library');
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+
+async function verify(token) {
+	const ticket = await client.verifyIdToken({
+		idToken: token,
+		audience: process.env.GOOGLE_CLIENT_ID,  // Specify the CLIENT_ID of the app that accesses the backend
+		// Or, if multiple clients access the backend:
+		//[CLIENT_ID_1, CLIENT_ID_2, CLIENT_ID_3]
+	});
+	const payload = ticket.getPayload();
+	const userid = payload['sub'];
+	console.log("UserID: ", userid)
+	// If request specified a G Suite domain:
+	// const domain = payload['hd'];
+  }
 
 const authenticateAPIKey = (key) => {
 	return key === process.env.API_KEY;
@@ -26,6 +42,7 @@ module.exports.home = async (req, res) => {
 Function for loggin in a user.
 EXPECTS req body to have 
 string: user_email
+string: id_token
 */
 module.exports.userLogin = async (req, res) => {
 	if (!authenticateAPIKey(req.body.api_key))
@@ -33,6 +50,9 @@ module.exports.userLogin = async (req, res) => {
 
 	if (!req.body.user_email)
 		return res.status(400).json({ message: 'Input error: did not provide email of user' });
+
+
+	verify(id_token).catch(console.error);
 	
 	let userEmail = req.body.user_email;
 

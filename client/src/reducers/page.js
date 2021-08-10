@@ -6,7 +6,7 @@ const initState = {
 
 export default (state = initState, action) => {
 	switch(action.type) {
-		case 'USER_LOGIN_SUCCESS': {
+		case 'USER_GOOGLE_LOGIN_SUCCESS': {
             return {
                 ...state,
                 userEmail: action.payload.userEmail

@@ -16,6 +16,7 @@
     "cors": "^2.8.5",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
+    "google-auth-library": "^7.5.0",
     "http": "0.0.1-security",
     "mysql2": "^2.2.5",
     "named-placeholders": "^1.1.2"

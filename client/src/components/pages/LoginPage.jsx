@@ -12,12 +12,14 @@ function LoginPage() {
     console.log(
       `Google Login successful! Welcome ${res.profileObj.name}\n`
     );
-    dispatch(userServerLogin(res.profileObj.email));
-    dispatch({ type: 'USER_LOGIN_SUCCESS', payload: {userEmail: res.profileObj.email}});
+    var idToken = res.getAuthResponse().id_token;
+
+    dispatch(userServerLogin(res.profileObj.email, idToken));
+    dispatch({ type: 'USER_GOOGLE_LOGIN_SUCCESS', payload: {userEmail: res.profileObj.email}});
   };
   
   const onFailure = (res) => {
-    dispatch({ type: 'USER_LOGIN_FAILURE'});
+    dispatch({ type: 'USER_GOOGLE_LOGIN_FAILURE'});
     console.log('[Login failed] res:', res.details);
   };
   
