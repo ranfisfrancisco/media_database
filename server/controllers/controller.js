@@ -13,9 +13,6 @@ async function verify(token) {
 	});
 	const payload = ticket.getPayload();
 	const userid = payload['sub'];
-	console.log("UserID: ", userid)
-	// If request specified a G Suite domain:
-	// const domain = payload['hd'];
   }
 
 const authenticateAPIKey = (key) => {
@@ -50,12 +47,22 @@ module.exports.userLogin = async (req, res) => {
 
 	if (!req.body.user_email)
 		return res.status(400).json({ message: 'Input error: did not provide email of user' });
-
-
-	verify(id_token).catch(console.error);
 	
-	let userEmail = req.body.user_email;
+	if (!req.body.id_token)
+		return res.status(400).json({ message: 'Input error: did not provide ID token.' });
 
+	let userEmail = req.body.user_email;
+	let idToken = req.body.id_token;
+	let verified = true;
+
+	await verify(idToken).catch((error) => {
+		console.error(error);
+		verified=false;
+	});		
+
+	if (!verified)
+		return res.status(400).json({ message: 'Failed to verify google login' });
+	
 	let idQuery = `SELECT user_id
 	FROM users
 	WHERE user_email="${userEmail}";`
