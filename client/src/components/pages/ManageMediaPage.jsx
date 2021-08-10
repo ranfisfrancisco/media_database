@@ -32,7 +32,7 @@ const ManageMediaPage = () => {
 	const [selectedRows, setSelectedRows] = useState([]); 
 	const [selectedRowKeys, setSelectedRowKeys] = useState([]); // Attatched to table to determine and read what the user has clicked on
 
-	const REFRESH_WAIT_TIME = 1000;
+	const REFRESH_WAIT_TIME = 2000;
 
 	const returnMomentDateRangeStrings = (start, finish) => {
 		if (start === undefined || finish === undefined)
