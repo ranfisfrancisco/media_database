@@ -4,7 +4,7 @@ var toUnnamed = require('named-placeholders')();
 const {OAuth2Client} = require('google-auth-library');
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
-async function verify(token) {
+async function verify(token, clientID) {
 	const ticket = await client.verifyIdToken({
 		idToken: token,
 		audience: process.env.GOOGLE_CLIENT_ID,  // Specify the CLIENT_ID of the app that accesses the backend
@@ -63,47 +63,53 @@ module.exports.userLogin = async (req, res) => {
 	if (!verified)
 		return res.status(400).json({ message: 'Failed to verify google login' });
 	
-	let idQuery = `SELECT user_id
+	let idQuery = toUnnamed(`SELECT user_id
 	FROM users
-	WHERE user_email="${userEmail}";`
+	WHERE user_email=:user_email;`, {
+		user_email: userEmail
+	});
 
 	//check if user exists
-	conn.query(idQuery, (err, result) => {
-		if(err){
+	conn.query(idQuery[0], idQuery[1], (err, result) => {
+		if (err){
 			console.log(err)
-		 return res.status(400).json({ message: 'Query error' });
+		 	return res.status(400).json({ message: 'Query error' });
 		}
 
 		//user does not exist
 		if (result.length === 0){
 			//insert new user
-			let insertQuery = `INSERT INTO users (user_email, last_login_date)
-			VALUES ("${userEmail}", CURRENT_TIMESTAMP());`
+			let insertQuery = toUnnamed(`INSERT INTO users (user_email, last_login_date)
+			VALUES (:user_email, CURRENT_TIMESTAMP());`, {
+				user_email: userEmail
+			})
 
-			conn.query(insertQuery, (err, result) => {
+			conn.query(insertQuery[0], insertQuery[1], (err, result) => {
 				if(err) return res.status(400).json({ message: 'Query error' });
 			});
 
-			//grab new ID
-			conn.query(idQuery, (err, result) => {
-				if(err) {
-					console.log(err)
-					return res.status(400).json({ message: 'Query error' });
-				}
-				res.send({ message: "USER_SERVER_LOGIN_SUCCESS", result });
-				return;
-			});
+			// //grab new ID
+			// conn.query(idQuery, (err, result) => {
+			// 	if(err) {
+			// 		console.log(err)
+			// 		return res.status(400).json({ message: 'Query error' });
+			// 	}
+			// 	res.send({ message: "USER_SERVER_LOGIN_SUCCESS", result });
+			// 	return;
+			// });
 		} 
 
-		let updateQuery = `UPDATE users SET last_login_date=CURRENT_TIMESTAMP() WHERE user_email="${userEmail}"`;
+		let updateQuery = toUnnamed(`UPDATE users SET last_login_date=CURRENT_TIMESTAMP() WHERE user_email=:user_email`, {
+			user_email: userEmail
+		});
 
-		conn.query(updateQuery, (err, result) => {
+		conn.query(updateQuery[0], updateQuery[1], (err, result) => {
 			if(err) {
 				console.log(err)
 				return res.status(400).json({ message: 'Query error' });
 			}
 			//grab new ID
-			conn.query(idQuery, (err, result) => {
+			conn.query(idQuery[0], idQuery[1], (err, result) => {
 				if(err) {
 					console.log(err)
 					return res.status(400).json({ message: 'Query error' });
