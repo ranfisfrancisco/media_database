@@ -99,22 +99,6 @@ module.exports.userLogin = async (req, res) => {
 			// });
 		} 
 
-		/*
-		SESSION MANAGEMENT
-		*/
-
-		let session=req.session;
-        session.userid=req.body.user_email;
-        console.log(req.session)
-		/*app.get('/logout',(req,res) => {
-    req.session.destroy();
-    res.redirect('/');
-});*/
-
-		/*
-		SESSION MANAGEMENT
-		*/
-
 		let updateQuery = toUnnamed(`UPDATE users SET last_login_date=CURRENT_TIMESTAMP() WHERE user_email=:user_email`, {
 			user_email: userEmail
 		});
@@ -130,6 +114,22 @@ module.exports.userLogin = async (req, res) => {
 					console.log(err)
 					return res.status(400).json({ message: 'Query error' });
 				}
+
+				/*
+				SESSION MANAGEMENT
+				*/
+
+				let session=req.session;
+        		session.userid=result[0].user_id;
+				/*app.get('/logout',(req,res) => {
+				req.session.destroy();
+				res.redirect('/');
+				});*/
+
+				/*
+				SESSION MANAGEMENT
+				*/
+
 				res.send({ message: "USER_SERVER_LOGIN_SUCCESS", result });
 				return;
 			});
@@ -153,6 +153,11 @@ date (as string): use_date
 date (as string): release_date
 */
 module.exports.createMediaItem = async (req, res) => {
+	let session = req.session;
+	
+	if (!session.userid)
+		return res.status(401).json({ message: 'Invalid session ID' });
+
 	if (!authenticateAPIKey(req.body.api_key))
 		return res.status(401).json({ message: 'Unauthorized API Key' });
 
@@ -384,6 +389,11 @@ date (as string): use_date
 date (as string): release_date
 */
 module.exports.updateMediaItem = async (req, res) => {
+	let session = req.session;
+	
+	if (!session.userid)
+		return res.status(401).json({ message: 'Invalid session ID' });
+
 	if (!authenticateAPIKey(req.body.api_key))
 		return res.status(401).json({ message: 'Unauthorized API Key' });
 
@@ -455,6 +465,11 @@ int[]: media_id_list (List of ID's to be deleted)
 Will return error otherwise
 */
 module.exports.deleteMediaItem = async (req, res) => {
+	let session = req.session;
+	
+	if (!session.userid)
+		return res.status(401).json({ message: 'Invalid session ID' });
+
 	if (!authenticateAPIKey(req.body.api_key))
 		return res.status(401).json({ message: 'Unauthorized API Key' });
 
@@ -480,6 +495,11 @@ module.exports.deleteMediaItem = async (req, res) => {
 }
 
 module.exports.getAllTypes = async (req, res) => {
+	let session = req.session;
+	
+	if (!session.userid)
+		return res.status(401).json({ message: 'Invalid session ID' });
+
 	if (!authenticateAPIKey(req.query.api_key))
 		return res.status(401).json({ message: 'Unauthorized API Key' });
 
@@ -497,6 +517,11 @@ module.exports.getAllTypes = async (req, res) => {
 }
 
 module.exports.getAllOwnerships = async (req, res) => {
+	let session = req.session;
+	
+	if (!session.userid)
+		return res.status(401).json({ message: 'Invalid session ID' });
+
 	if (!authenticateAPIKey(req.query.api_key))
 		return res.status(401).json({ message: 'Unauthorized API Key' });
 
@@ -514,6 +539,11 @@ module.exports.getAllOwnerships = async (req, res) => {
 }
 
 module.exports.getAllStatuses = async (req, res) => {
+	let session = req.session;
+	
+	if (!session.userid)
+		return res.status(401).json({ message: 'Invalid session ID' });
+		
 	if (!authenticateAPIKey(req.query.api_key))
 		return res.status(401).json({ message: 'Unauthorized API Key' });
 		
