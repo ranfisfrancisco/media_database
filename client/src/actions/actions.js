@@ -27,6 +27,24 @@ export const userServerLogin = (userEmail,idToken) => async (dispatch) => {
 	return message.error('Query Error 2!');
 }
 
+export const userServerLogout = () => async (dispatch) => {
+	let response;
+	dispatch({ type: 'USER_SERVER_LOGOUT_SUCCESS'});
+	try {
+		response = await api.post('/media_users/logout', {
+		});
+	} catch(error) {
+		console.log(error);
+		dispatch({ type: 'USER_SERVER_LOGOUT_FAILED' });
+		return message.error('Query Error 1!');
+	}
+	if(response.data.message === 'USER_SERVER_LOGOUT_SUCCESS') {
+		return message.success('Logged out of server!');
+	}
+	dispatch({ type: 'USER_SERVER_LOGOUT_FAILED' });
+	return message.error('Query Error 2!');
+}
+
 export const createMedia = (name, useDate, releaseDate, typeID, ownershipID, statusID) => async (dispatch) => {
 	dispatch({ type: 'CREATE_MEDIA_REQUEST' });
 	let response;

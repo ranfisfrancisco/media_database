@@ -2,6 +2,7 @@ import React from 'react';
 import { useDispatch } from 'react-redux';
 import { Button } from 'antd';
 import { useGoogleLogout } from 'react-google-login';
+import { userServerLogout } from '../actions/actions';
 
 const REACT_APP_GOOGLE_CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
 
@@ -25,6 +26,7 @@ const LogoutButton = () => {
 	
 	const onLogoutClick = () => {
 		dispatch({ type: 'USER_LOGOUT'});
+		dispatch(userServerLogout());
 		signOut();
 	}
 	

@@ -124,11 +124,6 @@ module.exports.userLogin = async (req, res) => {
 
 				let session=req.session;
         		session.userid=result[0].user_id;
-				console.log(session)
-				/*app.get('/logout',(req,res) => {
-				req.session.destroy();
-				res.redirect('/');
-				});*/
 
 				/*
 				SESSION MANAGEMENT
@@ -139,6 +134,11 @@ module.exports.userLogin = async (req, res) => {
 			});
 		});
 	});
+}
+
+module.exports.userLogout = async (req, res) => {
+	req.session.destroy();
+	res.send({ message: "USER_SERVER_LOGOUT_SUCCESS"});
 }
 
 /*
@@ -375,8 +375,6 @@ module.exports.searchMediaItem = async (req, res) => {
 		release_date_lower: req.query?.release_date_range?.[0],
 		release_date_upper: req.query?.release_date_range?.[1],
 	});
-
-	console.log(formattedQuery)
 
 	conn.query(formattedQuery[0], formattedQuery[1], (err, result) => {
 		if (err){
