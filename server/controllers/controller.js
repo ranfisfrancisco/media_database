@@ -121,6 +121,7 @@ module.exports.userLogin = async (req, res) => {
 
 				let session=req.session;
         		session.userid=result[0].user_id;
+				console.log(session)
 				/*app.get('/logout',(req,res) => {
 				req.session.destroy();
 				res.redirect('/');
@@ -262,6 +263,7 @@ resut: array of objects each representing a row in the array
 */
 module.exports.searchMediaItem = async (req, res) => {
 	let session = req.session;
+	console.log(session)
 	
 	if (!session.userid)
 		return res.status(401).json({ message: 'Invalid session ID' });
@@ -543,7 +545,7 @@ module.exports.getAllStatuses = async (req, res) => {
 	
 	if (!session.userid)
 		return res.status(401).json({ message: 'Invalid session ID' });
-		
+
 	if (!authenticateAPIKey(req.query.api_key))
 		return res.status(401).json({ message: 'Unauthorized API Key' });
 		

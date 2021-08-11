@@ -12,10 +12,12 @@ const server = http.createServer(app);
 const routes = require('./routes/routes');
 const PORT = process.env.PORT;
 
+// creating time from milliseconds
+const expireTime = 1000 * 60 * 60 * 1;
 app.use(sessions({
     secret: "thisismysecrctekeyfhrgfgrfrty84fwir767",
     saveUninitialized:true,
-    cookie: { maxAge: 30 },
+    cookie: { maxAge: expireTime },
     resave: false
 }));
 
