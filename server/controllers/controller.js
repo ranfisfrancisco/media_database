@@ -51,6 +51,7 @@ module.exports.userLogin = async (req, res) => {
 	if (!req.body.id_token)
 		return res.status(400).json({ message: 'Input error: did not provide ID token.' });
 
+
 	let userEmail = req.body.user_email;
 	let idToken = req.body.id_token;
 	let verified = true;
@@ -60,8 +61,10 @@ module.exports.userLogin = async (req, res) => {
 		verified=false;
 	});		
 
-	if (!verified)
+	if (!verified){
+		console.log("Failed to verify Google login")
 		return res.status(400).json({ message: 'Failed to verify google login' });
+	}
 	
 	let idQuery = toUnnamed(`SELECT user_id
 	FROM users
@@ -140,8 +143,10 @@ module.exports.userLogin = async (req, res) => {
 
 /*
 Function for creating new media item.
+Request cookie should have
+userid: user's ID gotten from logging in
+
 EXPECTS req body to have 
-int: user_id (the ID of the user) 
 string: name
 int: type_id
 string: api_key
@@ -159,11 +164,13 @@ module.exports.createMediaItem = async (req, res) => {
 	if (!session.userid)
 		return res.status(401).json({ message: 'Invalid session ID' });
 
+	let userid = session.userid
+
 	if (!authenticateAPIKey(req.body.api_key))
 		return res.status(401).json({ message: 'Unauthorized API Key' });
 
-	if (!req.body.user_id)
-		return res.status(400).json({ message: 'Input error: did not provide user ID' });
+	// if (!req.body.user_id)
+	// 	return res.status(400).json({ message: 'Input error: did not provide user ID' });
 
 	if (!req.body.name)
 		return res.status(400).json({ message: 'Input error: did not provide name of new item' });
@@ -173,7 +180,7 @@ module.exports.createMediaItem = async (req, res) => {
 	
 	let colValues = 
 	[
-		{col: "user_id", val: req.body.user_id},
+		{col: "user_id", val: userid},
 		{col: "name", val: (req.body.name) ? req.body.name.trim() : null},
 		{col: "type_id", val: req.body.type_id || null},
 		{col: "ownership_id", val: req.body.ownership_id || null},
@@ -215,7 +222,7 @@ module.exports.createMediaItem = async (req, res) => {
 	`; 
 
 	let formattedQuery = toUnnamed(query, {
-		user_id: req.body.user_id,
+		user_id: userid,
 		name: req.body.name,
 		type_id: req.body.type_id,
 		ownership_id: req.body.ownership_id,
@@ -236,6 +243,9 @@ module.exports.createMediaItem = async (req, res) => {
 
 /*
 Function for searching media item table.
+
+Request cookie should have
+userid: user's ID gotten from logging in
 
 EXPECTS req.query to have
 int: user_id (the ID of the user) 
@@ -263,20 +273,21 @@ resut: array of objects each representing a row in the array
 */
 module.exports.searchMediaItem = async (req, res) => {
 	let session = req.session;
-	console.log(session)
 	
 	if (!session.userid)
 		return res.status(401).json({ message: 'Invalid session ID' });
 
+	let userid = session.userid
+
 	if (!authenticateAPIKey(req.query.api_key))
 		return res.status(401).json({ message: 'Unauthorized API Key' });
 
-	if (!req.query.user_id)
-		return res.status(400).json({ message: 'Input error: did not provide user ID' });
+	// if (!req.query.user_id)
+	// 	return res.status(400).json({ message: 'Input error: did not provide user ID' });
 		
 	let filters = 
 	[
-		{col: "user_id", val: req.query.user_id},
+		{col: "user_id", val: userid},
 		{col: "media_id", val: req.query.media_id || null},
 		{col: "name", val: req.query.name || null},
 		{col: "type_id", val: req.query.type_id || null},
@@ -353,7 +364,7 @@ module.exports.searchMediaItem = async (req, res) => {
 	ORDER BY name;`; 
 
 	let formattedQuery = toUnnamed(query, {
-		user_id: req.query.user_id,
+		user_id: userid,
 		media_id: req.query.media_id,
 		name: req.query.name,
 		type_id: req.query.type_id,
@@ -364,6 +375,8 @@ module.exports.searchMediaItem = async (req, res) => {
 		release_date_lower: req.query?.release_date_range?.[0],
 		release_date_upper: req.query?.release_date_range?.[1],
 	});
+
+	console.log(formattedQuery)
 
 	conn.query(formattedQuery[0], formattedQuery[1], (err, result) => {
 		if (err){

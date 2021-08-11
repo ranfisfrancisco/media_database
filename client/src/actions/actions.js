@@ -4,7 +4,7 @@ import api from './api/api';
 
 const API_KEY = process.env.REACT_APP_API_KEY;
 
-export const userServerLogin = (userEmail, idToken) => async (dispatch) => {
+export const userServerLogin = (userEmail,idToken) => async (dispatch) => {
 	dispatch({ type: 'USER_SERVER_LOGIN' });
 	let response;
 
@@ -27,15 +27,12 @@ export const userServerLogin = (userEmail, idToken) => async (dispatch) => {
 	return message.error('Query Error 2!');
 }
 
-export const createMedia = (userID, name, useDate, releaseDate, typeID, ownershipID, statusID) => async (dispatch) => {
+export const createMedia = (name, useDate, releaseDate, typeID, ownershipID, statusID) => async (dispatch) => {
 	dispatch({ type: 'CREATE_MEDIA_REQUEST' });
 	let response;
 
-	console.log(userID, name, useDate, releaseDate, typeID, ownershipID, statusID)
-
 	try {
 		response = await api.put('/media', {
-			user_id: userID,
 			name: (typeof(name) === 'string') ? name.trim() : name,
 			use_date: (typeof(useDate) === 'string' && useDate.trim() !== "") ? useDate: null,
 			release_date: (typeof(releaseDate) === 'string' && releaseDate.trim() !== "") ? releaseDate: null,
@@ -59,14 +56,13 @@ export const createMedia = (userID, name, useDate, releaseDate, typeID, ownershi
 	return message.error('Query Error 2!');
 }
 
-export const searchMedia = (userID, mediaID, name, useDateRange, releaseDateRange, typeID, ownershipID, statusID, exactNameSearch, filterNullReleaseDate, filterNullUseDate) => async (dispatch) => {
+export const searchMedia = (mediaID, name, useDateRange, releaseDateRange, typeID, ownershipID, statusID, exactNameSearch, filterNullReleaseDate, filterNullUseDate) => async (dispatch) => {
 	dispatch({ type: 'GET_ALL_MEDIA_REQUEST' });
 	let response;
 
 	try {
 		response = await api.get('/media', {
 			params: {
-				user_id: userID,
 				media_id: mediaID,
 				name: name,
 				use_date_range: useDateRange,

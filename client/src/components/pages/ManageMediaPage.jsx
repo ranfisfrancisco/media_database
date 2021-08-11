@@ -7,7 +7,6 @@ import moment from 'moment';
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 
-const userIDSelector = (state) => state.page.userID;
 const searchSelector = (state) => state.search;
 const mediaTypesSelector = (state) => state.mediaTypes.data;
 const mediaOwnershipsSelector = (state) => state.mediaOwnerships.data;
@@ -16,7 +15,6 @@ const mediaStatusesSelector = (state) => state.mediaStatuses.data;
 const ManageMediaPage = () => {
 
 	const dispatch = useDispatch();
-	const userID = useSelector(userIDSelector);
 	const searchResult = useSelector(searchSelector);
     const mediaTypes = useSelector(mediaTypesSelector);
 	const mediaOwnerships = useSelector(mediaOwnershipsSelector);
@@ -91,7 +89,7 @@ const ManageMediaPage = () => {
 			return;
 		}
 
-		dispatch(createMedia(userID, name, useDate, releaseDate, type,
+		dispatch(createMedia(name, useDate, releaseDate, type,
 		  ownership, status));
 	}
 
@@ -168,7 +166,7 @@ const ManageMediaPage = () => {
 		let filterNullReleaseDate = form.getFieldValue("searchReleaseDateFilter");
 		let filterNullUseDate = form.getFieldValue("searchUseDateFilter");
 
-		dispatch(searchMedia(userID, id, name, useDateRange, releaseDateRange, type,
+		dispatch(searchMedia(id, name, useDateRange, releaseDateRange, type,
 		  ownership, status, exactNameSearch, filterNullReleaseDate, filterNullUseDate));
 	}
 
