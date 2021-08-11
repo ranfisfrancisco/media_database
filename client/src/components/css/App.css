@@ -19,9 +19,9 @@ button {
 }
 
 .search-content-wrapper {
-	width: 80%;
+	width: 90%;
 	margin: auto;
-	margin-top: 5%;
+	margin-top: 3%;
 	overflow:hidden;
 	/* background-color: #403c3c; */
 }
@@ -33,15 +33,18 @@ button {
 }
 
 .entry-form {
-    width: 30%;
+    width: 25%;
     float: left;
-    padding: 20px;
+    padding: 10px;
+    position: fixed;
+	border: 2px solid lightblue;
 }
 
 .result-table {
-	width: 70%;
-    float: left;
-    padding: 20px;
+	width:70%;
+    float: right;
+    padding: 10px;
+	border: 2px solid lightblue;
 }
 
 .buttonText {
