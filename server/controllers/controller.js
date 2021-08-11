@@ -409,6 +409,8 @@ module.exports.updateMediaItem = async (req, res) => {
 	if (!session.userid)
 		return res.status(401).json({ message: 'Invalid session ID' });
 
+	let userid = session.userid;
+
 	if (!authenticateAPIKey(req.body.api_key))
 		return res.status(401).json({ message: 'Unauthorized API Key' });
 
@@ -450,11 +452,11 @@ module.exports.updateMediaItem = async (req, res) => {
 
 	let query = `UPDATE media_items
 	SET ${setClause}
-	WHERE media_id IN (:id_list);`; 
+	WHERE media_id IN (:id_list) AND user_id=:user_id;`; 
 
 	let formattedQuery = toUnnamed(query, {
 		id_list: idList,
-		user_id: req.body.user_id,
+		user_id: userid,
 		media_id: req.body.media_id,
 		name: req.body.name,
 		type_id: req.body.type_id,
@@ -485,6 +487,8 @@ module.exports.deleteMediaItem = async (req, res) => {
 	if (!session.userid)
 		return res.status(401).json({ message: 'Invalid session ID' });
 
+	let userid = session.userid;
+
 	if (!authenticateAPIKey(req.body.api_key))
 		return res.status(401).json({ message: 'Unauthorized API Key' });
 
@@ -494,10 +498,11 @@ module.exports.deleteMediaItem = async (req, res) => {
 		return res.status(400).json({ message: 'Input error: did not provide list of ID to delete' });
 
 	let query = `DELETE FROM media_items
-	WHERE media_id IN (:id_list);`; 
+	WHERE media_id IN (:id_list) AND user_id=:user_id;`; 
 
 	let formattedQuery = toUnnamed(query, {
 		id_list: idList,
+		user_id: userid,
 	});
 
 	conn.query(formattedQuery[0], formattedQuery[1], (err, result) => {
