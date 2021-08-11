@@ -99,6 +99,22 @@ module.exports.userLogin = async (req, res) => {
 			// });
 		} 
 
+		/*
+		SESSION MANAGEMENT
+		*/
+
+		let session=req.session;
+        session.userid=req.body.user_email;
+        console.log(req.session)
+		/*app.get('/logout',(req,res) => {
+    req.session.destroy();
+    res.redirect('/');
+});*/
+
+		/*
+		SESSION MANAGEMENT
+		*/
+
 		let updateQuery = toUnnamed(`UPDATE users SET last_login_date=CURRENT_TIMESTAMP() WHERE user_email=:user_email`, {
 			user_email: userEmail
 		});
@@ -240,6 +256,11 @@ message: string with success or failure description
 resut: array of objects each representing a row in the array
 */
 module.exports.searchMediaItem = async (req, res) => {
+	let session = req.session;
+	
+	if (!session.userid)
+		return res.status(401).json({ message: 'Invalid session ID' });
+
 	if (!authenticateAPIKey(req.query.api_key))
 		return res.status(401).json({ message: 'Unauthorized API Key' });
 
