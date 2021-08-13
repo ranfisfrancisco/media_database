@@ -11,11 +11,12 @@ const app = express();
 const server = http.createServer(app);
 const routes = require('./routes/routes');
 const PORT = process.env.PORT;
+const sessionKey = process.env.SERVER_SESSION_KEY
 
 // creating time from milliseconds
 const expireTime = 1000 * 60 * 60 * 1;
 app.use(sessions({
-    secret: "thisismysecrctekeyfhrgfgrfrty84fwir767",
+    secret: sessionKey,
     saveUninitialized:true,
     cookie: { maxAge: expireTime },
     resave: false
