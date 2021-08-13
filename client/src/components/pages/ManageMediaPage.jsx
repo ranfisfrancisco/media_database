@@ -437,6 +437,7 @@ const ManageMediaPage = () => {
 
 	const renderSearchTable = () => {
 		let dataSource = searchResult.data;
+		let itemCount = dataSource.length;
 
 		let columns = [
 			{ title: 'ID', dataIndex: 'media_id', sorter: {compare: (a,b) => a.media_id - b.media_id} },
@@ -455,7 +456,7 @@ const ManageMediaPage = () => {
 		return (
 		<div>
 			<Button onClick={deselectRows}>Deselect {selectedRows.length}</Button>
-			<Table dataSource={dataSource} columns={columns} rowSelection={rowSelection} rowKey={record =>record.media_id} />
+			<Table dataSource={dataSource} columns={columns} rowSelection={rowSelection} rowKey={record =>record.media_id} title={() => `${itemCount} items found`} />
 		</div>
 		);
 	}
@@ -486,7 +487,7 @@ const ManageMediaPage = () => {
 		</Menu>
 	);
 
-	const renderContent = () => {
+	const renderSelectedForm = () => {
 		if (visibleContent === 'create'){
 			return renderCreateForm();
 		}else if(visibleContent === 'search') {
@@ -504,7 +505,8 @@ const ManageMediaPage = () => {
 		<div className='search-content-wrapper'>
 			<div className='entry-form'>
 				{renderMenu()}
-				{renderContent()}
+				<br></br>
+				{renderSelectedForm()}
 			</div>
 			<div className='result-table'>
 				{renderSearchTable()}
