@@ -23,6 +23,7 @@ export const userServerLogin = (userEmail,idToken) => async (dispatch) => {
 		dispatch({ type: 'USER_SERVER_LOGIN_SUCCESS', payload: response.data.result });
 		return message.success('Logged in with server!');
 	}
+	
 	dispatch({ type: 'USER_SERVER_LOGIN_FAILED' });
 	return message.error('Query Error 2!');
 }

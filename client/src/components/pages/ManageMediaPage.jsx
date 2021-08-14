@@ -1,9 +1,10 @@
 import { useDispatch, useSelector } from 'react-redux';
 import React, { useEffect, useState } from 'react';
-import { Form, Input, Button, Table, Select, Checkbox, DatePicker, Menu } from 'antd';
+import { Form, Input, Button, Table, Select, Checkbox, DatePicker, Menu, Layout } from 'antd';
 import { createMedia, searchMedia, updateMedia, deleteMedia, getAllMediaTypes, getAllMediaOwnerships, getAllMediaStatuses } from '../../actions/actions';
 import moment from 'moment';
 
+const { Content, Sider } = Layout;
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 
@@ -471,7 +472,7 @@ const ManageMediaPage = () => {
 	const handleMenuClick = (e) => setVisibleContent(e.key);
 
 	const renderMenu = () => (
-		<Menu mode='horizontal' onClick={handleMenuClick} selectedKeys={[visibleContent]} theme='dark'>
+		<Menu theme="dark" mode='horizontal' onClick={handleMenuClick} selectedKeys={[visibleContent]}>
 			<Menu.Item key='create'>
 				Create
 			</Menu.Item>
@@ -502,15 +503,28 @@ const ManageMediaPage = () => {
 	}
 
 	return (
-		<div className='search-content-wrapper'>
-			<div className='entry-form'>
-				{renderMenu()}
-				<br></br>
-				{renderSelectedForm()}
-			</div>
-			<div className='result-table'>
-				{renderSearchTable()}
-			</div>
+		<div>
+		<Layout>
+			<Sider 
+			theme="light"
+			width={390}
+			style={{
+				overflow: 'auto',
+				height: '90vh',
+				position: 'fixed',
+				left: 0,
+			}}
+    		>
+				<div className="entry-form">
+					{renderMenu()}
+					<br></br>
+					{renderSelectedForm()}
+				</div>
+			</Sider>
+			<Content style={{ marginLeft: 390 }}>
+					{renderSearchTable()}
+			</Content>
+		</Layout>
 		</div>
 	);
 }

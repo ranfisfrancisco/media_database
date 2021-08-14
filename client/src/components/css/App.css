@@ -33,16 +33,17 @@ button {
 }
 
 .entry-form {
-    width: 25%;
-    float: left;
+    /* width: 25%;
+     float: left;
     padding: 10px;
-    position: fixed;
+    position: fixed; 
 	border: 2px solid lightblue;
+	*/
 }
 
 .result-table {
 	width:70%;
-    float: right;
+    /* float: right;*/ 
     padding: 10px;
 	border: 2px solid lightblue;
 }
