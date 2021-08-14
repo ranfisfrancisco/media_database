@@ -4,7 +4,7 @@ import { Form, Input, Button, Table, Select, Checkbox, DatePicker, Menu, Layout 
 import { createMedia, searchMedia, updateMedia, deleteMedia, getAllMediaTypes, getAllMediaOwnerships, getAllMediaStatuses } from '../../actions/actions';
 import moment from 'moment';
 
-const { Content, Sider } = Layout;
+const { Content, Sider, Footer } = Layout;
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 
@@ -513,7 +513,6 @@ const ManageMediaPage = () => {
 	}
 
 	return (
-		<div>
 		<Layout>
 			<Sider 
 			theme="light"
@@ -531,11 +530,17 @@ const ManageMediaPage = () => {
 					{renderSelectedForm()}
 				</div>
 			</Sider>
-			<Content style={{ marginLeft: 390 }}>
-					{renderSearchTable()}
-			</Content>
+			<Layout>
+				<Content style={{ marginLeft: 390 }}>
+						{renderSearchTable()}
+				</Content>
+				<Footer style={{ textAlign: 'center', marginLeft: 390 }}>
+					<p>Author: Ranfis Francisco</p>
+					<p>Email: ranfis.francisco@gmail.com</p>
+					<a href="https://github.com/ranfisfrancisco/media_database">Project Github</a>
+				</Footer>
+			</Layout>
 		</Layout>
-		</div>
 	);
 }
 export default ManageMediaPage;
