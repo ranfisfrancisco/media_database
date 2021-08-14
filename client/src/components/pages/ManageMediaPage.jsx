@@ -541,7 +541,7 @@ const ManageMediaPage = () => {
 				}}
 				>
 				{(!sidebarCollapsed) ?
-					<div className="entry-form">
+					<div className="entry-form" >
 						{renderMenu()}
 						<br></br>
 						{renderSelectedForm()}
@@ -549,8 +549,8 @@ const ManageMediaPage = () => {
 				 : null}
 					
 				</Sider>
-				<Layout>
-					<Content style={{ marginLeft: currentWidth }} className={`table-content table-content-${theme}`}>
+				<Layout >
+					<Content style={{ marginLeft: currentWidth}} className={`table-content table-content-${theme}`}>
 							{renderSearchTable()}
 					</Content>
 					<Footer style={{ textAlign: 'center', marginLeft: currentWidth }}>

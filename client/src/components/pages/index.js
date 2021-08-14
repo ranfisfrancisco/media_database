@@ -59,7 +59,7 @@ const SelectPage = () => {
 	}
 	
 	return (
-		<div className='reader-page-wrapper'>
+		<div className='reader-page-wrapper' >
 			<div className={`top-bar top-bar-${theme}`}>
 			<Switch onChange={onThemeToggle} class='toggle-dark' checkedChildren="Light" unCheckedChildren="Dark" ></Switch>
 			<LogoutButton/>
