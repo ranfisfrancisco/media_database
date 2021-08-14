@@ -31,6 +31,8 @@ const ManageMediaPage = () => {
 	const [selectedRows, setSelectedRows] = useState([]); 
 	const [selectedRowKeys, setSelectedRowKeys] = useState([]); // Attatched to table to determine and read what the user has clicked on
 
+	const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+
 	const REFRESH_WAIT_TIME = 2000; // time in milleseconds
 
 	const returnMomentDateRangeStrings = (start, finish) => {
@@ -512,35 +514,52 @@ const ManageMediaPage = () => {
 		return <div>Select an Option</div>;
 	}
 
-	return (
-		<Layout>
-			<Sider 
-			theme="light"
-			width={390}
-			style={{
-				overflow: 'auto',
-				height: '100vh',
-				position: 'fixed',
-				left: 0,
-			}}
-    		>
-				<div className="entry-form">
-					{renderMenu()}
-					<br></br>
-					{renderSelectedForm()}
-				</div>
-			</Sider>
+	const onCollapse = collapsed => {
+		setSidebarCollapsed(collapsed);
+	};
+
+	const render = () => {
+		const sidebarWidth = 330;
+		const sidebarCollapsedWidth = 60;
+		const currentWidth = sidebarCollapsed ? sidebarCollapsedWidth : sidebarWidth;
+
+		return (
 			<Layout>
-				<Content style={{ marginLeft: 390 }}>
-						{renderSearchTable()}
-				</Content>
-				<Footer style={{ textAlign: 'center', marginLeft: 390 }}>
-					<p>Author: Ranfis Francisco</p>
-					<p>Email: ranfis.francisco@gmail.com</p>
-					<a href="https://github.com/ranfisfrancisco/media_database">Project Github</a>
-				</Footer>
+				<Sider 
+				collapsible collapsed={sidebarCollapsed} onCollapse={onCollapse}
+				theme="light"
+				collapsedWidth={sidebarCollapsedWidth}
+				width={sidebarWidth}
+				style={{
+					overflow: 'auto',
+					height: '100vh',
+					position: 'fixed',
+					left: 0,
+				}}
+				>
+				{(!sidebarCollapsed) ?
+					<div className="entry-form">
+						{renderMenu()}
+						<br></br>
+						{renderSelectedForm()}
+					</div>
+				 : null}
+					
+				</Sider>
+				<Layout>
+					<Content style={{ marginLeft: currentWidth }}>
+							{renderSearchTable()}
+					</Content>
+					<Footer style={{ textAlign: 'center', marginLeft: currentWidth }}>
+						<p>Author: Ranfis Francisco</p>
+						<p>Email: ranfis.francisco@gmail.com</p>
+						<a href="https://github.com/ranfisfrancisco/media_database">Project Github</a>
+					</Footer>
+				</Layout>
 			</Layout>
-		</Layout>
-	);
+		);
+	}
+
+	return render();
 }
 export default ManageMediaPage;
