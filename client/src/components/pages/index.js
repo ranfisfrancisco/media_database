@@ -39,7 +39,7 @@ const SelectPage = () => {
 	}
 
 	const renderMenu = () => (
-		<Menu mode='horizontal' onClick={handleClick} selectedKeys={[visibleContent]} theme='dark'>
+		<Menu mode='horizontal' onClick={handleClick} selectedKeys={[visibleContent]} theme={`${theme}`}>
 			<Menu.Item key='manage' icon={<SearchOutlined />}>
 				Manage Media
 			</Menu.Item>

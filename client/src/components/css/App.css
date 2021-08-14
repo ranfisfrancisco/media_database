@@ -26,6 +26,13 @@ button {
 	/* background-color: #403c3c; */
 }
 
+.table-content-dark {
+	background-color: #18242c;
+}
+
+.app-wrapper-dark {
+	background-color: #18242c;
+}
 
 /*.entry-form {
      width: 25%;
@@ -43,11 +50,11 @@ button {
 }
 
 .top-bar-light {
-	background-color:white
+	background-color:lightblue
 }
 
 .top-bar-dark {
-	background-color: #343434;
+	background-color: #18242c;
 }
 
 .logout-button-wrapper {
@@ -66,8 +73,6 @@ button {
     font-weight: 500;
     background-color: lightblue;
 }
-
-
 
 .result-table {
 	width:70%;

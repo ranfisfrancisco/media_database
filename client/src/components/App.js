@@ -21,7 +21,7 @@ const App = () => {
 				</div>
 			);
 		} else if (page.visible === 'managemediapage') {
-			return (<div className='login-wrapper'>
+			return (<div className='managemedia-wrapper'>
 					{<SelectPage/>}
 			</div>)
 		} else {
@@ -30,7 +30,7 @@ const App = () => {
 	}
 
 	return (
-	<div className='app-wrapper'>
+	<div className={`app-wrapper app-wrapper-${page.theme}`}>
 	 		{renderPage()}
 	</div>
 	);

@@ -550,7 +550,7 @@ const ManageMediaPage = () => {
 					
 				</Sider>
 				<Layout>
-					<Content style={{ marginLeft: currentWidth }}>
+					<Content style={{ marginLeft: currentWidth }} className={`table-content table-content-${theme}`}>
 							{renderSearchTable()}
 					</Content>
 					<Footer style={{ textAlign: 'center', marginLeft: currentWidth }}>
