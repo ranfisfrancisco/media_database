@@ -1,5 +1,5 @@
 const initState = {
-	visible: 'managemediapage', //DEBUG REMOVE FOR PRODUCTION
+	visible: 'loginpage', //DEBUG FIX FOR PRODUCTION
     userEmail: null,
     userID: null
 };

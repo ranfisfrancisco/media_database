@@ -109,7 +109,12 @@ const ManageMediaPage = () => {
 
 		return (
 			<Form form={form} onFinish={createFormOnFinish} id="create-form" >
-				<Form.Item label="Name" name='createName'>
+				<Form.Item label="Name" name='createName' rules={[
+					{
+						required: true,
+						message: 'Please input a name.',
+					},
+					]}>
 					<Input/>
 				</Form.Item>
 
@@ -121,7 +126,12 @@ const ManageMediaPage = () => {
 					<DatePicker/>
 				</Form.Item>
 
-				<Form.Item label='Type' name='createType'>
+				<Form.Item label='Type' name='createType' rules={[
+					{
+						required: true,
+						message: 'Please select a type.',
+					},
+					]}>
                     <Select defaultValue={NOT_SELECTED_TEXT} style={{ width: 120 }}>
 						<Option key={NOT_SELECTED_TEXT}>{NOT_SELECTED_TEXT}</Option>
                         { typeOptions }
