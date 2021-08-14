@@ -1,7 +1,7 @@
 const initState = {
-	visible: 'loginpage', //DEBUG FIX FOR PRODUCTION
+	visible: 'loginpage',
     userEmail: null,
-    userID: null
+    userID: null //ID from media database
 };
 
 export default (state = initState, action) => {
