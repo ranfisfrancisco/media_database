@@ -1,5 +1,6 @@
 const initState = {
 	visible: 'loginpage',
+    theme: "dark",
     userEmail: null,
     userID: null //ID from media database
 };
@@ -12,6 +13,20 @@ export default (state = initState, action) => {
         //         userEmail: action.payload.userEmail
         //     }
         // }
+
+        case 'ENABLE_DARK_THEME': {
+            return {
+                ...state,
+                theme: "dark",
+            }
+        }
+
+        case 'ENABLE_LIGHT_THEME': {
+            return {
+                ...state,
+                theme: "light",
+            }
+        }
 
         case 'USER_SERVER_LOGIN_SUCCESS': {
             return {

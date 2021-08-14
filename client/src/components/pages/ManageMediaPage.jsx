@@ -12,10 +12,12 @@ const searchSelector = (state) => state.search;
 const mediaTypesSelector = (state) => state.mediaTypes.data;
 const mediaOwnershipsSelector = (state) => state.mediaOwnerships.data;
 const mediaStatusesSelector = (state) => state.mediaStatuses.data;
+const themeSelector = (state) => state.page.theme;
 
 const ManageMediaPage = () => {
 
 	const dispatch = useDispatch();
+	const theme = useSelector(themeSelector);
 	const searchResult = useSelector(searchSelector);
     const mediaTypes = useSelector(mediaTypesSelector);
 	const mediaOwnerships = useSelector(mediaOwnershipsSelector);
@@ -526,8 +528,9 @@ const ManageMediaPage = () => {
 		return (
 			<Layout>
 				<Sider 
+				className={`form-sidebar form-sidebar-${theme}`}
 				collapsible collapsed={sidebarCollapsed} onCollapse={onCollapse}
-				theme="light"
+				theme={theme}
 				collapsedWidth={sidebarCollapsedWidth}
 				width={sidebarWidth}
 				style={{

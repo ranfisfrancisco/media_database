@@ -26,20 +26,48 @@ button {
 	/* background-color: #403c3c; */
 }
 
-.logout-button-wrapper {
-	display: flex;
-	justify-content: center;
-	margin: 5px;
-}
 
-.entry-form {
-    /* width: 25%;
+/*.entry-form {
+     width: 25%;
      float: left;
     padding: 10px;
     position: fixed; 
 	border: 2px solid lightblue;
-	*/
+	
+}*/
+
+.top-bar {
+	margin: auto;
+	width: 100%;
+	padding: 1px;
 }
+
+.top-bar-light {
+	background-color:white
+}
+
+.top-bar-dark {
+	background-color: #343434;
+}
+
+.logout-button-wrapper {
+	display: flex;
+	justify-content: center;
+	margin: 5px;
+	float:center;
+}
+
+.toggle-dark {
+	float:left;
+}
+
+.form-sidebar label {
+	font-size: 20px;
+    font-weight: 500;
+    background-color: lightblue;
+}
+
+
 
 .result-table {
 	width:70%;

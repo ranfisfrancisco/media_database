@@ -1,7 +1,7 @@
 import React from 'react';
 import { useState } from 'react';
-import { useSelector } from 'react-redux';
-import { Menu } from 'antd';
+import { useDispatch, useSelector } from 'react-redux';
+import { Menu, Switch } from 'antd';
 import { 
 	SearchOutlined,
 	RollbackOutlined,
@@ -17,12 +17,13 @@ import LogoutButton from '../LogoutButton';
 
 import ManageMediaPage from './ManageMediaPage';
 
-//const readerUsernameSelector = (state) => state.page.reader.pname;
+const themeSelector = (state) => state.page.theme;
 
 const SelectPage = () => {
 
+	const dispatch = useDispatch();
+	const theme = useSelector(themeSelector);
 	const [visibleContent, setVisibleContent] = useState('manage');
-	//const readerUsername = useSelector(readerUsernameSelector);
 
 	const handleClick = (e) => setVisibleContent(e.key);
 
@@ -48,10 +49,21 @@ const SelectPage = () => {
 	/*<Menu.Item key='export' icon={<ArrowUpOutlined />}>
 				Export Data
 			</Menu.Item>*/
+
+	function onThemeToggle(checked) {
+		console.log(`switch to ${checked}`);
+		if (!checked){
+			return dispatch({ type: 'ENABLE_DARK_THEME' });
+		}
+		return dispatch({ type: 'ENABLE_LIGHT_THEME' });
+	}
 	
 	return (
 		<div className='reader-page-wrapper'>
+			<div className={`top-bar top-bar-${theme}`}>
+			<Switch onChange={onThemeToggle} class='toggle-dark' checkedChildren="Light" unCheckedChildren="Dark" ></Switch>
 			<LogoutButton/>
+			</div>
 			{renderMenu()}
 			{renderContent()}
 		</div>
