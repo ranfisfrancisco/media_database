@@ -31,7 +31,7 @@ const ManageMediaPage = () => {
 	const [selectedRows, setSelectedRows] = useState([]); 
 	const [selectedRowKeys, setSelectedRowKeys] = useState([]); // Attatched to table to determine and read what the user has clicked on
 
-	const REFRESH_WAIT_TIME = 2000;
+	const REFRESH_WAIT_TIME = 2000; // time in milleseconds
 
 	const returnMomentDateRangeStrings = (start, finish) => {
 		if (start === undefined || finish === undefined)
@@ -215,7 +215,7 @@ const ManageMediaPage = () => {
         });
 
         return (
-			<Form form={form} onFinish={searchFormOnFinish} id="search-form" >
+			<Form size="small" form={form} onFinish={searchFormOnFinish} id="search-form" >
 				<Form.Item label='ID:'  name='searchID'>
 					<Input type="number"  />
 				</Form.Item>
@@ -520,7 +520,7 @@ const ManageMediaPage = () => {
 			width={390}
 			style={{
 				overflow: 'auto',
-				height: '90vh',
+				height: '100vh',
 				position: 'fixed',
 				left: 0,
 			}}
@@ -538,5 +538,4 @@ const ManageMediaPage = () => {
 		</div>
 	);
 }
-
 export default ManageMediaPage;
