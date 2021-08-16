@@ -525,6 +525,7 @@ const ManageMediaPage = () => {
 		const sidebarCollapsedWidth = 60;
 		const currentWidth = sidebarCollapsed ? sidebarCollapsedWidth : sidebarWidth;
 
+		//repeated <br> needed to force scrollbar to appear
 		return (
 			<Layout>
 				<Sider 
@@ -545,6 +546,7 @@ const ManageMediaPage = () => {
 						{renderMenu()}
 						<br></br>
 						{renderSelectedForm()}
+						<br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br>
 					</div>
 				 : null}
 					
