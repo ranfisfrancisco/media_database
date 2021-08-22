@@ -4,7 +4,7 @@ var toUnnamed = require('named-placeholders')();
 const {OAuth2Client} = require('google-auth-library');
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
-async function verify(token, clientID) {
+async function verify_google_token(token) {
 	const ticket = await client.verifyIdToken({
 		idToken: token,
 		audience: process.env.GOOGLE_CLIENT_ID,  // Specify the CLIENT_ID of the app that accesses the backend
@@ -13,7 +13,7 @@ async function verify(token, clientID) {
 	});
 	const payload = ticket.getPayload();
 	const userid = payload['sub'];
-  }
+}
 
 const authenticateAPIKey = (key) => {
 	return key === process.env.API_KEY;
@@ -56,7 +56,7 @@ module.exports.userLogin = async (req, res) => {
 	let idToken = req.body.id_token;
 	let verified = true;
 
-	await verify(idToken).catch((error) => {
+	await verify_google_token(idToken).catch((error) => {
 		console.error(error);
 		verified=false;
 	});		
@@ -195,7 +195,7 @@ module.exports.createMediaItem = async (req, res) => {
 
 	for (var cv of colValues){
 		if (cv.val !== null){
-			if(statementCount > 0){
+			if (statementCount > 0){
 				colClause += ", ";
 				valueClause += ", ";
 			}
@@ -213,7 +213,7 @@ module.exports.createMediaItem = async (req, res) => {
 	}
 
 	if (statementCount === 0){
-		return res.status(400).json({ message: 'Input error: provided no columns to update' });
+		return res.status(400).json({ message: 'Input error: provided no columns' });
 	}
 
 	let query = `INSERT INTO media_items
@@ -227,8 +227,8 @@ module.exports.createMediaItem = async (req, res) => {
 		type_id: req.body.type_id,
 		ownership_id: req.body.ownership_id,
 		status_id: req.body.status_id,
-		use_date: req.body?.use_date,
-		release_date: req.body?.release_date,
+		use_date: req.body.use_date,
+		release_date: req.body.release_date,
 	});
 
 	conn.query(formattedQuery[0], formattedQuery[1], (err, result) => {
@@ -269,7 +269,7 @@ int (as string): filter_null_use_date (determines whether null results for relea
 
 Returns JSON object with:
 message: string with success or failure description
-resut: array of objects each representing a row in the array
+result: array of objects each representing a row in the array
 */
 module.exports.searchMediaItem = async (req, res) => {
 	let session = req.session;
@@ -281,9 +281,6 @@ module.exports.searchMediaItem = async (req, res) => {
 
 	if (!authenticateAPIKey(req.query.api_key))
 		return res.status(401).json({ message: 'Unauthorized API Key' });
-
-	// if (!req.query.user_id)
-	// 	return res.status(400).json({ message: 'Input error: did not provide user ID' });
 		
 	let filters = 
 	[
@@ -302,7 +299,7 @@ module.exports.searchMediaItem = async (req, res) => {
 	let filterNullUseDate = 0;
 	let whereClause = "";
 
-	if (req.query.exact_name_search === "1" || req.query.exact_name_search === "true")
+	if (req.query.exact_name_search === "true" || req.query.exact_name_search === 1)
 		exactNameSearch = true;
 
 	if (req.query.filter_null_release_date === "1" || req.query.filter_null_release_date === "2")

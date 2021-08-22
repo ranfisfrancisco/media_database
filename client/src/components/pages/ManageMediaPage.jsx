@@ -26,7 +26,6 @@ const ManageMediaPage = () => {
 	//using multiple useForm caused glitches with forms not submitting, updating
 	const [form] = Form.useForm();
 
-	const NOT_SELECTED_ID = -1;
 	const NOT_SELECTED_TEXT = "All"
 
 	const [visibleContent, setVisibleContent] = useState('search');
@@ -52,7 +51,7 @@ const ManageMediaPage = () => {
 
 	const valueToColID = (value, options) => {
 		if (value === undefined || value === NOT_SELECTED_TEXT || value === null){
-			return NOT_SELECTED_ID;
+			return null;
 		}
 
 		for (const option of options){
@@ -62,7 +61,7 @@ const ManageMediaPage = () => {
 		}
 
 		console.log("Failed to map Select option to corresponding ID >> \n", value, "\n", options);
-		return NOT_SELECTED_ID;
+		return null;
 	}
 
 	const clearCreateForm = () => {
@@ -89,7 +88,7 @@ const ManageMediaPage = () => {
 			return;
 		}
 
-		if (type === NOT_SELECTED_ID || type === undefined){
+		if (type === null || type === undefined){
 			alert("You must set a type!");
 			return;
 		}
@@ -170,6 +169,8 @@ const ManageMediaPage = () => {
 	}
 
 	const submitSearch = () => {
+		console.log(form.getFieldValue("searchReleaseDateFilter"))
+
 		let id = form.getFieldValue("searchID")
 		let name = form.getFieldValue("searchName")?.trim()
 		let useDateRange = processDateRange(form.getFieldValue("searchUseDateRange"));
@@ -178,8 +179,8 @@ const ManageMediaPage = () => {
 		let ownership = valueToColID(form.getFieldValue("searchOwnership"), mediaOwnerships);
 		let status = valueToColID(form.getFieldValue("searchStatus"), mediaStatuses);
 		let exactNameSearch = form.getFieldValue("exactNameSearch");
-		let filterNullReleaseDate = form.getFieldValue("searchReleaseDateFilter");
-		let filterNullUseDate = form.getFieldValue("searchUseDateFilter");
+		let filterNullReleaseDate = parseInt(form.getFieldValue("searchReleaseDateFilter"));
+		let filterNullUseDate = parseInt(form.getFieldValue("searchUseDateFilter"));
 
 		dispatch(searchMedia(id, name, useDateRange, releaseDateRange, type,
 		  ownership, status, exactNameSearch, filterNullReleaseDate, filterNullUseDate));
@@ -237,7 +238,7 @@ const ManageMediaPage = () => {
 				</Form.Item>
 
 				<Form.Item label="Release Date Filter" name='searchReleaseDateFilter'>
-					<Select defaultValue={NOT_SELECTED_TEXT} style={{ width: 120 }}>
+					<Select style={{ width: 120 }}>
 						<Option key="0">{NOT_SELECTED_TEXT}</Option>
 						<Option key="1">No Null Values</Option>
 						<Option key="2">Only Null Values</Option>
@@ -249,7 +250,7 @@ const ManageMediaPage = () => {
 				</Form.Item>
 
 				<Form.Item label="Use Date Filter" name='searchUseDateFilter'>
-					<Select defaultValue={NOT_SELECTED_TEXT} style={{ width: 120 }}>
+					<Select  style={{ width: 120 }}>
 						<Option key="0">{NOT_SELECTED_TEXT}</Option>
 						<Option key="1">No Null Values</Option>
 						<Option key="2">Only Null Values</Option>

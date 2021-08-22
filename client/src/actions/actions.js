@@ -4,7 +4,7 @@ import api from './api/api';
 
 const API_KEY = process.env.REACT_APP_API_KEY;
 
-export const userServerLogin = (userEmail,idToken) => async (dispatch) => {
+export const userServerLogin = (userEmail, idToken) => async (dispatch) => {
 	dispatch({ type: 'USER_SERVER_LOGIN' });
 	let response;
 
@@ -50,6 +50,8 @@ export const createMedia = (name, useDate, releaseDate, typeID, ownershipID, sta
 	dispatch({ type: 'CREATE_MEDIA_REQUEST' });
 	let response;
 
+	console.log(name, useDate, releaseDate, typeID, ownershipID, statusID)
+
 	try {
 		response = await api.put('/media', {
 			name: (typeof(name) === 'string') ? name.trim() : name,
@@ -79,6 +81,8 @@ export const searchMedia = (mediaID, name, useDateRange, releaseDateRange, typeI
 	dispatch({ type: 'GET_ALL_MEDIA_REQUEST' });
 	let response;
 
+	console.log(mediaID, name, useDateRange, releaseDateRange, typeID, ownershipID, statusID, exactNameSearch, filterNullReleaseDate, filterNullUseDate)
+
 	try {
 		response = await api.get('/media', {
 			params: {
@@ -86,9 +90,9 @@ export const searchMedia = (mediaID, name, useDateRange, releaseDateRange, typeI
 				name: name,
 				use_date_range: useDateRange,
 				release_date_range: releaseDateRange,
-				type_id: (typeID !== -1) ? typeID : null,
-				ownership_id: (ownershipID !== -1) ? ownershipID : null,
-				status_id: (statusID !== -1) ? statusID : null,
+				type_id: typeID,
+				ownership_id: ownershipID,
+				status_id: statusID,
 				exact_name_search: exactNameSearch,
 				filter_null_release_date: filterNullReleaseDate,
 				filter_null_use_date: filterNullUseDate,
@@ -110,6 +114,8 @@ export const searchMedia = (mediaID, name, useDateRange, releaseDateRange, typeI
 export const updateMedia = (mediaIdList, name, useDate, releaseDate, typeID, ownershipID, statusID) => async (dispatch) => {
 	dispatch({ type: 'UPDATE_MEDIA_REQUEST' });
 	let response;
+
+	console.log(mediaIdList, name, useDate, releaseDate, typeID, ownershipID, statusID)
 
 	try {
 		response = await api.post('/media', {
@@ -138,6 +144,8 @@ export const updateMedia = (mediaIdList, name, useDate, releaseDate, typeID, own
 export const deleteMedia = (mediaIdList) => async (dispatch) => {
 	dispatch({ type: 'DELETE_MEDIA_REQUEST' });
 	let response;
+
+	console.log(mediaIdList)
 
 	try {
 		response = await api.delete('/media', {data: {
