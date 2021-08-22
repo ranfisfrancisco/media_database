@@ -299,7 +299,7 @@ module.exports.searchMediaItem = async (req, res) => {
 	let filterNullUseDate = 0;
 	let whereClause = "";
 
-	if (req.query.exact_name_search === "true" || req.query.exact_name_search === 1)
+	if (req.query.exact_name_search === "true" || req.query.exact_name_search === "1")
 		exactNameSearch = true;
 
 	if (req.query.filter_null_release_date === "1" || req.query.filter_null_release_date === "2")

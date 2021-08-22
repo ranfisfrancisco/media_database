@@ -50,8 +50,6 @@ export const createMedia = (name, useDate, releaseDate, typeID, ownershipID, sta
 	dispatch({ type: 'CREATE_MEDIA_REQUEST' });
 	let response;
 
-	console.log(name, useDate, releaseDate, typeID, ownershipID, statusID)
-
 	try {
 		response = await api.put('/media', {
 			name: (typeof(name) === 'string') ? name.trim() : name,
@@ -80,8 +78,6 @@ export const createMedia = (name, useDate, releaseDate, typeID, ownershipID, sta
 export const searchMedia = (mediaID, name, useDateRange, releaseDateRange, typeID, ownershipID, statusID, exactNameSearch, filterNullReleaseDate, filterNullUseDate) => async (dispatch) => {
 	dispatch({ type: 'GET_ALL_MEDIA_REQUEST' });
 	let response;
-
-	console.log(mediaID, name, useDateRange, releaseDateRange, typeID, ownershipID, statusID, exactNameSearch, filterNullReleaseDate, filterNullUseDate)
 
 	try {
 		response = await api.get('/media', {
@@ -115,8 +111,6 @@ export const updateMedia = (mediaIdList, name, useDate, releaseDate, typeID, own
 	dispatch({ type: 'UPDATE_MEDIA_REQUEST' });
 	let response;
 
-	console.log(mediaIdList, name, useDate, releaseDate, typeID, ownershipID, statusID)
-
 	try {
 		response = await api.post('/media', {
 			media_id_list: mediaIdList,
@@ -144,8 +138,6 @@ export const updateMedia = (mediaIdList, name, useDate, releaseDate, typeID, own
 export const deleteMedia = (mediaIdList) => async (dispatch) => {
 	dispatch({ type: 'DELETE_MEDIA_REQUEST' });
 	let response;
-
-	console.log(mediaIdList)
 
 	try {
 		response = await api.delete('/media', {data: {

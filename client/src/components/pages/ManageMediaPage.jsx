@@ -169,8 +169,6 @@ const ManageMediaPage = () => {
 	}
 
 	const submitSearch = () => {
-		console.log(form.getFieldValue("searchReleaseDateFilter"))
-
 		let id = form.getFieldValue("searchID")
 		let name = form.getFieldValue("searchName")?.trim()
 		let useDateRange = processDateRange(form.getFieldValue("searchUseDateRange"));
@@ -179,8 +177,8 @@ const ManageMediaPage = () => {
 		let ownership = valueToColID(form.getFieldValue("searchOwnership"), mediaOwnerships);
 		let status = valueToColID(form.getFieldValue("searchStatus"), mediaStatuses);
 		let exactNameSearch = form.getFieldValue("exactNameSearch");
-		let filterNullReleaseDate = parseInt(form.getFieldValue("searchReleaseDateFilter"));
-		let filterNullUseDate = parseInt(form.getFieldValue("searchUseDateFilter"));
+		let filterNullReleaseDate = parseInt(form.getFieldValue("searchReleaseDateFilter")) || null;
+		let filterNullUseDate = parseInt(form.getFieldValue("searchUseDateFilter")) || null;
 
 		dispatch(searchMedia(id, name, useDateRange, releaseDateRange, type,
 		  ownership, status, exactNameSearch, filterNullReleaseDate, filterNullUseDate));
