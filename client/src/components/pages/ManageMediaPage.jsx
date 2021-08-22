@@ -312,8 +312,8 @@ const ManageMediaPage = () => {
 			return row.media_id;
 		})
 
-		if (name === "" && useDate === "" && releaseDate === "" && type === -1 && ownership === -1 && status === -1){
-			alert("Must provide something to update!")
+		if (name === "" && useDate === null && releaseDate === null && type === null && ownership === null && status === null){
+			alert("Must provide a field to update!")
 			return;
 		}
 
@@ -334,7 +334,6 @@ const ManageMediaPage = () => {
 			updateStatus: "All"
 		});
 	}
-
 
 	const renderUpdateForm = () => {
 		var typeOptions = mediaTypes.map(function(obj, index){
