@@ -16,10 +16,10 @@ async function verify_google_token(token) {
 }
 
 const authenticateSession = (request) => {
-	if (!request.user_id)
-		return null;
-	
-	return request.user_id;
+	if (request?.user_id)
+		return request.user_id;
+
+	return null;
 }
 
 const authenticateAPIKey = (key) => {
@@ -106,7 +106,7 @@ module.exports.userLogin = async (req, res) => {
 				console.log(err)
 				return res.status(400).json({ message: 'Query error' });
 			}
-			
+
 			conn.query(idQuery[0], idQuery[1], (err, result) => {
 				if(err) {
 					console.log(err)
@@ -156,7 +156,7 @@ date (as string): release_date
 module.exports.createMediaItem = async (req, res) => {
 	let userid = authenticateSession(req);
 
-	if (userid === NULL)
+	if (userid === null)
 		return res.status(401).json({ message: 'Invalid session ID' });
 
 	if (!authenticateAPIKey(req.body.api_key))
@@ -267,7 +267,7 @@ result: array of objects each representing a row in the array
 module.exports.searchMediaItem = async (req, res) => {
 	let userid = authenticateSession(req);
 
-	if (userid === NULL)
+	if (userid === null)
 		return res.status(401).json({ message: 'Invalid session ID' });
 
 	if (!authenticateAPIKey(req.query.api_key))
@@ -392,7 +392,7 @@ date (as string): release_date
 module.exports.updateMediaItem = async (req, res) => {
 	let userid = authenticateSession(req);
 
-	if (userid === NULL)
+	if (userid === null)
 		return res.status(401).json({ message: 'Invalid session ID' });
 
 	if (!authenticateAPIKey(req.body.api_key))
@@ -468,7 +468,7 @@ Will return error otherwise
 module.exports.deleteMediaItem = async (req, res) => {
 	let userid = authenticateSession(req);
 
-	if (userid === NULL)
+	if (userid === null)
 		return res.status(401).json({ message: 'Invalid session ID' });
 
 	if (!authenticateAPIKey(req.body.api_key))
@@ -499,7 +499,7 @@ module.exports.deleteMediaItem = async (req, res) => {
 module.exports.getAllTypes = async (req, res) => {
 	let userid = authenticateSession(req);
 
-	if (userid === NULL)
+	if (userid === null)
 		return res.status(401).json({ message: 'Invalid session ID' });
 
 	if (!authenticateAPIKey(req.query.api_key))
@@ -521,7 +521,7 @@ module.exports.getAllTypes = async (req, res) => {
 module.exports.getAllOwnerships = async (req, res) => {
 	let userid = authenticateSession(req);
 
-	if (userid === NULL)
+	if (userid === null)
 		return res.status(401).json({ message: 'Invalid session ID' });
 
 	if (!authenticateAPIKey(req.query.api_key))
@@ -543,7 +543,7 @@ module.exports.getAllOwnerships = async (req, res) => {
 module.exports.getAllStatuses = async (req, res) => {
 	let userid = authenticateSession(req);
 
-	if (userid === NULL)
+	if (userid === null)
 		return res.status(401).json({ message: 'Invalid session ID' });
 
 	if (!authenticateAPIKey(req.query.api_key))
