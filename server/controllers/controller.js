@@ -12,7 +12,14 @@ async function verify_google_token(token) {
 		//[CLIENT_ID_1, CLIENT_ID_2, CLIENT_ID_3]
 	});
 	const payload = ticket.getPayload();
-	const userid = payload['sub'];
+	const googleUserID = payload['sub'];
+}
+
+const authenticateSession = (request) => {
+	if (!request.user_id)
+		return null;
+	
+	return request.user_id;
 }
 
 const authenticateAPIKey = (key) => {
@@ -79,9 +86,7 @@ module.exports.userLogin = async (req, res) => {
 		 	return res.status(400).json({ message: 'Query error' });
 		}
 
-		//user does not exist
 		if (result.length === 0){
-			//insert new user
 			let insertQuery = toUnnamed(`INSERT INTO users (user_email, last_login_date)
 			VALUES (:user_email, CURRENT_TIMESTAMP());`, {
 				user_email: userEmail
@@ -90,16 +95,6 @@ module.exports.userLogin = async (req, res) => {
 			conn.query(insertQuery[0], insertQuery[1], (err, result) => {
 				if(err) return res.status(400).json({ message: 'Query error' });
 			});
-
-			// //grab new ID
-			// conn.query(idQuery, (err, result) => {
-			// 	if(err) {
-			// 		console.log(err)
-			// 		return res.status(400).json({ message: 'Query error' });
-			// 	}
-			// 	res.send({ message: "USER_SERVER_LOGIN_SUCCESS", result });
-			// 	return;
-			// });
 		} 
 
 		let updateQuery = toUnnamed(`UPDATE users SET last_login_date=CURRENT_TIMESTAMP() WHERE user_email=:user_email`, {
@@ -111,7 +106,7 @@ module.exports.userLogin = async (req, res) => {
 				console.log(err)
 				return res.status(400).json({ message: 'Query error' });
 			}
-			//grab new ID
+			
 			conn.query(idQuery[0], idQuery[1], (err, result) => {
 				if(err) {
 					console.log(err)
@@ -159,12 +154,10 @@ date (as string): use_date
 date (as string): release_date
 */
 module.exports.createMediaItem = async (req, res) => {
-	let session = req.session;
-	
-	if (!session.userid)
-		return res.status(401).json({ message: 'Invalid session ID' });
+	let userid = authenticateSession(req);
 
-	let userid = session.userid
+	if (userid === NULL)
+		return res.status(401).json({ message: 'Invalid session ID' });
 
 	if (!authenticateAPIKey(req.body.api_key))
 		return res.status(401).json({ message: 'Unauthorized API Key' });
@@ -272,12 +265,10 @@ message: string with success or failure description
 result: array of objects each representing a row in the array
 */
 module.exports.searchMediaItem = async (req, res) => {
-	let session = req.session;
-	
-	if (!session.userid)
-		return res.status(401).json({ message: 'Invalid session ID' });
+	let userid = authenticateSession(req);
 
-	let userid = session.userid
+	if (userid === NULL)
+		return res.status(401).json({ message: 'Invalid session ID' });
 
 	if (!authenticateAPIKey(req.query.api_key))
 		return res.status(401).json({ message: 'Unauthorized API Key' });
@@ -399,12 +390,10 @@ date (as string): use_date
 date (as string): release_date
 */
 module.exports.updateMediaItem = async (req, res) => {
-	let session = req.session;
-	
-	if (!session.userid)
-		return res.status(401).json({ message: 'Invalid session ID' });
+	let userid = authenticateSession(req);
 
-	let userid = session.userid;
+	if (userid === NULL)
+		return res.status(401).json({ message: 'Invalid session ID' });
 
 	if (!authenticateAPIKey(req.body.api_key))
 		return res.status(401).json({ message: 'Unauthorized API Key' });
@@ -477,12 +466,10 @@ int[]: media_id_list (List of ID's to be deleted)
 Will return error otherwise
 */
 module.exports.deleteMediaItem = async (req, res) => {
-	let session = req.session;
-	
-	if (!session.userid)
-		return res.status(401).json({ message: 'Invalid session ID' });
+	let userid = authenticateSession(req);
 
-	let userid = session.userid;
+	if (userid === NULL)
+		return res.status(401).json({ message: 'Invalid session ID' });
 
 	if (!authenticateAPIKey(req.body.api_key))
 		return res.status(401).json({ message: 'Unauthorized API Key' });
@@ -510,9 +497,9 @@ module.exports.deleteMediaItem = async (req, res) => {
 }
 
 module.exports.getAllTypes = async (req, res) => {
-	let session = req.session;
-	
-	if (!session.userid)
+	let userid = authenticateSession(req);
+
+	if (userid === NULL)
 		return res.status(401).json({ message: 'Invalid session ID' });
 
 	if (!authenticateAPIKey(req.query.api_key))
@@ -532,9 +519,9 @@ module.exports.getAllTypes = async (req, res) => {
 }
 
 module.exports.getAllOwnerships = async (req, res) => {
-	let session = req.session;
-	
-	if (!session.userid)
+	let userid = authenticateSession(req);
+
+	if (userid === NULL)
 		return res.status(401).json({ message: 'Invalid session ID' });
 
 	if (!authenticateAPIKey(req.query.api_key))
@@ -554,9 +541,9 @@ module.exports.getAllOwnerships = async (req, res) => {
 }
 
 module.exports.getAllStatuses = async (req, res) => {
-	let session = req.session;
-	
-	if (!session.userid)
+	let userid = authenticateSession(req);
+
+	if (userid === NULL)
 		return res.status(401).json({ message: 'Invalid session ID' });
 
 	if (!authenticateAPIKey(req.query.api_key))

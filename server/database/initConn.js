@@ -9,7 +9,4 @@ var conn = mysql.createPool({
   multipleStatements: true
 });
 
-// // I am Chuck Norris:
-// conn.on('error', function() {});
-
 module.exports = conn;
