@@ -16,8 +16,8 @@ async function verify_google_token(token) {
 }
 
 const authenticateSession = (request) => {
-	if (request?.user_id)
-		return request.user_id;
+	if (request?.session?.userid)
+		return request.session.userid;
 
 	return null;
 }

@@ -9,7 +9,7 @@ const cors = require('cors');
 
 const app = express();
 const server = http.createServer(app);
-const routes = require('./routes/routes');
+const apiRoutes = require('./routes/routes');
 const PORT = process.env.PORT;
 const sessionKey = process.env.SERVER_SESSION_KEY
 
@@ -28,7 +28,7 @@ app.use(express.static(path.resolve(__dirname, '../client/build')));
 app.use(express.json());
 app.use(cors());
 
-app.use('/api', routes);
+app.use('/api', apiRoutes);
 // All other GET requests not handled before will return our React app
 app.get('*', (req, res) => {
     res.sendFile(path.resolve(__dirname, '../client/build', 'index.html'));
