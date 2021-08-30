@@ -10,6 +10,8 @@ Currently hosted at https://my-media-database.herokuapp.com/
 
 Files include front-end client and back-end server connected to an SQL database.
 
+Uses React and NodeJS.
+
 ## Getting Started
 
 ### Dependencies
