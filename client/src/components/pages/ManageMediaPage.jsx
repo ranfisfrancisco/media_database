@@ -462,7 +462,7 @@ const ManageMediaPage = () => {
             { title: 'Type', dataIndex: 'type', sorter: {compare: (a,b) => a.type > b.type} },
             { title: 'Ownership', dataIndex: 'ownership', sorter: {compare: (a,b) => a.ownership > b.ownership} },
             { title: 'Status', dataIndex: 'status', sorter: {compare: (a,b) => a.status > b.status} },
-			{ title: 'Date Entered Into DB', dataIndex: 'created_date', render: ((date) => getFullDate(date)),
+			{ title: 'Date Added', dataIndex: 'created_date', render: ((date) => getFullDate(date)),
 				 sorter: {compare: (a,b) => new Date(a.created_date) - new Date(b.created_date)} },
 		];
 
